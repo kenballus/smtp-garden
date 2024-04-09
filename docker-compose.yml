@@ -1,0 +1,11 @@
+services:
+  aiosmtpd:
+    build:
+      context: "./images/aiosmtpd"
+      args:
+        APP_VERSION: "master"
+  postfix:
+    build:
+      context: "./images/postfix"
+      args:
+        APP_VERSION: "master"
