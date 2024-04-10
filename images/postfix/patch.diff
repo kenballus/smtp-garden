@@ -1,0 +1,26 @@
+diff --git a/postfix/src/util/sys_defs.h b/postfix/src/util/sys_defs.h
+index 62749ab57..90c5a73b1 100644
+--- a/postfix/src/util/sys_defs.h
++++ b/postfix/src/util/sys_defs.h
+@@ -1708,7 +1708,7 @@ typedef int pid_t;
+ #endif
+ 
+ #ifndef SSIZE_T_MAX
+-#define SSIZE_T_MAX __MAXINT__(ssize_t)
++#define SSIZE_T_MAX SSIZE_MAX
+ #endif
+ 
+  /*
+diff --git a/postfix/src/util/vstream.c b/postfix/src/util/vstream.c
+index affbcc0df..3bdd7397d 100644
+--- a/postfix/src/util/vstream.c
++++ b/postfix/src/util/vstream.c
+@@ -1127,7 +1127,7 @@ static int vstream_buf_space(VBUF *bp, ssize_t want)
+ 		return (VSTREAM_EOF);
+ 	if ((shortage = (want - bp->cnt)) > 0) {
+ 	    if ((bp->flags & VSTREAM_FLAG_FIXED)
+-		|| shortage > __MAXINT__(ssize_t) -bp->len - stream->req_bufsize) {
++		|| shortage > SSIZE_T_MAX -bp->len - stream->req_bufsize) {
+ 		bp->flags |= VSTREAM_FLAG_WR_ERR;
+ 	    } else {
+ 		incr = VSTREAM_ROUNDUP(shortage, stream->req_bufsize);
