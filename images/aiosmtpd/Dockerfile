@@ -5,4 +5,6 @@ RUN apt -y update && apt -y upgrade && apt -y install python3-setuptools && git 
 ARG APP_VERSION
 RUN cd aiosmtpd && git checkout $APP_VERSION && python3 setup.py install
 
-CMD ["aiosmtpd", "-l", "0.0.0.0:25"]
+COPY relay.py .
+
+CMD ["python3", "relay.py"]

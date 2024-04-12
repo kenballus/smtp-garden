@@ -4,8 +4,22 @@ services:
       context: "./images/aiosmtpd"
       args:
         APP_VERSION: "master"
+  exim:
+    build:
+      context: "./images/exim"
+      args:
+        APP_VERSION: "master"
   postfix:
     build:
       context: "./images/postfix"
       args:
         APP_VERSION: "master"
+  sendmail:
+    build:
+      context: "./images/sendmail"
+      args:
+        APP_VERSION: "8.18.1"
+
+  echo:
+    build:
+      context: "./images/echo"
