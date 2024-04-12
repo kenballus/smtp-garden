@@ -8,4 +8,6 @@ COPY patch.diff .
 ARG APP_VERSION
 RUN cd postfix && git checkout $APP_VERSION && patch -p1 < /app/patch.diff && cd postfix && make -j$(nproc) OPT='-fsanitize=undefined' && useradd postfix && groupadd postdrop && make install POSTFIX_INSTALL_OPTS=-non-interactive
 
+RUN sed -i 's/^#relayhost = $mydomain/relayhost = [echo]:25/' /etc/postfix/main.cf
+
 CMD postfix start && sleep infinity
