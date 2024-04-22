@@ -23,3 +23,7 @@ services:
   echo:
     build:
       context: "./images/echo"
+
+  opensmtpd:
+    build:
+      context: "./images/opensmtpd"
