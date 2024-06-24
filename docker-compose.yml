@@ -14,16 +14,23 @@ services:
       context: "./images/postfix"
       args:
         APP_VERSION: "master"
+        MYDESTINATION: "postfix"
+        RELAYHOST: "echo"
+    image: smtp-garden-postfix:latest
+    ports:
+      - 127.0.0.1:2501:25
   sendmail:
     build:
       context: "./images/sendmail"
       args:
         APP_VERSION: "8.18.1"
-
   echo:
     build:
       context: "./images/echo"
-
+    image: smtp-gargen-echo:latest
+    ports:
+      - 127.0.0.1:25:25
   opensmtpd:
     build:
       context: "./images/opensmtpd"
+
