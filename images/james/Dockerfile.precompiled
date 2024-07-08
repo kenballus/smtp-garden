@@ -1,0 +1,24 @@
+FROM smtp-garden-soil:latest
+
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH=${PATH}:${JAVA_HOME}/bin
+#ENV GLOWROOT_ACTIVATED=false
+
+EXPOSE 25
+
+RUN apt -y update && apt -y upgrade && apt -y install unzip wget libdb-dev default-jdk libc6 libc6-dev m4 maven
+
+WORKDIR /app
+RUN wget https://dlcdn.apache.org/james/server/3.8.1/james-server-jpa-guice.zip
+RUN unzip james-server-jpa-guice.zip
+
+# still need to run keytool and manually start the server
+#keytool -genkey -alias james -keyalg RSA -keystore conf/keystore
+# use the default password: james72laBalle
+
+# then run:
+#java -javaagent:james-server-jpa-app.lib/openjpa-3.2.0.jar \
+#    -Dlogback.configurationFile=conf/logback.xml \
+#    -Djdk.tls.ephemeralDHKeySize=2048 \
+#    -Dworking.directory=. \
+#    -jar james-server-jpa-app.jar
