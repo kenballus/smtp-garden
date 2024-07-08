@@ -33,7 +33,7 @@ services:
   echo:
     build:
       context: "./images/echo"
-    image: smtp-gargen-echo:latest
+    image: smtp-garden-echo:latest
     ports:
       - 127.0.0.1:25:25
   opensmtpd:
