@@ -9,6 +9,12 @@ services:
       context: "./images/exim"
       args:
         APP_VERSION: "master"
+  james:
+    build:
+      context: "./images/james"
+    image: james:11fromsource
+    ports:
+      - 127.0.0.1:2502:25
   postfix:
     build:
       context: "./images/postfix"
