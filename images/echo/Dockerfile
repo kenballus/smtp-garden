@@ -1,4 +1,4 @@
-FROM smtp-garden-soil:latest
+FROM smtp-garden-soil:malcolm
 
 COPY server.py .
 

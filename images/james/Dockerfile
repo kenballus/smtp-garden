@@ -1,4 +1,4 @@
-FROM smtp-garden-soil:latest
+FROM smtp-garden-soil:malcolm
 
 # default pw for keystore is james72laBalle, a legacy James thing
 

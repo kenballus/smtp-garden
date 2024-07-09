@@ -1,4 +1,4 @@
-FROM smtp-garden-soil:latest
+FROM smtp-garden-soil:malcolm
 
 ARG MYDESTINATION=postfix
 ARG RELAYHOST=echo
@@ -7,8 +7,8 @@ RUN apt -y update && apt -y upgrade && apt -y install libdb-dev m4
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_PRIORITY=critical
-ENV MYDESTINATION $MYDESTINATION
-ENV RELAYHOST $RELAYHOST
+ENV MYDESTINATION=$MYDESTINATION
+ENV RELAYHOST=$RELAYHOST
 
 RUN apt --yes --quiet --option Dpkg::Options::=--force-confold --option Dpkg::Options::=--force-confdef install postfix
 
@@ -20,8 +20,4 @@ RUN sed -i '$ a maillog_file = /dev/stdout' /etc/postfix/main.cf
 
 RUN sed -i '/^smtp/s/y/n/' /etc/postfix/master.cf
 
-CMD postfix start-fg && sleep infinity
-
-#old:
-#RUN sed -i '/^mydestination/s/localdomain, ,/localdomain,/' /etc/postfix/main.cf
-
+CMD ["postfix", "start-fg"]

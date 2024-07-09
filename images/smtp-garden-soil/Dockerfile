@@ -2,7 +2,7 @@ FROM debian:trixie-slim
 
 WORKDIR /app
 
-RUN apt -y update && apt -y upgrade && apt -y install busybox vim ncat net-tools procps iputils-ping telnet gi python3-dev
+RUN apt -y update && apt -y upgrade && apt -y install busybox vim ncat net-tools procps iputils-ping telnet git python3-dev
 
 RUN rm -rf /var/lib/apt/lists/*
 

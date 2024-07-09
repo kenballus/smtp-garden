@@ -12,7 +12,7 @@ services:
   james:
     build:
       context: "./images/james"
-    image: james:11fromsource
+    image: smtp-garden-james:malcolm
     ports:
       - 127.0.0.1:2502:25
   postfix:
@@ -22,7 +22,7 @@ services:
         APP_VERSION: "master"
         MYDESTINATION: "postfix"
         RELAYHOST: "echo"
-    image: smtp-garden-postfix:latest
+    image: smtp-garden-postfix:malcolm
     ports:
       - 127.0.0.1:2501:25
   sendmail:
@@ -33,7 +33,7 @@ services:
   echo:
     build:
       context: "./images/echo"
-    image: smtp-garden-echo:latest
+    image: smtp-garden-echo:malcolm
     ports:
       - 127.0.0.1:25:25
   opensmtpd:
