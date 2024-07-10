@@ -42,7 +42,7 @@
     <processors>
         <processor state="root" enableJmx="true">
             <mailet match="All" class="ToProcessor">
-                <processor>relay</processor>
+		<processor>transport</processor>
             </mailet>
         </processor>
 
@@ -59,15 +59,25 @@
             </mailet>
         </processor>
 
+        <processor state="transport" enableJmx="true">
+            <mailet match="All" class="RemoveMimeHeader">
+		<name>bcc</name>
+		<onMailetException>ignore</onMailetException>
+	    </mailet>
+            <mailet match="All" class="ToProcessor">
+		<processor>relay</processor>
+	    </mailet>
+	</processor>
+
         <!-- see https://james.apache.org/server/3/apidocs/org/apache/james/transport/mailets/RemoteDelivery.html
              and
              https://github.com/apache/james-project/blob/3.8.x/server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/RemoteDelivery.java -->
         <processor state="relay" enableJmx="true">
             <mailet match="All" class="RemoteDelivery">
-                <gateway>echo:25<gateway>
+		<gateway>echo:25</gateway>
                 <outgoing>outgoingQueue</outgoing>
                 <heloName>JAMES</heloName>
-                <!-- outgoingQueue>outgoing</outgoingQueue -- typo in original? 'outgoing' is the required token!! -ms -->
+                <!-- outgoingQueue>outgoing</outgoingQueue -->
                 <delayTime>2000, 2000, 2000</delayTime>
                 <maxRetries>3</maxRetries>
                 <maxDnsProblemRetries>0</maxDnsProblemRetries>

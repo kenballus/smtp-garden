@@ -50,7 +50,7 @@
             <requireSSL>false</requireSSL>
             <plainAuthEnabled>true</plainAuthEnabled>
         </auth>
-        <authorizedAddresses>127.0.0.0/8</authorizedAddresses>
+        <authorizedAddresses>*</authorizedAddresses>
         <verifyIdentity>false</verifyIdentity>
         <maxmessagesize>0</maxmessagesize>
         <addressBracketsEnforcement>true</addressBracketsEnforcement>
