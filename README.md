@@ -2,14 +2,14 @@
 
 ## General
 
-A containerized arrangement of various open-source SMTP servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H]([https://arpa-h.gov/) collaboration.
+A containerized arrangement of various open-source SMTP servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
 ## Status (as of 7/12/2024)
 
 - Configuration of SMTP servers: in progress
   - JAMES and Postfix are functional works-in-progress
   - Several other SMTP servers are in a pre-configuration state
-- Support containers: in progress/pre-implementation
+- Support containers: in progress / pre-implementation
   - Basic echo container functional.  An output filter/beautifier would be nice.
   - An adversary container concept proposed, needs development
 - Fuzzer: not begun
