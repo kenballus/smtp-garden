@@ -55,19 +55,19 @@ def sendmsg(filename, servername, port):
             banner = s.recv(1024)
         except socket.timeout:
             sys.exit("No SMTP banner received within timeout period, quitting.")
-        print(f"[{servername}]: {banner!r}")
+        print(f"Received [{s.getpeername()}]: {banner!r}")
         s.settimeout(1)
         with open(filename, "r") as email:
             for line in email:
                 line = line[0:-1] # strip \n
                 linebytes = line.replace("\\r","\r").replace("\\n","\n").encode()
-                print(f"[sendmsg]: {linebytes!r}")
+                print(f"Sending [{s.getsockname()}]: {linebytes!r}")
                 s.sendall(linebytes)
                 try:
                     reply = s.recv(1024)
                 except socket.timeout:         
                     continue
-                print(f"[{servername}]: {reply!r}")
+                print(f"Received [{s.getpeername()}]: {reply!r}")
 
 
 if __name__ == "__main__":
