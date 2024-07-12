@@ -1,8 +1,13 @@
-FROM smtp-garden-soil:malcolm
+FROM smtp-garden-soil:latest
 
 # default pw for keystore is james72laBalle, a legacy James thing
+# TODO:
+# - transition sourcing from the zip hosted at apache.org, to git repo and a branch designated by ARG
+# - `RUN wget|curl` all config files from official site, if they don't need to be modified
+# - `COPY` in only the config files we need to modify
+# - prune components that are unnecessary for simple relay purposes (like TLS stuff)
 
-# Dev config
+# Development environment config
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=${PATH}:${JAVA_HOME}/bin
 RUN echo "deb http://deb.debian.org/debian unstable main non-free contrib" >> /etc/apt/sources.list && \
