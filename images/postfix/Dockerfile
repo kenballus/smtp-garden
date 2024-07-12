@@ -1,6 +1,6 @@
 FROM smtp-garden-soil:latest
 
-ARG APP_VERSION="master"
+ARG APP_VERSION=master
 ARG MYDESTINATION=postfix
 ARG RELAYHOST=echo
 
@@ -24,15 +24,20 @@ RUN make -j$(nproc) OPT='-fsanitize=undefined -lnsl' \
 RUN make install POSTFIX_INSTALL_OPTS=-non-interactive
 
 # Option A- Install pre-written config files:
-#COPY main.cf /etc/postfix/
-#COPY master.cf /etc/postfix/
+COPY main.cf /etc/postfix/
+COPY master.cf /etc/postfix/
+RUN chmod 644 /etc/postfix/main.cf \
+ && chmod 644 /etc/postfix/master.cf \
+ && sed -i "s/__RELAYHOST__/$RELAYHOST/" /etc/postfix/main.cf \
+ && touch /etc/aliases \
+ && /usr/bin/newaliases
 
-# Option B- Modifying original config files in place:
-RUN sed -i "s/^smtpd_banner = \$myhostname/smtpd_banner = SMTP Garden $MYDESTINATION container -/" /etc/postfix/main.cf
-RUN sed -i "s/^mydestination = .*/mydestination = /" /etc/postfix/main.cf
-RUN sed -i "s/^relayhost = /relayhost = [$RELAYHOST]:25/" /etc/postfix/main.cf
-RUN sed -i 's|^mynetworks = |mynetworks = 172.0.0.0/8 |' /etc/postfix/main.cf
-RUN sed -i '$ a maillog_file = /dev/stdout' /etc/postfix/main.cf
-RUN sed -i '/^smtp/s/y/n/' /etc/postfix/master.cf
+# Option B- Modifying original config files in place (only works on installs from deb repo. Doesn't work on `make install` versions):
+#RUN sed -i "s/^smtpd_banner = \$myhostname/smtpd_banner = SMTP Garden $MYDESTINATION container -/" /etc/postfix/main.cf
+#RUN sed -i "s/^mydestination = .*/mydestination = /" /etc/postfix/main.cf
+#RUN sed -i "s/^relayhost = /relayhost = [$RELAYHOST]:25/" /etc/postfix/main.cf
+#RUN sed -i 's|^mynetworks = |mynetworks = 172.0.0.0/8 |' /etc/postfix/main.cf
+#RUN sed -i '$ a maillog_file = /dev/stdout' /etc/postfix/main.cf
+#RUN sed -i '/^smtp/s/y/n/' /etc/postfix/master.cf
 
 CMD ["postfix", "start-fg"]

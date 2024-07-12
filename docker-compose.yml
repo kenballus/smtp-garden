@@ -22,7 +22,7 @@ services:
         APP_VERSION: "master"
         MYDESTINATION: "postfix"
         RELAYHOST: "echo"
-    image: smtp-garden-postfix:malcolm
+    image: smtp-garden-postfix:latest
     ports:
       - 127.0.0.1:2501:25
   sendmail:
