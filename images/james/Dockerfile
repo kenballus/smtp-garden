@@ -8,6 +8,7 @@ FROM smtp-garden-soil:latest
 # - prune components that are unnecessary for simple relay purposes (like TLS stuff)
 
 # Development environment config
+ARG RELAYHOST=echo
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=${PATH}:${JAVA_HOME}/bin
 RUN echo "deb http://deb.debian.org/debian unstable main non-free contrib" >> /etc/apt/sources.list && \
@@ -27,11 +28,12 @@ RUN rm /app/james-project-3.8.1-source-release.zip
 WORKDIR /app/james-project
 
 # Build; Skip executing tests, but you can't skip building them (with `-Dmaven.skip.tests=true`) or compilation fails
-RUN mvn -T 4 -DskipTests clean install 
+RUN mvn -T $(nproc) -DskipTests clean install 
 
 # Deploy jars and cleanup
 RUN mkdir /app/james && cp -r /app/james-project/server/apps/jpa-app/target/james-server-jpa-app.* /app/james/
 ADD conf /app/james/conf/
+RUN sed -i 's/__RELAYHOST__/$RELAYHOST/' /app/james/conf/mailetcontainer.xml
 RUN rm -r /app/james-project
 
 # Go
