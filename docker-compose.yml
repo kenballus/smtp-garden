@@ -12,7 +12,9 @@ services:
   james:
     build:
       context: "./images/james"
-    image: smtp-garden-james:malcolm
+      args:
+        RELAYHOST: "echo"
+    image: smtp-garden-james:3.8.1
     ports:
       - 127.0.0.1:2502:25
   postfix:

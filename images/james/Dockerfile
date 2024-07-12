@@ -1,8 +1,14 @@
-FROM smtp-garden-soil:malcolm
+FROM smtp-garden-soil:latest
 
 # default pw for keystore is james72laBalle, a legacy James thing
+# TODO:
+# - transition sourcing from the zip hosted at apache.org, to git repo and a branch designated by ARG
+# - `RUN wget|curl` all config files from official site, if they don't need to be modified
+# - `COPY` in only the config files we need to modify
+# - prune components that are unnecessary for simple relay purposes (like TLS stuff)
 
-# Dev config
+# Development environment config
+ARG RELAYHOST=echo
 ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV PATH=${PATH}:${JAVA_HOME}/bin
 RUN echo "deb http://deb.debian.org/debian unstable main non-free contrib" >> /etc/apt/sources.list && \
@@ -22,11 +28,12 @@ RUN rm /app/james-project-3.8.1-source-release.zip
 WORKDIR /app/james-project
 
 # Build; Skip executing tests, but you can't skip building them (with `-Dmaven.skip.tests=true`) or compilation fails
-RUN mvn -T 4 -DskipTests clean install 
+RUN mvn -T $(nproc) -DskipTests clean install 
 
 # Deploy jars and cleanup
 RUN mkdir /app/james && cp -r /app/james-project/server/apps/jpa-app/target/james-server-jpa-app.* /app/james/
 ADD conf /app/james/conf/
+RUN sed -i 's/__RELAYHOST__/$RELAYHOST/' /app/james/conf/mailetcontainer.xml
 RUN rm -r /app/james-project
 
 # Go
