@@ -1,0 +1,12 @@
+HELO root@vm\r\n
+MAIL FROM:<outer@vm>\r\n
+RCPT TO:<root@echo>\r\n
+DATA\r\n
+Outer message\r\n
+\r\n.\r\n
+MAIL FROM:<inner@vm>\r\n
+RCPT TO:<victim@echo>\r\n
+DATA\r\n
+Smuggled message-Send bitcoin, or else!\r\n
+\r\n.\r\n
+QUIT\r\n

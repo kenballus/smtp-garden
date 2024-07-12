@@ -1,0 +1,7 @@
+HELO root@vm\r\n
+MAIL FROM:<root@vm>\r\n
+RCPT TO:<root@echo>\r\n
+DATA\r\n
+Test 123!\r\n
+\r\n.\r\n
+QUIT\r\n

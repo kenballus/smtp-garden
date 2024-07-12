@@ -1,3 +1,8 @@
+"""
+Version 1.1, prints peer identification info -mss 6/10/2024
+Version 1.0, by bk (original)
+"""
+
 import socket
 import threading
 import sys
@@ -24,7 +29,7 @@ def handle_connection(client_sock: socket.socket, _client_address: tuple[str, in
     except ConnectionResetError:
         pass
     while payload := really_recv(client_sock):
-        print(f"I received {payload!r}", file=sys.stderr)
+        print(f"Received from {client_sock.getpeername()}: {payload!r}", file=sys.stderr)
         try:
             if payload.lstrip()[:5].rstrip().upper() == b"DATA":
                 client_sock.sendall(b"354\r\n")
