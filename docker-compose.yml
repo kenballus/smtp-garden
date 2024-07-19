@@ -9,6 +9,10 @@ services:
       context: "./images/exim"
       args:
         APP_VERSION: "master"
+        RELAYHOST: "echo"
+    image: smtp-garden-exim:latest
+    ports:
+      - 127.0.0.1:2503:25
   james:
     build:
       context: "./images/james"

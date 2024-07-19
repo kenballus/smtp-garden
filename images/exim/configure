@@ -1,0 +1,241 @@
+######################################################################
+#                  Runtime configuration file for Exim               #
+######################################################################
+
+
+# This configuration file is modified from the default for the purposes
+# of the SMTP garden project.
+
+# The configuration manual is at:
+# https://www.exim.org/exim-html-current/doc/html/spec_html/index.html
+
+# This file is divided into several parts, all but the first of which are
+# headed by a line starting with the word "begin". Only those parts that
+# are required need to be present. Blank lines, and lines starting with #
+# are ignored.
+
+########### IMPORTANT ########## IMPORTANT ########### IMPORTANT ###########
+#                                                                          #
+# Whenever you change Exim's configuration file, you *must* remember to    #
+# HUP the Exim daemon, because it will not pick up the new configuration   #
+# until you do. However, any other Exim processes that are started, for    #
+# example, a process started by an MUA in order to send a message, will    #
+# see the new configuration as soon as it is in place.                     #
+#                                                                          #
+# You do not need to HUP the daemon for changes in auxiliary files that    #
+# are referenced from this file. They are read every time they are used.   #
+#                                                                          #
+# It is usually a good idea to test a new configuration for syntactic      #
+# correctness before installing it (for example, by running the command    #
+# "exim -C /config/file.new -bV").                                         #
+#                                                                          #
+########### IMPORTANT ########## IMPORTANT ########### IMPORTANT ###########
+
+
+######################################################################
+#                    MAIN CONFIGURATION SETTINGS                     #
+######################################################################
+
+# In the following line, __RELAYHOST__ must be replaced with the actual target.
+# The Dockerfile should take care of that.
+ROUTER_RELAY_HOST = __RELAYHOST__
+
+# because `hostname` gives nonreproducible output
+primary_hostname = localhost
+domainlist relay_to_domains = *
+
+# unused in this iteration
+#hostlist   relay_from_hosts = *
+
+# if these are undefined they will result in rejected mail
+acl_smtp_etrn = acl_accept_all
+acl_smtp_expn = acl_accept_all
+acl_smtp_rcpt = acl_accept_all
+acl_smtp_vrfy = acl_accept_all
+
+qualify_domain = exim
+qualify_recipient = smtpgarden
+
+#being defined at compilation time, next line is redundant
+#never_users = root
+
+# We don't want to DNS lookup everything, which will usually fail
+#host_lookup = *
+
+
+# The settings below cause Exim to make RFC 1413 (ident) callbacks
+# for all incoming SMTP calls. You can limit the hosts to which these
+# calls are made, and/or change the timeout that is used. If you set
+# the timeout to zero, all RFC 1413 calls are disabled. RFC 1413 calls
+# are cheap and can provide useful information for tracing problem
+# messages, but some hosts and firewalls have problems with them.
+# This can result in a timeout instead of an immediate refused
+# connection, leading to delays on starting up SMTP sessions.
+# (The default was reduced from 30s to 5s for release 4.61. and to
+# disabled for release 4.86)
+#
+#rfc1413_hosts = *
+#rfc1413_query_timeout = 5s
+
+
+# Enable an efficiency feature.  We advertise the feature; clients
+# may request to use it.  For multi-recipient mails we then can
+# reject or accept per-user after the message is received.
+# This supports recipient-dependent content filtering; without it
+# you have to temp-reject any recipients after the first that have
+# incompatible filtering, and do the filtering in the data ACL.
+# Even with this enabled, you must support the old style for peers
+# not flagging support for PRDR (visible via $prdr_requested).
+
+.ifdef _HAVE_PRDR
+prdr_enable = true
+.endif
+
+
+# By default, Exim expects all envelope addresses to be fully qualified, that
+# is, they must contain both a local part and a domain. If you want to accept
+# unqualified addresses (just a local part) from certain hosts, you can specify
+# these hosts by setting one or both of
+
+sender_unqualified_hosts = *
+recipient_unqualified_hosts = *
+
+# to control sender and recipient addresses, respectively. When this is done,
+# unqualified addresses are qualified using the settings of qualify_domain
+# and/or qualify_recipient (see above).
+
+
+# Unless you run a high-volume site you probably want more logging
+# detail than the default.  Adjust to suit.
+
+log_selector = +smtp_protocol_error +smtp_syntax_error \
+        +tls_certificate_verified
+
+
+# If you want Exim to support the "percent hack" for certain domains,
+# uncomment the following line and provide a list of domains. The "percent
+# hack" is the feature by which mail addressed to x%y@z (where z is one of
+# the domains listed) is locally rerouted to x@y and sent on. If z is not one
+# of the "percent hack" domains, x%y is treated as an ordinary local part. This
+# hack is rarely needed nowadays; you should not enable it unless you are sure
+# that you really need it.
+#
+# percent_hack_domains =
+#
+# As well as setting this option you will also need to remove the test
+# for local parts containing % in the ACL definition below.
+
+
+# When Exim can neither deliver a message nor return it to sender, it "freezes"
+# the delivery error message (aka "bounce message"). There are also other
+# circumstances in which messages get frozen. They will stay on the queue for
+# ever unless one of the following options is set.
+
+# This option unfreezes frozen bounce messages after two days, tries
+# once more to deliver them, and ignores any delivery failures.
+
+#ignore_bounce_errors_after = 2d
+
+# This option cancels (removes) frozen messages
+timeout_frozen_after = 60s
+
+
+# NOTE: Keep this comment section present for smtp garden
+# If you're in a part of the world where ASCII is not sufficient for most
+# text, then you're probably familiar with RFC2047 message header extensions.
+# By default, Exim adheres to the specification, including a limit of 76
+# characters to a line, with encoded words fitting within a line.
+# If you wish to use decoded headers in message filters in such a way
+# that successful decoding of malformed messages matters, you may wish to
+# configure Exim to be more lenient.
+#
+# check_rfc2047_length = false
+#
+# In particular, the Exim maintainers have had multiple reports of problems
+# from Russian administrators of issues until they disable this check,
+# because of some popular, yet buggy, mail composition software.
+
+
+# If you wish to be strictly RFC compliant, or if you know you'll be
+# exchanging email with systems that are not 8-bit clean, then you may
+# wish to disable advertising 8BITMIME.  Uncomment this option to do so.
+
+# accept_8bitmime = false
+
+
+# The following ACL, router, and transport configurations are minimally
+# designed to forward all incoming mail, unconditionally.
+
+######################################################################
+#                       ACL CONFIGURATION                            #
+#         Specifies access control lists for incoming SMTP mail      #
+######################################################################
+
+begin acl
+
+acl_accept_all:
+  accept
+
+
+######################################################################
+#                      ROUTERS CONFIGURATION                         #
+#               Specifies how addresses are handled                  #
+######################################################################
+#     THE ORDER IN WHICH THE ROUTERS ARE DEFINED IS IMPORTANT!       #
+# An address is passed to each router in turn until it is accepted.  #
+######################################################################
+
+begin routers
+
+# Beware that the hostname is specified again in the Transport.
+
+relayall:
+  driver = manualroute
+  domains = +relay_to_domains
+  transport = remote_smtp
+#  route_data = ROUTER_RELAY_HOST
+  route_list = * ROUTER_RELAY_HOST
+  host_find_failed = fail
+  no_more
+
+
+######################################################################
+#                      TRANSPORTS CONFIGURATION                      #
+######################################################################
+#                       ORDER DOES NOT MATTER                        #
+#     Only one appropriate transport is called for each delivery.    #
+######################################################################
+
+begin transports
+
+# This transport should match all mail
+
+remote_smtp:
+  driver = smtp
+#  message_size_limit = ${if > {$max_received_linelength}{998} {1}{0}}
+  multi_domain
+  allow_localhost
+
+
+######################################################################
+#                      RETRY CONFIGURATION                           #
+######################################################################
+
+#begin retry
+# Without any retry definitions, retrying will always fail
+
+######################################################################
+#                      REWRITE CONFIGURATION                         #
+######################################################################
+
+begin rewrite
+
+
+######################################################################
+#                   AUTHENTICATION CONFIGURATION                     #
+######################################################################
+
+begin authenticators
+
+
+# End of Exim configuration file

@@ -1,4 +1,4 @@
-HELO root@vm\r\n
+HELO smtpgarden\r\n
 MAIL FROM:<outer@vm>\r\n
 RCPT TO:<root@echo>\r\n
 DATA\r\n
