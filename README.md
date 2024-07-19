@@ -17,14 +17,13 @@ A containerized arrangement of various open-source SMTP servers for differential
 
 ## TODO (7/19/2024)
 
+- exim (7/19/2024)
+  - explore pros/cons of alternate configurations
 - JAMES (7/12/2024)
   - Migrate source accession from Apache.org zip file to github, with argument-based branch selection
   - Prune unneccessary components from build and configuration
-- exim (7/19/2024)
-  - explore pros/cons of alternate configurations
 - General configuration:
   - aiosmtp
-  - exim
   - opensmtpd
   - sendmail
 - All containers
@@ -48,7 +47,7 @@ In `docker-compose.yml` and/or individual `Dockerfile`s, target relay hosts can 
 ### Deploy
 
 ```
-docker compose up [echo] [postfix] [james]
+docker compose up [echo] [postfix] [james] [exim]
 ```
 Add additional containers as they become functional
 
