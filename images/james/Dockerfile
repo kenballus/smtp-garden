@@ -33,7 +33,7 @@ RUN mvn -T $(nproc) -DskipTests clean install
 # Deploy jars and cleanup
 RUN mkdir /app/james && cp -r /app/james-project/server/apps/jpa-app/target/james-server-jpa-app.* /app/james/
 ADD conf /app/james/conf/
-RUN sed -i 's/__RELAYHOST__/$RELAYHOST/' /app/james/conf/mailetcontainer.xml
+RUN sed -i "s/<gateway>__RELAYHOST__/<gateway>${RELAYHOST}/" /app/james/conf/mailetcontainer.xml
 RUN rm -r /app/james-project
 
 # Go

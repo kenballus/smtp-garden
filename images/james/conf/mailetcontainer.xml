@@ -74,7 +74,7 @@
              https://github.com/apache/james-project/blob/3.8.x/server/mailet/mailets/src/main/java/org/apache/james/transport/mailets/RemoteDelivery.java -->
         <processor state="relay" enableJmx="true">
             <mailet match="All" class="RemoteDelivery">
-		<gateway>echo:25</gateway>
+		<gateway>__RELAYHOST__:25</gateway>
                 <outgoing>outgoingQueue</outgoing>
                 <heloName>JAMES</heloName>
                 <!-- outgoingQueue>outgoing</outgoingQueue -->
