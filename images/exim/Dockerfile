@@ -2,6 +2,7 @@ FROM smtp-garden-soil:latest
 
 # Development environment config
 ARG APP_VERSION
+ARG RELAYHOST=echo
 RUN apt -y update && apt -y upgrade &&\
   apt -y install libpcre2-dev libdb-dev libssl-dev libfile-fcntllock-perl pkg-config &&\
   git clone 'https://github.com/Exim/exim'
@@ -12,8 +13,7 @@ RUN cd exim && git checkout $APP_VERSION && cd src && mkdir Local && cp src/EDIT
 
 # Configure
 ADD configure /usr/exim/
-ARG RELAYHOST=echo
-RUN sed -i "s/__RELAYHOST__/$RELAYHOST/" /usr/exim/configure
+RUN sed -i "/ROUTER_RELAY_HOST/s/__RELAYHOST__/${RELAYHOST}/" /usr/exim/configure
 
 # Go
 CMD ["/usr/exim/bin/exim", "-bdf"]
