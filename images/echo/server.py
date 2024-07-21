@@ -1,53 +1,53 @@
 """
+Version 1.2, handles SIGTERM gracefully, with async routines -mss
 Version 1.1, prints peer identification info -mss 6/10/2024
 Version 1.0, by bk (original)
 """
 
-import socket
-import threading
+import asyncio
+import signal
 import sys
 
 RECV_SIZE = 65536
-SOCKET_TIMEOUT = .5
 
-
-def really_recv(sock: socket.socket) -> bytes:
-    """Receives bytes from a socket until a timeout expires."""
-    result: bytes = b""
-    try:
-        while b := sock.recv(RECV_SIZE):
-            result += b
-    except (TimeoutError, ConnectionResetError):
-        pass
-    return result
-
-
-def handle_connection(client_sock: socket.socket, _client_address: tuple[str, int]) -> None:
-    client_sock.settimeout(SOCKET_TIMEOUT)
-    try:
-        client_sock.sendall(b"220 echo\r\n")
-    except ConnectionResetError:
-        pass
-    while payload := really_recv(client_sock):
-        print(f"Received from {client_sock.getpeername()}: {payload!r}", file=sys.stderr)
-        try:
-            if payload.lstrip()[:5].rstrip().upper() == b"DATA":
-                client_sock.sendall(b"354\r\n")
-            else:
-                client_sock.sendall(b"250\r\n")
-        except ConnectionResetError:
-            pass
-    client_sock.close()
-
-
-def main() -> None:
-    """Serve"""
-    server_sock: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_sock.bind(("0.0.0.0", 25))
-    server_sock.listen()
+async def handle_connection(reader, writer):
+    writer.write(b"220 echo\r\n")
+    await writer.drain()
     while True:
-        t: threading.Thread = threading.Thread(target=handle_connection, args=(*server_sock.accept(),))
-        t.start()
+        data = await reader.read(RECV_SIZE)
+        if not data:
+            break
+        peer_host, peer_port = writer.get_extra_info('peername')
+        print(f"Received from {peer_host}:{peer_port}: {data!r}")
+        sys.stdout.flush()
+        response = b"354\r\n" if data.lstrip()[:5].rstrip().upper() == b"DATA" else b"250\r\n"
+        writer.write(response)
+        await writer.drain()
+    writer.close()
+    await writer.wait_closed()
+
+async def shutdown(loop, server):
+    server.close()
+    await server.wait_closed()
+    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+    for task in tasks:
+        task.cancel()
+    await asyncio.gather(*tasks, return_exceptions=True)
+    loop.stop()
+
+def stop_handler(loop, server):
+    asyncio.ensure_future(shutdown(loop, server))
+
+async def main():
+    server = await asyncio.start_server(handle_connection, '0.0.0.0', 25)
+    loop = asyncio.get_running_loop()
+    loop.add_signal_handler(signal.SIGTERM, stop_handler, loop, server)
+    loop.add_signal_handler(signal.SIGINT, stop_handler, loop, server)
+    async with server:
+        await server.serve_forever()
 
 if __name__ == "__main__":
-    main()
+    try:
+        asyncio.run(main())
+    except asyncio.CancelledError:
+        print("echo server closed.")

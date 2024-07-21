@@ -4,20 +4,17 @@
 
 A containerized arrangement of various open-source SMTP servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 7/19/2024)
-
+## Status (as of 7/20/2024)
 - Configuration of SMTP servers: in progress
   - JAMES, Postfix, and exim are functional works-in-progress
   - Several other SMTP servers are in a pre-configuration state
 - Support containers: in progress / pre-implementation
-  - Basic echo container functional.  An output filter/beautifier would be nice.
+  - echo server improved with async methods.  An output filter/beautifier would be nice.
   - An adversary container concept proposed, needs development
 - Fuzzer: not begun
   - Simple payload delivery script works
 
 ## TODO
-- echo
-  - improve shutdown time in response to docker SIGTERM (7/20/2024)
 - postfix
   - make postfix HELO as something informative ("postfix") (7/20/2024)
 - exim
