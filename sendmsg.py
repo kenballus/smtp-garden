@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """
+sendmsg v2
 Send contents of file $1 to $2:$3[=25]
 
 Arguments to consider adding:
@@ -8,21 +9,24 @@ Arguments to consider adding:
 -R --mask-rx        mask received data from stdout
 -T --mask-tx        mask sent data from stdout
 
+Version 2: improved escape sequence handling
+Version 1: limited escape sequence handling (\r, \n only)
+
 About message formatting:
 -Input files are assumed to be text files with line breaks of 0x0A for readability,
  but these line terminators will be ignored in the sending of byte data.
--When it is desired to send a \r (0x0D) or \n (0x0A), put literal '\r' or '\n' token(s)
- in the file (like you were writing a string for printf.)
--These tokens will be translated to 0x0D and 0x0A respectively, for sending, so you have
- granular control.
+-Windows-style, i.e. \r\n, will not work as expected. Use Linux convention.
+-Escaped characters will be interpreted as such, using codes.escape_decode(). i.e.:
+ '\r' and '\n' literals in the input file become carriage return and newline.
+ '\x41' becomes 'A', '\t' is ASCII tab, etc.
+-codecs.escape_decode() is an undocumented Python function, so proceed with caution!
 -If you do not put at least a '\n' token at the end of every line, the mail server will probably
  get confused and not recognize EOL, and a timeout exception will be caught.
--Use '\r' as desired for signaling end of DATA and/or fuzzing.
 """
 
 import socket
 import sys
-
+import codecs
 
 mail_port = 25
 
@@ -38,7 +42,7 @@ def enough_args():
     return True
 
 def validate_port(port = "notNone"): # pre-empt a None-related exception
-    complain_badport = f"Error: {port} is not a number -65535"
+    complain_badport = f"Error: {port} is not a number 1-65535"
     if not port.isdigit():
         usage(complain_badport)
     portnum = int(port)
@@ -59,16 +63,14 @@ def sendmsg(filename, servername, port):
         s.settimeout(1)
         with open(filename, "r") as email:
             for line in email:
-                line = line[0:-1] # strip \n
-                linebytes = line.replace("\\r","\r").replace("\\n","\n").encode()
+                linebytes = codecs.escape_decode(bytes(line[0:-1], "utf-8"))[0]
                 print(f"Sending [{s.getsockname()}]: {linebytes!r}")
                 s.sendall(linebytes)
                 try:
                     reply = s.recv(1024)
-                except socket.timeout:         
+                except socket.timeout:
                     continue
                 print(f"Received [{s.getpeername()}]: {reply!r}")
-
 
 if __name__ == "__main__":
     if not enough_args():

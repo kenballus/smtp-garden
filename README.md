@@ -15,10 +15,14 @@ A containerized arrangement of various open-source SMTP servers for differential
 - Fuzzer: not begun
   - Simple payload delivery script works
 
-## TODO (7/19/2024)
-
-- exim (7/19/2024)
-  - explore pros/cons of alternate configurations
+## TODO
+- echo
+  - improve shutdown time in response to docker SIGTERM (7/20/2024)
+- postfix
+  - make postfix HELO as something informative ("postfix") (7/20/2024)
+- exim
+  - make exim HELO as something informative ("exim") (7/20/2024)
+  - explore pros/cons of other general alternate configurations (7/19/2024)
 - JAMES (7/12/2024)
   - Migrate source accession from Apache.org zip file to github, with argument-based branch selection
   - Prune unneccessary components from build and configuration
@@ -53,15 +57,17 @@ Add additional containers as they become functional
 
 
 ## Employment (early stage)
-Provisional localhost port assignment:
+### Provisional localhost port assignment:
 - 25 - echo
 - 2501 - postfix
 - 2502 - james
 - 2503 - exim
 
-```
-./sendmsg.py [message_file] localhost [port]
-```
-Note: actual line breaks and carriage returns (i.e., 0x0D and 0x0A bytes) in the message_file are ignored, but they can be retained for human readability.  Literal '\r' and '\n' tokens are encoded prior to transmission, to allow firm control of these bytes.  No methods are in place for escaping these characters, currently.
+### Provisional payload delivery
 
+Send file contents with sendmsg.py.  Alternatively, SMTP commands can be manually sent with telnet or netcat.  Piping file contents is brittle.
 
+```
+./sendmsg.py message_file localhost [port=25]
+```
+Notes: sendmsg reads and sends one line at a time.  Lines are delimited by mandatory newline bytes, but these newline bytes are stripped prior to sending.  Failure to send lines individually may lead to a 554 error.  Escaped characters within the line of text are interpreted according to Python rules and transmitted.  So, literal tokens can be sent as-is, by escaping the backslash ('\') character itself.  And, explicit bytes can be sent in hex or octal, such as '\x41' or '\101'.  Normally (if not part of your fuzzing protocol), each line should end with a '\r\n' token to signifiy to the SMTP server the end of the SMTP command, otherwise the server may time out on you.  See example files.

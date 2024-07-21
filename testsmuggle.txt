@@ -3,7 +3,7 @@ MAIL FROM:<outer@vm>\r\n
 RCPT TO:<root@echo>\r\n
 DATA\r\n
 Outer message\r\n
-\r\n.\r\n
+\\x0D\\x0A.\\x0D\\x0A
 MAIL FROM:<inner@vm>\r\n
 RCPT TO:<victim@echo>\r\n
 DATA\r\n
