@@ -41,7 +41,7 @@
 ROUTER_RELAY_HOST = __RELAYHOST__
 
 # because `hostname` gives nonreproducible output
-primary_hostname = localhost
+primary_hostname = smtp-garden-exim
 domainlist relay_to_domains = *
 
 # unused in this iteration

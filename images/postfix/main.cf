@@ -11,7 +11,7 @@ readme_directory = no
 compatibility_level = 3.6
 
 smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
-myhostname = localhost
+myhostname = smtp-garden-postfix
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 mydestination = 
