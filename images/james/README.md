@@ -1,6 +1,6 @@
-# Key configuration items
+## Key configuration items
 
-- Main folder: [./conf/](conf)
+- Main files in: [/app/james/conf/](conf)
   - Contents collected from https://github.com/apache/james-project/tree/master/examples
   - Key files:
     - [conf/mailetcontainer.xml](conf/mailetcontainer.xml) : defines mailets (like servelets, but for mail). Chained "processors" for the transport pipieline (see below)
