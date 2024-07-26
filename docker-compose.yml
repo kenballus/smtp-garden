@@ -4,6 +4,10 @@ services:
       context: "./images/aiosmtpd"
       args:
         APP_VERSION: "master"
+        RELAYHOST: "echo"
+    image: smtp-garden-aiosmtpd:latest
+    ports:
+    - 127.0.0.1:2504:25
   exim:
     build:
       context: "./images/exim"
