@@ -1,7 +1,7 @@
 FROM smtp-garden-soil:latest
 
 # Development environment config
-ARG APP_VERSION
+ARG APP_VERSION=master
 ARG RELAYHOST=echo
 RUN apt -y update && apt -y upgrade &&\
   apt -y install libpcre2-dev libdb-dev libssl-dev libfile-fcntllock-perl pkg-config &&\
