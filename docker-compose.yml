@@ -53,4 +53,10 @@ services:
   opensmtpd:
     build:
       context: "./images/opensmtpd"
+      args:
+        APP_VERSION: "master"
+        RELAYHOST: "echo"
+    image: smtp-garden-opensmtpd:latest
+    ports:
+      - 127.0.0.1:2506:25
 

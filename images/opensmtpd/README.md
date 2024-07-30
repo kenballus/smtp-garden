@@ -1,0 +1,15 @@
+## Key configuration items
+
+- Target relay host: follows `relay host` in smtpd.conf, in quotes.
+- HELO name: follows `helo` in smtpd.conf, in quotes.
+- Default location for current "master" version: [/usr/local/etc/smtpd.conf](smtpd.conf), which is the only required file.
+  - Take note: many online references describe the default location as `/etc`, `/etc/mail`, or other locations, perhaps based on different versions.
+  - If your config file has an error in it, running `smtpd -n` will report the error along side the file location and line number.  If there are no errors, it assumes you know which file it is parsing. 
+  - Alternate locations can be used with the `-f /path/to/file` command line argument.
+
+
+## Other
+- This relay is pickier about RFC 2822, and more likely to reject test messages.  It seems to:
+  - Require at least one colon character, ie ':' somewhere in the DATA body.
+  - Reject any DATA message that contains an \n byte before the terminal `\r\n.\r\n`.
+  - Validation might be performed in ../usr.sbin/smtpd/smtp_session.c, needs further investigation.
