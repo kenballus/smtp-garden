@@ -40,6 +40,10 @@ services:
       context: "./images/sendmail"
       args:
         APP_VERSION: "8.18.1"
+        RELAYHOST: "echo"
+    image: smtp-garden-sendmail:latest
+    ports:
+    - 127.0.0.1:2505:25
   echo:
     build:
       context: "./images/echo"

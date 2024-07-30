@@ -6,8 +6,8 @@ A containerized arrangement of various open-source SMTP servers for differential
 
 ## Status (as of 7/26/2024)
 - Configuration of SMTP servers: in progress
-  - aiosmtpd, Apache James, Postfix, and Exim are functional works-in-progress
-  - Several other SMTP servers are in a pre-configuration state
+  - aiosmtpd, Apache James, Exim, Postfix, and Sendmail are functional works-in-progress
+  - other SMTP servers are in a candidate or pre-configuration state
 - Support containers: in progress / pre-implementation
   - echo server improved with async methods.  An output filter/beautifier would be nice.
   - An adversary container concept proposed, needs development
@@ -17,7 +17,6 @@ A containerized arrangement of various open-source SMTP servers for differential
 ## TODO
 - Finish general configuration:
   - [opensmtpd](images/opensmtpd)
-  - [sendmail](images/sendmail)
 - [Apache James](images/james) (7/12/2024)
   - Migrate source accession from Apache.org zip file to github, with argument-based branch selection
   - Prune unneccessary components from build and configuration
@@ -58,6 +57,7 @@ Add additional containers as they become functional
 - 2502 - james
 - 2503 - exim
 - 2504 - aiosmtpd
+- 2505 - sendmail
 - (subject to change)
 
 ### Provisional payload delivery

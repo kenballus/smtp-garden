@@ -1,5 +1,5 @@
-APPENDDEF(`confENVDEF',`-DSTARTTLS -DSASL -DLDAPMAP -DHASFLOCK')
-APPENDDEF(`confLIBS', `-lssl -lcrypto -lsasl2 -lldap -llber')
+APPENDDEF(`confENVDEF',`-DSTARTTLS -DSASL -DLDAPMAP -DHASFLOCK -DNEWDB')
+APPENDDEF(`confLIBS', `-lssl -lcrypto -lsasl2 -lldap -llber -ldb')
 APPENDDEF(`confINCDIRS', `-I/usr/include/sasl')
 define(`confMANGRP',`root')
 define(`confMANOWN',`root')
