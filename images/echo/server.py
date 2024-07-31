@@ -1,4 +1,5 @@
 """
+Version 1.3, handles ConnectionResetError, commonly caused by MTA disconnecting abruptly
 Version 1.2, handles SIGTERM gracefully, with async routines -mss
 Version 1.1, prints peer identification info -mss 6/10/2024
 Version 1.0, by bk (original)
