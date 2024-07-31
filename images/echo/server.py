@@ -11,20 +11,23 @@ import sys
 RECV_SIZE = 65536
 
 async def handle_connection(reader, writer):
-    writer.write(b"220 echo\r\n")
-    await writer.drain()
-    while True:
-        data = await reader.read(RECV_SIZE)
-        if not data:
-            break
-        peer_host, peer_port = writer.get_extra_info('peername')
-        print(f"Received from {peer_host}:{peer_port}: {data!r}")
-        sys.stdout.flush()
-        response = b"354\r\n" if data.lstrip()[:5].rstrip().upper() == b"DATA" else b"250\r\n"
-        writer.write(response)
+    try:
+        writer.write(b"220 echo\r\n")
         await writer.drain()
-    writer.close()
-    await writer.wait_closed()
+        while True:
+            data = await reader.read(RECV_SIZE)
+            if not data:
+                break
+            peer_host, peer_port = writer.get_extra_info('peername')
+            print(f"Received from {peer_host}:{peer_port}: {data!r}")
+            sys.stdout.flush()
+            response = b"354\r\n" if data.lstrip()[:5].rstrip().upper() == b"DATA" else b"250\r\n"
+            writer.write(response)
+            await writer.drain()
+        writer.close()
+        await writer.wait_closed()
+    except ConnectionResetError:
+        print("ConnectionResetError caught: Connection reset by peer (premature disconnection)")
 
 async def shutdown(loop, server):
     server.close()
