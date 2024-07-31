@@ -1,6 +1,9 @@
 """
 aiosmtpd proxy
 
+Version 1.1.1 20240730 mss
+- flush to stdout more frequently
+
 Version 1.1 - 20240725 mss
 - uses __RELAYHOST__ convention
 - captures signals from docker for faster exit
@@ -22,10 +25,12 @@ relay_host = "__RELAYHOST__"
 keep_running = True
 HELO_name = "smtp-garden-aiostmpd"
 
+
 """ SIGNAL HANDLING """
 def stop_handler(sig, frame):
     global keep_running
     print(f"[aiosmtpd] Exiting...", end="")
+    sys.stdout.flush()
     keep_running = False
 
 signal.signal(signal.SIGINT, stop_handler)
@@ -38,6 +43,7 @@ controller = Controller(
 )
 
 print("[aiosmtpd] Starting proxy...")
+sys.stdout.flush()
 controller.start()
 while keep_running:
     time.sleep(1)
