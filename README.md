@@ -71,12 +71,9 @@ Send file contents with sendmsg.py.  Alternatively, SMTP commands can be manuall
 ./sendmsg.py message_file [server|"localhost"] [port|"25"]
 ```
 Notes:
-- If you only specify a server or a port but not both, the script is smart enough to figure out what you meant, and will apply a default for the other value
-- `server` defaults to "localhost".  Just give an IPv4 or name, i.e., `172.18.0.3`.  Don't expect docker hostnames to be recognized on the host OS unless you have updated your hosts file.
-- `port` defaults to 25. As for `server`, just give a number. i.e., `2501`, not `port=2501`
-- sendmsg reads and sends one line at a time from `message_file`
-- Lines are delimited by mandatory newline bytes (which also help human-readability), but these newline bytes are stripped prior to sending.
-- Normally (if not part of your fuzzing protocol), each line should end with a '\r\n' token to signifiy to the SMTP server the end of the SMTP command, otherwise the server may time out on you.  See example .txt files.
-- Escaped characters within the line of text are interpreted according to Python rules and transmitted.  So, literal tokens can be sent as-is, with an escaped backslash ('\\\\').  And, explicit bytes can be sent in hex or octal, such as '\x41' or '\101'.
-- Escape parsing uses codecs.escape_decode(), an undocumented Python function, please report any unexpected results.
+- If you only specify a server or a port, but not both, the script is smart enough to figure out what you meant, and will apply a default for the other value
+  - `server` defaults to "localhost".
+  - `port` defaults to 25. As for `server`, just give a number. i.e., `2501`, not `port=2501`
+- See leading script comments/description for message_file formatting details.
+- Note: Escape character parsing uses codecs.escape_decode(), an undocumented Python function, please report any unexpected results.
 
