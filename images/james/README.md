@@ -24,8 +24,10 @@
 - HELO name: \<heloName\> field (`relay` processor, [conf/mailetcontainer.xml](conf/mailetcontainer.xml))
 - Target relay host: \<gateway\> field (`relay` processor, [conf/smtpserver.xml](conf/smtpserver.xml))
 
-## Versions
+## Alternate Versions
 
-- The fallback Dockerfile generates a (large, ~12gb) image based on Apache James 3.8.1, from the Apache official release source tarball.
+- Use the "fallback" Dockerfile for Apache James 3.8.1, the latest stable James release
+  - Fetches .zip from official source release at [https://dlcdn.apache.org/james/server/3.8.1/james-project-3.8.1-source-release.zip](https://dlcdn.apache.org/james/server/3.8.1/james-project-3.8.1-source-release.zip).
+  - See project homepage at [https://james.apache.org/download.cgi](https://james.apache.org/download.cgi) for other versions.
   - Note: builds with openjdk-11.  In contrast, current master is based on JRE 21, a substantial leap forward.
 - An official Apache James image on Docker Hub, based on 3.6.1 also exists, and could also be tested.
