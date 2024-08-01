@@ -17,9 +17,8 @@ A containerized arrangement of various open-source SMTP servers for differential
 ## TODO
 - See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate MTAs.
 - [OpenSMTPD](images/opensmtpd) demonstrated stricter RFC 2822-enforcing behavior than the other relays.  Examine source further.
-- [Apache James](images/james) (7/12/2024)
-  - Migrate source accession from Apache.org zip file to github, with argument-based branch selection
-  - Prune unneccessary components from build and configuration
+- [Apache James](images/james) (8/1/2024)
+  - Further minimize changes to example config files
 - [Exim](images/exim) (7/19/2024)
   - Explore pros/cons of other general alternate configurations
 - [aiosmtpd](images/aiosmtpd) (7/26/2024)

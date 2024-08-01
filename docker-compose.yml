@@ -22,7 +22,7 @@ services:
       context: "./images/james"
       args:
         RELAYHOST: "echo"
-    image: smtp-garden-james:3.8.1
+    image: smtp-garden-james:latest
     ports:
       - 127.0.0.1:2502:25
   postfix:
