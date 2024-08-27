@@ -6,7 +6,7 @@ A containerized arrangement of various open-source SMTP servers for differential
 
 ## Status (as of 7/30/2024)
 - Configuration of SMTP servers: in progress
-  - aiosmtpd, Apache James, Exim, OpenSMTPD, Postfix, and Sendmail are functional works-in-progress
+  - aiosmtpd, Apache James, Exim, nullmailer, OpenSMTPD, Postfix, and Sendmail are functional works-in-progress
   - other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
 - Support containers: in progress / pre-implementation
   - echo server improved with async methods.  An output filter/beautifier would be nice.
@@ -59,6 +59,7 @@ Add additional containers as they become functional
 - 2504 - aiosmtpd
 - 2505 - sendmail
 - 2506 - opensmtpd
+- 2507 - nullmailer
 
 (subject to change)
 

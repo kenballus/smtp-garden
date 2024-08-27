@@ -22,4 +22,5 @@ RUN echo "smtp-garden-nullmailer" > /usr/local/etc/nullmailer/me \
   && echo "${RELAYHOST} smtp" > /usr/local/etc/nullmailer/remotes
 
 # Go
-CMD nullmailer-send & sleep infinity
+CMD nullmailer-send & nc -lk -p 25 -c nullmailer-smtpd
+

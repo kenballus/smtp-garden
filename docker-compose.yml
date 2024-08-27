@@ -21,6 +21,7 @@ services:
     build:
       context: "./images/james"
       args:
+        APP_VERSION: "master"
         RELAYHOST: "echo"
     image: smtp-garden-james:latest
     ports:
@@ -59,4 +60,13 @@ services:
     image: smtp-garden-opensmtpd:latest
     ports:
       - 127.0.0.1:2506:25
+  nullmailer:
+    build:
+      context: "./images/nullmailer"
+      args:
+        APP_VERSION: "master"
+        RELAYOST: "echo"
+    image: smtp-garden-nullmailer:latest
+    ports:
+      - 127.0.0.1:2507:25
 
