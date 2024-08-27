@@ -4,7 +4,7 @@
 
 A containerized arrangement of various open-source SMTP servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 7/30/2024)
+## Status (as of 8/27/2024)
 - Configuration of SMTP servers: in progress
   - aiosmtpd, Apache James, Exim, nullmailer, OpenSMTPD, Postfix, and Sendmail are functional works-in-progress
   - other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
