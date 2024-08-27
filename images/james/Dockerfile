@@ -3,12 +3,15 @@ FROM smtp-garden-soil:latest
 ARG RELAYHOST=echo
 ARG APP_VERSION=master
 ADD conf /app/conf
+
+# Consolidated RUN command saves docker several GB of storage
 RUN apt -y update && apt -y upgrade \
     && apt -y install unzip openjdk-21-jdk maven libdb-dev m4 libc6 libc6-dev \
     && cd /app \
     && git clone https://github.com/apache/james-project.git \
     && echo "Building..." \
     && cd /app/james-project \
+    && git checkout $APP_VERSION \
     && mvn -T $(nproc) -DskipTests clean install \
     && echo "Deploying jars..." \
     && mkdir /app/james \
@@ -17,7 +20,7 @@ RUN apt -y update && apt -y upgrade \
 # Version A: somewhat minimal configuration (loads fast, no activemq log spam)
     && mkdir /app/james/conf \
     && cp /app/conf/* /app/james/conf \
-# Version B: default conf files, minimal (warning, James spams the logs. These needs additional editing)
+# Version B: default conf files, most minimal config change (warning, James spams the logs. These needs additional editing)
 #    && find /app/james-project/server/apps/spring-app/src/main/resources -maxdepth 1 -type f -exec cp -t /app/james/conf {} + \
 #    && cp /app/conf/mailetcontainer.xml /app/james/conf \
 #    && cp /app/conf/smtpserver.xml /app/james/conf \
@@ -31,7 +34,7 @@ RUN apt -y update && apt -y upgrade \
     && rm -r /root/.m2
 
 # Go
-WORKDIR /app/james
+#WORKDIR /app/james
 CMD ["java", \
      "-javaagent:/app/james/james-server-jpa-app.lib/openjpa-4.0.0.jar", \
      "-Dlogback.configurationFile=/app/james/conf/logback.xml", \
