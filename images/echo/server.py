@@ -1,4 +1,6 @@
 """
+Version 1.4, -Updated server reply bytes to appease finicky clients (minimum 4 byte response instead of 3)
+             -generate_response method drafted in comment block
 Version 1.3, handles ConnectionResetError, commonly caused by MTA disconnecting abruptly
 Version 1.2, handles SIGTERM gracefully, with async routines -mss
 Version 1.1, prints peer identification info -mss 6/10/2024
@@ -11,10 +13,27 @@ import sys
 
 RECV_SIZE = 65536
 
+"""
+# Alternate response generator, if higher fidelity to normal behavior is needed
+def generate_response(client_bytes, is_datamode):
+    if is_datamode:
+        if client_bytes == b".":
+            return b"250 Ok", False
+        else:
+            return b"", True
+    if(client_bytes == b"DATA"):
+        return b"354 Send data\r\n", True
+    elif(client_bytes == b"QUIT"):
+        return b"221 Bye\r\n", False
+    else:
+        return b"250 Ok", False
+"""
+
 async def handle_connection(reader, writer):
     try:
-        writer.write(b"220 echo\r\n")
+        writer.write(b"220 echo ESMTP\r\n")
         await writer.drain()
+#        is_datamode = False
         while True:
             data = await reader.read(RECV_SIZE)
             if not data:
@@ -22,7 +41,8 @@ async def handle_connection(reader, writer):
             peer_host, peer_port = writer.get_extra_info('peername')
             print(f"Received from {peer_host}:{peer_port}: {data!r}")
             sys.stdout.flush()
-            response = b"354\r\n" if data.lstrip()[:5].rstrip().upper() == b"DATA" else b"250\r\n"
+#            response, is_datamode = generate_response(data.lstrip()[:5].rstrip().upper(), is_datamode)
+            response = b"354 \r\n" if data.lstrip()[:5].rstrip().upper() == b"DATA" else b"250 \r\n"
             writer.write(response)
             await writer.drain()
         writer.close()
@@ -55,3 +75,9 @@ if __name__ == "__main__":
         asyncio.run(main())
     except asyncio.CancelledError:
         print("echo server closed.")
+
+"""
+extra
+            response = b"354 Send data\r\n" if data.lstrip()[:5].rstrip().upper() == b"DATA" else b"250 Ok\r\n"
+"""
+
