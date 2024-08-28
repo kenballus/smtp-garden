@@ -16,7 +16,6 @@ A containerized arrangement of various open-source SMTP servers for differential
 
 ## TODO
 - See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate MTAs.
-- [msmtp](images/msmtp) has a workaround for a weird socket bug, see [issues](https://github.com/kenballus/smtp-garden/issues)
 - start [nullmailer](images/nullmailer) with a signal-handling script, for graceful shutdown
 - [OpenSMTPD](images/opensmtpd) demonstrated stricter RFC 2822-enforcing behavior than the other relays.  Examine source further.
 - [Apache James](images/james) (8/1/2024)

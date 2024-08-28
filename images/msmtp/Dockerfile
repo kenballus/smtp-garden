@@ -5,9 +5,9 @@ ARG APP_VERSION=master
 ARG RELAYHOST=echo
 RUN apt -y update && apt -y upgrade \
   && apt -y install automake libtool gettext texinfo pkg-config libgnutls28-dev \
-  && git clone https://git.marlam.de/git/msmtp.git
+  && git clone https://git.marlam.de/git/msmtp.git \
+  && cd msmtp \
 # Build
-RUN cd msmtp \
   && git checkout $APP_VERSION \
   && autoreconf -i \
   && ./configure \
@@ -19,10 +19,8 @@ RUN cd msmtp \
 COPY start.sh .
 RUN chmod +x start.sh
  
-# Go
-# Workaround for msmtpd not aware of incoming network connections:
-CMD nc -lk -p 25 -c 'msmtpd --inetd'
+# Go (port number "25" is optional and can be changed)
+CMD ["./start.sh", "25"]
 
-# Preferred, if bug can be fixed:
-#CMD ["./start.sh", "25"]
-
+# Alternate invocation by ncat:
+#CMD nc -lk -p 25 -c 'msmtpd --inetd'

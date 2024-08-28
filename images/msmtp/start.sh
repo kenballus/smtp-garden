@@ -26,7 +26,7 @@ trap 'stop_msmtpd' TERM INT
 # Start msmtpd
 echo '[msmtp] starting...'
 
-msmtpd --log=/var/msmtpd.log --port=$myport &
+msmtpd --log=/var/msmtpd.log --interface=0.0.0.0 --port=$myport &
 if [ $? -ne 0 ]; then
     echo '[msmtp] msmtpd failed to start'
     exit 1
