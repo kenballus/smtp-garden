@@ -4,9 +4,9 @@
 
 A containerized arrangement of various open-source SMTP servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 8/27/2024)
+## Status (as of 8/28/2024)
 - Configuration of SMTP servers: in progress
-  - aiosmtpd, Apache James, Exim, nullmailer, OpenSMTPD, Postfix, and Sendmail are functional works-in-progress
+  - aiosmtpd, Apache James, Exim, Msmtp, nullmailer, OpenSMTPD, Postfix, and Sendmail are functional works-in-progress
   - other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
 - Support containers: in progress / pre-implementation
   - echo server improved with async methods.  An output filter/beautifier would be nice.
@@ -16,6 +16,8 @@ A containerized arrangement of various open-source SMTP servers for differential
 
 ## TODO
 - See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate MTAs.
+- [msmtp](images/msmtp) has a workaround for a weird socket bug, see [issues](https://github.com/kenballus/smtp-garden/issues)
+- start [nullmailer](images/nullmailer) with a signal-handling script, for graceful shutdown
 - [OpenSMTPD](images/opensmtpd) demonstrated stricter RFC 2822-enforcing behavior than the other relays.  Examine source further.
 - [Apache James](images/james) (8/1/2024)
   - Further minimize changes to example config files
@@ -60,17 +62,22 @@ Add additional containers as they become functional
 - 2505 - sendmail
 - 2506 - opensmtpd
 - 2507 - nullmailer
+- 2508 - msmtp
 
 (subject to change)
 
 ### Provisional payload delivery
 
-Send file contents with sendmsg.py.  Alternatively, SMTP commands can be manually sent with telnet or netcat, but piping file contents is a brittle method (expect a 554 or other error).
+#### Option 1. `netcat` (or similar tool): 
+- Piping file contents can be brittle (expect a 554 or other error).
+- Depending on your build/system, you can probably send escape codes manually
+- i.e., by pressing `[ctrl-V]`, `[ctrl-M]`, `[ctrl-M]`, `.`, `[ctrl-V]`, `[ctrl-M]`, `[ctrl-M]`, you can send \<CR>\<LF>.\<CR>\<LF>
+
+#### Option 2. Sending file contents with sendmsg.py:
 
 ```
 ./sendmsg.py message_file [server|"localhost"] [port|"25"]
 ```
-Notes:
 - If you only specify a server or a port, but not both, the script is smart enough to figure out what you meant, and will apply a default for the other value
   - `server` defaults to "localhost".
   - `port` defaults to 25. As for `server`, just give a number. i.e., `2501`, not `port=2501`

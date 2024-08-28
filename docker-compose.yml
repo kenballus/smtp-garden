@@ -69,4 +69,12 @@ services:
     image: smtp-garden-nullmailer:latest
     ports:
       - 127.0.0.1:2507:25
-
+  msmtp:
+    build:
+      context: "./images/msmtp"
+      args:
+        APP_VERSION: "master"
+        RELAYHOST: "echo"
+    image: smtp-garden-msmtp:latest
+    ports:
+      - 127.0.0.1:2508:25
