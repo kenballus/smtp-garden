@@ -65,7 +65,7 @@ services:
       context: "./images/nullmailer"
       args:
         APP_VERSION: "master"
-        RELAYOST: "echo"
+        RELAYHOST: "echo"
     image: smtp-garden-nullmailer:latest
     ports:
       - 127.0.0.1:2507:25
