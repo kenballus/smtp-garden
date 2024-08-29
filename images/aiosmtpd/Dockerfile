@@ -1,13 +1,17 @@
 FROM smtp-garden-soil:latest
 
-ARG APP_VERSION=master
-ARG RELAYHOST=echo
+RUN apt -y update \
+ && apt -y upgrade \
+ && apt -y install --no-install-recommends python3-setuptools \
+ && git clone --recurse-submodules 'https://github.com/aio-libs/aiosmtpd'
 
-WORKDIR /app
-RUN apt -y update && apt -y upgrade && apt -y install python3-setuptools && git clone 'https://github.com/aio-libs/aiosmtpd'
-RUN cd aiosmtpd && git checkout $APP_VERSION && python3 setup.py install
+ARG APP_VERSION
+RUN cd aiosmtpd \
+ && git checkout "$APP_VERSION" \
+ && python3 setup.py install
 
 COPY relay.py .
+ARG RELAYHOST
 RUN sed -i "/^relay_host/s/__RELAYHOST__/${RELAYHOST}/" relay.py
 
 CMD ["python3", "relay.py"]
