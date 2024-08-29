@@ -1,16 +1,16 @@
 FROM smtp-garden-soil:latest
 
 # Development environment config
-ARG APP_VERSION=master
-ARG RELAYHOST=echo
+ARG APP_VERSION
+ARG RELAYHOST
 RUN apt -y update && apt -y upgrade \
-  && apt -y install automake \
-  && git clone 'https://github.com/bruceg/nullmailer.git' \
+  && apt -y --no-install-recommends install automake \
+  && git clone --recurse-submodules 'https://github.com/bruceg/nullmailer.git' \
   && groupadd nullmail \
   && useradd -g nullmail nullmail \
 # Build
   && cd nullmailer \
-  && git checkout $APP_VERSION \
+  && git checkout "$APP_VERSION" \
   && sh ./autogen.sh \
   && ./configure \
   && make \
