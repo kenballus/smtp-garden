@@ -1,10 +1,13 @@
 """
-Version 1.4, -Updated server reply bytes to appease finicky clients (minimum 4 byte response instead of 3)
-             -generate_response method drafted in comment block
-Version 1.3, handles ConnectionResetError, commonly caused by MTA disconnecting abruptly
-Version 1.2, handles SIGTERM gracefully, with async routines -mss
-Version 1.1, prints peer identification info -mss 6/10/2024
-Version 1.0, by bk (original)
+SMTP Garden - Python Echo Server
+
+Version 1.4, -replies with minimum 4 bytes (instead of 3) to appease finicky clients
+             -generate_response method drafted in comment block -mss 8/27/2024
+Version 1.3, -handles ConnectionResetError, commonly caused by MTA disconnecting abruptly
+Version 1.2, -async routines
+             -handles SIGTERM gracefully
+Version 1.1, -prints peer identification info -mss 6/10/2024
+Version 1.0, -by bk (original)
 """
 
 import asyncio
@@ -15,15 +18,16 @@ RECV_SIZE = 65536
 
 """
 # Alternate response generator, if higher fidelity to normal behavior is needed
+# (<CR><LF>.<CR><LF> detection is not ideal)
 def generate_response(client_bytes, is_datamode):
     if is_datamode:
         if client_bytes == b".":
             return b"250 Ok", False
         else:
             return b"", True
-    if(client_bytes == b"DATA"):
+    if client_bytes == b"DATA":
         return b"354 Send data\r\n", True
-    elif(client_bytes == b"QUIT"):
+    elif client_bytes == b"QUIT":
         return b"221 Bye\r\n", False
     else:
         return b"250 Ok", False
@@ -76,8 +80,4 @@ if __name__ == "__main__":
     except asyncio.CancelledError:
         print("echo server closed.")
 
-"""
-extra
-            response = b"354 Send data\r\n" if data.lstrip()[:5].rstrip().upper() == b"DATA" else b"250 Ok\r\n"
-"""
 
