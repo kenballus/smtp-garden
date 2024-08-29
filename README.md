@@ -16,14 +16,11 @@ A containerized arrangement of various open-source SMTP servers for differential
 
 ## TODO
 - See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate MTAs.
-- start [nullmailer](images/nullmailer) with a signal-handling script, for graceful shutdown
-- [OpenSMTPD](images/opensmtpd) demonstrated stricter RFC 2822-enforcing behavior than the other relays.  Examine source further.
-- [Apache James](images/james) (8/1/2024)
-  - Further minimize changes to example config files
-- [Exim](images/exim) (7/19/2024)
-  - Explore pros/cons of other general alternate configurations
-- [aiosmtpd](images/aiosmtpd) (7/26/2024)
-  - Nice to have aiosmtpd HELO to echo with an explicit name instead of an IPv4 address, if there's a simple way
+- [nullmailer](images/nullmailer): submit bug report for crashes.  Explore email header requirements.
+- [OpenSMTPD](images/opensmtpd): demonstrated stricter RFC 2822-enforcing behavior than the other relays.  Examine source further.
+- [Apache James](images/james) (8/1/2024): further minimize changes to example config files
+- [Exim](images/exim) (7/19/2024): explore pros/cons of other general alternate configurations
+- [aiosmtpd](images/aiosmtpd) (7/26/2024): nice to have aiosmtpd HELO to echo with an explicit name instead of an IPv4 address, if there's a simple way
 - All containers
   - Prune unneccessary build/environment components for efficiency (as needed)
 - Ancillary
