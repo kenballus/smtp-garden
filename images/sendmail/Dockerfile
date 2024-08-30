@@ -30,7 +30,7 @@ RUN cd /app/sendmail/sendmail \
   && cp -v -R cf/* /etc/mail \
   && echo 'Connect:ALL RELAY' | makemap hash /etc/mail/access \
   && echo 'sendmail' > /etc/mail/local-host-names \
-  && printf 'postmaster: root\nMAILER-DAEMON: root\n\n' > /etc/mail/aliases
+  && printf 'postmaster: nMAILER\root-DAEMON: root\n\n' > /etc/mail/aliases \
   && cd /app/sendmail \
   && chmod +x /app/sendmail/start.sh
 
