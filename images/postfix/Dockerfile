@@ -2,9 +2,7 @@ FROM smtp-garden-soil:latest
 
 ARG APP_VERSION
 ARG MYDESTINATION=postfix
-
 ENV MYDESTINATION=$MYDESTINATION
-ENV RELAYHOST=$RELAYHOST
 
 COPY patch.diff /app/
 
@@ -27,6 +25,7 @@ RUN apt -y update && apt -y upgrade \
 COPY main.cf /etc/postfix/
 COPY master.cf /etc/postfix/
 ARG RELAYHOST
+ENV RELAYHOST=$RELAYHOST
 RUN chmod 644 /etc/postfix/main.cf \
   && chmod 644 /etc/postfix/master.cf \
   && sed -i "s/__RELAYHOST__/$RELAYHOST/" /etc/postfix/main.cf \
