@@ -1,13 +1,14 @@
 FROM smtp-garden-soil:latest
 
-# Development environment config
-ARG APP_VERSION
+# Dev environment config
 RUN apt -y update && apt -y upgrade \
   && apt -y --no-install-recommends install libpcre2-dev libdb-dev libssl-dev libfile-fcntllock-perl pkg-config \
   && git clone --recurse-submodules 'https://github.com/Exim/exim' \
-  && useradd exim \
+  && useradd exim
+
 # Build
-  && cd exim \
+ARG APP_VERSION
+RUN cd exim \
   && git checkout "$APP_VERSION" \
   && cd src \
   && mkdir Local \
@@ -17,7 +18,7 @@ RUN apt -y update && apt -y upgrade \
   && make install
 
 # Configure
-ADD configure /usr/exim/
+COPY configure /usr/exim/
 ARG RELAYHOST
 RUN sed -i "/ROUTER_RELAY_HOST/s/__RELAYHOST__/${RELAYHOST}/" /usr/exim/configure
 
