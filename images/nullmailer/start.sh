@@ -1,6 +1,6 @@
 #!/bin/bash
 # By Malcolm Schongalla - SMTP Garden nullmailer
-# Version 1
+# Version 1.0.1
 
 # Why this script? Because containerized nullmailer doesn't gracefully
 # exit on its own
@@ -77,7 +77,7 @@ fi
 
 pgrep nc > /dev/null
 if [ $? -eq 0 ]; then
-    echo 'nullmailer] sending SIGKILL to nc'
+    echo '[nullmailer] sending SIGKILL to nc'
     pkill -9 nc
     did_sigkill=true
 fi
