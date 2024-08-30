@@ -1,3 +1,7 @@
+## Attention!
+
+Dockerfile updated and pushed (8/29/2024) for testing. This notice will be removed once it is verified.
+
 ## Key configuration items
 
 - [site.config.m4](site.config.m4) configures build options, not server options
