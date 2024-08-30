@@ -1,4 +1,7 @@
 services:
+  soil:
+    build: "./images/smtp-soil-garden"
+    image: smtp-garden-soil:latest
   aiosmtpd:
     build:
       context: "./images/aiosmtpd"
