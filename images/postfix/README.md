@@ -1,7 +1,3 @@
-## Attention!
-
-This version is pushed for testing purposes (8/29/2024) and is not verified yet.  This message will be removed once it is tested.
-
 ## Key configuration items
 
 - Main files:

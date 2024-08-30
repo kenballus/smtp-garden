@@ -1,6 +1,3 @@
-## Attention!
-The current version (8/29/2024) is pushed for testing purposes.  It hasn't been re-verified yet.  Because of relatively long compilation time. This README will be updated after testing is re-accomplished.
-
 ## Key configuration items
 
 James is an enterprise application, with enterprise-scale configuration.

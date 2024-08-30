@@ -28,25 +28,30 @@ A containerized arrangement of various open-source SMTP servers for differential
 
 ## Deployment (volatile)
 
-### Build and tag individual containers
+### Build and tag containers
 
-In `docker-compose.yml` and/or individual `Dockerfile`s, target relay hosts can be configured (default is `echo` for all).  This mechanism can be used to "daisy chain" servers, if desired.  See subfolder READMEs for synopses of each configuration and quick reference for key items.
+The target images can conveniently be build with docker compose, starting with [smtp-garden-soil](images/smtp-garden-soil):
+```
+smtp-garden$ docker compose build soil
+smtp-garden$ docker compose build [echo] [msmtp] [...]
+```
+Or, built directly, individually:
+```
+images/smtp-garden-soil$ docker build -t smtp-garden-soil:latest .
+images/smtp-garden-exim$ docker build -t smtp-garden-exim:latest --build-arg=APP_VERSION=master --build-arg=RELAYHOST=echo .
+# etc for additional images.  The build-args are required.
+```
 
-```
-.../images/smtp-garden-soil$ docker build -t smtp-garden-soil:latest .
-.../images/james$ docker build -t smtp-garden-james:3.8.1 .
-.../images/echo$ docker build -t smtp-garden-echo:latest .
-.../images/postfix$ docker build -t smtp-garden-postfix:latest .
-(etc)
-```
+- Some servers require an alternate APP_VERSION, so check the YAML and don't assume it is always "master".
+- See subfolder READMEs for each image for a configuration quick reference and brief overview.
+- By modifying RELAYHOST, servers can be "daisy chained," if desired.
 
 ### Deploy
 
 ```
 docker compose up [echo] [postfix] [james] [exim] [...]
 ```
-Add additional containers as they become functional
-
+- The soil container never needs to be run
 
 ## Employment (early stage)
 ### Provisional localhost port assignment:
