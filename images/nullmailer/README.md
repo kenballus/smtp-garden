@@ -11,15 +11,23 @@ To compile with LLVM, do one of these:
 
 ## Basic [dys]function
 
-nullmailer-smtpd, nullmailer-inject, nullmailer-queue, and nullmailer-send work in concert.
+#### nullmailer-smtpd, nullmailer-inject, nullmailer-queue, and nullmailer-send work in concert.
 - nullmailer-smtpd is neither a true SMTP server nor a daemon on its own.
-  - It works in this scenario by being invoked by netcat listening on port 25.
-  - nullmailer-smtpd forks nullmailer-inject to put a new email in the queue, but error handling characteristics are poor.
-  - It requires the `MAIL FROM:<>` and `RCPT TO:<>` values to be fully qualified.
-  - i.e., `<root@example.com>` works, but not `<root@example>` or `<root>`
-- nullmailer-queue gets forked by nullmailer-smtpd after it receives "DATA" from client.
-  - nullmailer-queue in turn triggers nullmailer-send, which actually sends the mail to echo (i.e. the smart host).
-- BUGS (9/10/2024):
-  - unpatched code segfaults if a malformed payload causes nullmailer-queue to exit with a non-zero code
-  - a simple patch (`sed` line in Dockerfile) fixes the out-of-bounds read condition, and has been reported.
-  - a subsequent bug has been revealed in processing of the same malformed payloads, see issues tab
+  - nullmailer-smtpd works in this scenario by being invoked by netcat listening on port 25.
+  - nullmailer-smtpd should require (but does not explicitly enforce) the `MAIL FROM:<>` and `RCPT TO:<>` values to be fully qualified.
+  - i.e., `<root@example.com>` works, but `<root@example>` or `<root>` fail secondarily after the fork (with poor failure info)
+  - nullmailer-smtpd forks nullmailer-queue after receiving "DATA", but error handling characteristics are poor.
+- nullmailer-queue receives message from nullmailer-smtpd and passes it to nullmailer-send.
+- nullmailer-send sends the mail to echo (i.e. the smart host).
+
+#### BUGS (9/10/2024):
+1. Unpatched code segfaults if a malformed payload causes nullmailer-queue to exit with a non-zero code
+   - The underlying bug was reported in a different specific context, June 2024, on github repo and Debian bug list.
+   - smtp-garden research explored and reported the generalized case
+   - a simple patch (`sed` line in Dockerfile) fixes the out-of-bounds read condition.
+2. The patched build reveals a latent bug in the src/smtpd.cc qwrite routine.
+   - qwrite fails to confirm stream is valid before attempting write.
+   - Program fails to capture SIGPIPE, exits unexpectely, code 141 (128+SIGPIPE).
+   - Presence of a simple signal handler fixes bug (not implemented).
+   - Reported to author 9/10/2024.
+

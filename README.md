@@ -15,9 +15,8 @@ A containerized arrangement of various open-source SMTP servers for differential
   - A simple, payload delivery script is functional
   - Preliminary testing has identified a few bugs so far
 
-## TODO
-- See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate MTAs.
-- [nullmailer](images/nullmailer): exploration of various unexpected behavior underway.
+## TODO (as of 9/10/2024)
+- See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate MTAs (especially Dovecot, Twisted).
 - All containers
   - Continue Dockerfile migration to a standard style
 
