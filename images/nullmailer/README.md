@@ -3,6 +3,7 @@
 Main config files are in /usr/local/etc/nullmailer
 - `me` contains the HELO name.
 - `remotes` contains smart host's name [along with any desired options].
+
 To compile with LLVM, do one of these:
 - compile with -Wno-c++11-narrowing
 - compile with -std=c++03
