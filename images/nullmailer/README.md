@@ -19,6 +19,6 @@ nullmailer-smtpd, nullmailer-inject, nullmailer-queue, and nullmailer-send work 
 - nullmailer-queue gets forked by nullmailer-smtpd after it receives "DATA" from client.
   - nullmailer-queue in turn triggers nullmailer-send, which actually sends the mail to echo (i.e. the smart host).
 - BUGS (9/10/2024):
-  - unpatched code segfaults if a malformed payload causes nullmailer-inject to return a non-zero code to nullmailer-smtpd
-  - a simple patch (`sed` line in Dockerfile) fixes the out-of-bounds read, and has been reported.
+  - unpatched code segfaults if a malformed payload causes nullmailer-queue to exit with a non-zero code
+  - a simple patch (`sed` line in Dockerfile) fixes the out-of-bounds read condition, and has been reported.
   - a subsequent bug has been revealed in processing of the same malformed payloads, see issues tab
