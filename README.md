@@ -4,27 +4,22 @@
 
 A containerized arrangement of various open-source SMTP servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 8/28/2024)
+## Status (as of 9/10/2024)
 - Configuration of SMTP servers: in progress
-  - aiosmtpd, Apache James, Exim, Msmtp, nullmailer, OpenSMTPD, Postfix, and Sendmail are functional works-in-progress
+  - aiosmtpd, Apache James, Exim, Msmtp, nullmailer, OpenSMTPD, Postfix, and Sendmail are functional with primary configurations
   - other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
 - Support containers: in progress / pre-implementation
   - echo server improved with async methods.  An output filter/beautifier would be nice.
   - An adversary container concept proposed, needs development
-- Fuzzer: early development
+- Fuzzing: early development
   - A simple, payload delivery script is functional
+  - Preliminary testing has identified a few bugs so far
 
 ## TODO
 - See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate MTAs.
-- [nullmailer](images/nullmailer): submit bug report for crashes.  Explore email header requirements.
-- [OpenSMTPD](images/opensmtpd): demonstrated stricter RFC 2822-enforcing behavior than the other relays.  Examine source further.
-- [Apache James](images/james) (8/1/2024): further minimize changes to example config files
-- [Exim](images/exim) (7/19/2024): explore pros/cons of other general alternate configurations
-- [aiosmtpd](images/aiosmtpd) (7/26/2024): nice to have aiosmtpd HELO to echo with an explicit name instead of an IPv4 address, if there's a simple way
+- [nullmailer](images/nullmailer): exploration of various unexpected behavior underway.
 - All containers
-  - Prune unneccessary build/environment components for efficiency (as needed)
-- Ancillary
-  - Consider scripting to alter configuration files, if this turns out to be a frequent thing
+  - Continue Dockerfile migration to a standard style
 
 ## Deployment (volatile)
 

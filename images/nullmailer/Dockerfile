@@ -1,26 +1,29 @@
 FROM smtp-garden-soil:latest
 
-# Development environment config
-ARG APP_VERSION
-ARG RELAYHOST
+# Development environment
 RUN apt -y update && apt -y upgrade \
   && apt -y --no-install-recommends install automake \
   && git clone --recurse-submodules 'https://github.com/bruceg/nullmailer.git' \
   && groupadd nullmail \
-  && useradd -g nullmail nullmail \
+  && useradd -g nullmail nullmail
+WORKDIR /app/nullmailer
+ARG APP_VERSION
+RUN git checkout "$APP_VERSION" \
+# patch for segfault bug:
+  && sed -i 's/extern const char cli_program\[\] = "nullmailer-smtpd";/extern const char* cli_program = "nullmailer-smtpd";/' /app/nullmailer/src/smtpd.cc
+
 # Build
-  && cd nullmailer \
-  && git checkout "$APP_VERSION" \
-  && sh ./autogen.sh \
+RUN sh ./autogen.sh \
   && ./configure \
   && make \
-  && make install install-root \
-# Configure
-  && echo "smtp-garden-nullmailer" > /usr/local/etc/nullmailer/me \
-  && echo "${RELAYHOST} smtp" > /usr/local/etc/nullmailer/remotes
-
+  && make install install-root
 COPY start.sh .
-RUN chmod +x start.sh
+
+# Configure
+ARG RELAYHOST
+RUN echo "${RELAYHOST} smtp" > /usr/local/etc/nullmailer/remotes \
+  && echo "smtp-garden-nullmailer" > /usr/local/etc/nullmailer/me \
+  && chmod +x start.sh
 
 # Go
 CMD ["./start.sh", "25"]
