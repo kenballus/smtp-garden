@@ -4,7 +4,7 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 9/10/2024)
+## Status (as of 9/16/2024)
 - Configuration of SMTP servers: in progress
   - aiosmtpd, Apache James, Exim, Msmtp, nullmailer, OpenSMTPD, Postfix, and Sendmail are functional with primary configurations
 - Configuration of LMTP Servers: in progress
@@ -19,7 +19,7 @@ A containerized arrangement of various open-source SMTP and SMTP-like servers fo
   - A simple, payload delivery script is functional
   - Preliminary testing has identified a few bugs so far
 
-## TODO (as of 9/10/2024)
+## TODO (as of 9/16/2024)
 - See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers (especially ~~Dovecot,~~ Twisted).
 - All containers
   - Continue Dockerfile migration to a standard style
