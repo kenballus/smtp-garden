@@ -2,12 +2,16 @@
 
 ## General
 
-A containerized arrangement of various open-source SMTP servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
+A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
 ## Status (as of 9/10/2024)
 - Configuration of SMTP servers: in progress
   - aiosmtpd, Apache James, Exim, Msmtp, nullmailer, OpenSMTPD, Postfix, and Sendmail are functional with primary configurations
-  - other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
+- Configuration of LMTP Servers: in progress
+  - Dovecot
+- Configuration of Submission Servers: in progress
+  - Dovecot
+- Other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
 - Support containers: in progress / pre-implementation
   - echo server improved with async methods.  An output filter/beautifier would be nice.
   - An adversary container concept proposed, needs development
@@ -16,7 +20,7 @@ A containerized arrangement of various open-source SMTP servers for differential
   - Preliminary testing has identified a few bugs so far
 
 ## TODO (as of 9/10/2024)
-- See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate MTAs (especially Dovecot, Twisted).
+- See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers (especially ~~Dovecot,~~ Twisted).
 - All containers
   - Continue Dockerfile migration to a standard style
 
@@ -49,6 +53,7 @@ docker compose up [echo] [postfix] [james] [exim] [...]
 
 ## Employment (early stage)
 ### Provisional localhost port assignment:
+SMTP
 - 25 - echo
 - 2501 - postfix
 - 2502 - james
@@ -59,12 +64,18 @@ docker compose up [echo] [postfix] [james] [exim] [...]
 - 2507 - nullmailer
 - 2508 - msmtp
 
+LMTP
+- 2401 - dovecot
+
+Submission Servers
+- 2601 - dovecot (see [special AUTH notes](images/dovecot))
+
 (subject to change)
 
 ### Provisional payload delivery
 
 #### Option 1. `netcat` (or similar tool): 
-- Piping file contents can be brittle (expect a 554 or other error).
+- Piping file contents can be brittle (expect a 554 or other error unless server explicitly allows pipelining).
 - Depending on your build/system, you can probably send escape codes manually
 - i.e., by pressing `[ctrl-V]`, `[ctrl-M]`, `[ctrl-M]`, `.`, `[ctrl-V]`, `[ctrl-M]`, `[ctrl-M]`, you can send \<CR>\<LF>.\<CR>\<LF>
 
@@ -78,4 +89,4 @@ docker compose up [echo] [postfix] [james] [exim] [...]
   - `port` defaults to 25. As for `server`, just give a number. i.e., `2501`, not `port=2501`
 - See leading script comments/description for message_file formatting details.
 - Note: Escape character parsing uses codecs.escape_decode(), an undocumented Python function, please report any unexpected results.
-
+- The example payload file works fine for SMTP servers, but LMTP and Submission payloads require modification (i.e. LHLO, AUTH)

@@ -81,3 +81,13 @@ services:
     image: smtp-garden-msmtp:latest
     ports:
       - 127.0.0.1:2508:25
+  dovecot:
+    build:
+      context: "./images/dovecot"
+      args:
+        APP_VERSION: "main"
+        RELAYHOST: "echo"
+    image: smtp-garden-dovecot:latest
+    ports:
+      - 127.0.0.1:2401:24
+      - 127.0.0.1:2601:587
