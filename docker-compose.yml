@@ -1,6 +1,6 @@
 services:
   soil:
-    build: "./images/smtp-soil-garden"
+    build: "./images/smtp-garden-soil"
     image: smtp-garden-soil:latest
   aiosmtpd:
     build:
