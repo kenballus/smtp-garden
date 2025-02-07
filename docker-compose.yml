@@ -1,7 +1,25 @@
+networks:
+  smtp:
+    
 services:
   soil:
     build: "./images/smtp-garden-soil"
     image: smtp-garden-soil:latest
+
+  dns-mx:
+    build:
+      context: "./images/dnsmasq"
+      args:
+        APP_VERSION: "master"
+    image: smtp-garden-dnsmasq:latest
+    hostname: dns-mx.smtp.garden
+    volumes:
+      - ./images/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
+    networks:
+     smtp:
+        aliases:
+          - dns-mx.smtp.garden
+ 
   aiosmtpd:
     build:
       context: "./images/aiosmtpd"
@@ -9,8 +27,14 @@ services:
         APP_VERSION: "master"
         RELAYHOST: "echo"
     image: smtp-garden-aiosmtpd:latest
+    hostname: aiosmtpd.smtp.garden
+    networks:
+      smtp:
+        aliases:
+          - aiosmtpd.smtp.garden
     ports:
     - 127.0.0.1:2504:25
+
   exim:
     build:
       context: "./images/exim"
@@ -18,8 +42,16 @@ services:
         APP_VERSION: "master"
         RELAYHOST: "echo"
     image: smtp-garden-exim:latest
+    hostname: exim.smtp.garden
+    volumes:
+       - ./images/exim/smtp-garden-domains:/etc/smtp-garden-domains
+    networks:
+      smtp:
+        aliases:
+          - exim.smtp.garden
     ports:
       - 127.0.0.1:2503:25
+
   james:
     build:
       context: "./images/james"
@@ -27,8 +59,14 @@ services:
         APP_VERSION: "master"
         RELAYHOST: "echo"
     image: smtp-garden-james:latest
+    hostname: james.smtp.garden
+    networks:
+      smtp:
+        aliases:
+          - james.smtp.garden
     ports:
       - 127.0.0.1:2502:25
+
   postfix:
     build:
       context: "./images/postfix"
@@ -37,8 +75,14 @@ services:
         MYDESTINATION: "postfix"
         RELAYHOST: "echo"
     image: smtp-garden-postfix:latest
+    hostname: postfix.smtp.garden
+    networks:
+      smtp:
+        aliases:
+          - postfix.smtp.garden
     ports:
       - 127.0.0.1:2501:25
+
   sendmail:
     build:
       context: "./images/sendmail"
@@ -46,14 +90,26 @@ services:
         APP_VERSION: "8.18.1"
         RELAYHOST: "echo"
     image: smtp-garden-sendmail:latest
+    hostname: sendmail.smtp.garden
+    networks:
+      smtp:
+        aliases:
+          - sendmail.smtp.garden
     ports:
     - 127.0.0.1:2505:25
+
   echo:
     build:
       context: "./images/echo"
     image: smtp-garden-echo:latest
+    hostname: echo.smtp.garden
+    networks:
+      smtp:
+        aliases:
+          - echo.smtp.garden
     ports:
       - 127.0.0.1:25:25
+
   opensmtpd:
     build:
       context: "./images/opensmtpd"
@@ -61,8 +117,14 @@ services:
         APP_VERSION: "master"
         RELAYHOST: "echo"
     image: smtp-garden-opensmtpd:latest
+    hostname: opensmtpd.smtp.garden
+    networks:
+      smtp:
+        aliases:
+          - opensmtpd.smtp.garden
     ports:
       - 127.0.0.1:2506:25
+
   nullmailer:
     build:
       context: "./images/nullmailer"
@@ -70,8 +132,14 @@ services:
         APP_VERSION: "master"
         RELAYHOST: "echo"
     image: smtp-garden-nullmailer:latest
+    hostname: nullmailer.smtp.garden
+    networks:
+      smtp:
+        aliases:
+          - nullmailer.smtp.garden
     ports:
       - 127.0.0.1:2507:25
+
   msmtp:
     build:
       context: "./images/msmtp"
@@ -79,8 +147,14 @@ services:
         APP_VERSION: "master"
         RELAYHOST: "echo"
     image: smtp-garden-msmtp:latest
+    hostname: msmtp.smtp.garden
+    networks:
+      smtp:
+        aliases:
+          - msmtp.smtp.garden
     ports:
       - 127.0.0.1:2508:25
+
   dovecot:
     build:
       context: "./images/dovecot"
@@ -88,6 +162,11 @@ services:
         APP_VERSION: "main"
         RELAYHOST: "echo"
     image: smtp-garden-dovecot:latest
+    hostname: dovecot.smtp.garden
+    networks:
+      smtp:
+        aliases:
+          - dovecot.smtp.garden
     ports:
       - 127.0.0.1:2401:24
       - 127.0.0.1:2601:587
