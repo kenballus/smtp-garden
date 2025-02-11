@@ -4,9 +4,13 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 9/16/2024)
-- Configuration of SMTP servers: in progress
-  - aiosmtpd, Apache James, Exim, Msmtp, nullmailer, OpenSMTPD, Postfix, and Sendmail are functional with primary configurations
+## Status (as of 2/10/2025)
+- Configuration of SMTP servers is ongoing.
+- Relay-only / MTA servers
+  - aiosmtpd, Apache James\*, msmtp\*, nullmailer\*, OpenSMTPD\*, Postfix\*, Sendmail\*
+  - \*Candidate for eventual local delivery/Maildir testing configuration 
+- SMTP with relay and local delivery
+  - Exim
 - Configuration of LMTP Servers: in progress
   - Dovecot
 - Configuration of Submission Servers: in progress
@@ -14,13 +18,18 @@ A containerized arrangement of various open-source SMTP and SMTP-like servers fo
 - Other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
 - Support containers: in progress / pre-implementation
   - echo server improved with async methods.  An output filter/beautifier would be nice.
+  - DNS container for MX records ("dns-mx" running dnsmasq) if needed
+    - Some remaining docker networking issues
+    - Most servers seem to happily fall back on A records if MX record not available, so this may not be needed
   - An adversary container concept proposed, needs development
 - Fuzzing: early development
   - A simple, payload delivery script is functional
   - Preliminary testing has identified a few bugs so far
 
-## TODO (as of 9/16/2024)
-- See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers (especially ~~Dovecot,~~ Twisted).
+## TODO (as of 2/10/2025)
+- Update eligible servers to support local mail delivery
+- DNS container as necessary
+- See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers.
 - All containers
   - Continue Dockerfile migration to a standard style
 
@@ -47,13 +56,13 @@ images/smtp-garden-exim$ docker build -t smtp-garden-exim:latest --build-arg=APP
 ### Deploy
 
 ```
-docker compose up [echo] [postfix] [james] [exim] [...]
+docker compose up [-d] [echo] [postfix] [james] [exim] [...]
 ```
 - The soil container never needs to be run
 
 ## Employment (early stage)
 ### Provisional localhost port assignment:
-SMTP
+SMTP (mostly arbitrary order)
 - 25 - echo
 - 2501 - postfix
 - 2502 - james
