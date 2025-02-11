@@ -41,8 +41,12 @@
 ROUTER_RELAY_HOST = __RELAYHOST__
 
 # because `hostname` gives nonreproducible output
-primary_hostname = smtp-garden-exim
-domainlist relay_to_domains = *
+# primary_hostname = exim.smtp.garden
+domainlist local_domains = @ : exim : exim.smtp.garden : localhost
+domainlist relay_to_domains = /etc/smtp-garden-domains
+#domainlist relay_to_domains = *.smtp.garden
+
+allow_domain_literals
 
 # unused in this iteration
 #hostlist   relay_from_hosts = *
@@ -53,8 +57,8 @@ acl_smtp_expn = acl_accept_all
 acl_smtp_rcpt = acl_accept_all
 acl_smtp_vrfy = acl_accept_all
 
-qualify_domain = exim
-qualify_recipient = smtpgarden
+# qualify_domain =
+# qualify_recipient =
 
 #being defined at compilation time, next line is redundant
 #never_users = root
@@ -189,11 +193,37 @@ begin routers
 
 # Beware that the hostname is specified again in the Transport.
 
-relayall:
-  driver = manualroute
+# accept raw ip addresses
+domain_literal:
+  driver = ipliteral
+  domains = !+local_domains
+  transport = remote_smtp
+
+# check if this works, later:
+# domain_literal_local:
+#   driver = ipliteral
+#   domains = +local_domains
+#   check_local_user
+#   transport = local_delivery
+
+# use dns-mx service to route garden addresses
+dnslookup:
+  driver = dnslookup
   domains = +relay_to_domains
   transport = remote_smtp
-#  route_data = ROUTER_RELAY_HOST
+
+# local inboxes
+localuser:
+  driver = accept
+  domains = +local_domains
+  check_local_user
+  transport = local_delivery
+
+# everything else goes to the relay host (i.e. echo)
+relay_everything_else:
+  driver = manualroute
+  domains = *
+  transport = remote_smtp
   route_list = * ROUTER_RELAY_HOST
   host_find_failed = fail
   no_more
@@ -208,7 +238,12 @@ relayall:
 
 begin transports
 
-# This transport should match all mail
+local_delivery:
+  driver = appendfile
+  directory = ${home}/Maildir
+  maildir_format
+  create_directory
+  mode = 0750
 
 remote_smtp:
   driver = smtp
