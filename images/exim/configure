@@ -199,6 +199,13 @@ domain_literal:
   domains = !+local_domains
   transport = remote_smtp
 
+# check if this works, later:
+# domain_literal_local:
+#   driver = ipliteral
+#   domains = +local_domains
+#   check_local_user
+#   transport = local_delivery
+
 # use dns-mx service to route garden addresses
 dnslookup:
   driver = dnslookup
