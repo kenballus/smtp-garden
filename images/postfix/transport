@@ -1,0 +1,10 @@
+# Tells postfix the specific routing to reach other SMTP garden peers
+exim.smtp.garden smtp:[exim.smtp.garden]
+aiosmtpd.smtp.garden smtp:[aiosmtpd.smtp.garden]
+exim.smtp.garden smtp:[dovecot.smtp.garden]
+james.smtp.garden smtp:[james.smtp.garden]
+msmtp.smtp.garden smtp:[msmtp.smtp.garden]
+nullmailer.smtp.garden smtp:[nullmailer.smtp.garden]
+opensmtpd.smtp.garden smtp:[opensmtpd.smtp.garden]
+sendmail.smtp.garden smtp:[sendmail.smtp.garden]
+
