@@ -14,4 +14,6 @@
   - Fallback: everything else (including generated bounce replies, etc) relay to `ROUTER_RELAY_HOST` (in main configuration settings)
 - Main documentation at: https://www.exim.org/exim-html-current/doc/html/spec_html/index.html
 - Local logs in /var/spool/exim/log
-- Future work: consider docker volumized single-file mailbox
+
+TODO:
+- [ ] Docker volumize Maildir

@@ -1,0 +1,11 @@
+# Used to expand smtp garden peer alias domains
+@aiosmtpd	@aiosmtpd.smtp.garden
+@dovecot	@dovecot.smtp.garden
+@exim		@exim.smtp.garden
+@james		@james.smtp.garden
+@msmtp		@msmtp.smtp.garden
+@nullmailer	@nullmailer.smtp.garden
+@opensmtpd	@opensmtp.smtp.garden
+@postfix	@postfix.smtp.garden
+@sendmail	@sendmail.smtp.garden
+

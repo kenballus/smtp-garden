@@ -1,0 +1,9 @@
+# Tells postfix which peers it can relay directly to
+exim.smtp.garden OK
+aiosmtpd.smtp.garden OK
+exim.smtp.garden OK
+james.smtp.garden OK
+msmtp.smtp.garden OK
+nullmailer.smtp.garden OK
+opensmtpd.smtp.garden OK
+sendmail.smtp.garden OK
