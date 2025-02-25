@@ -36,18 +36,21 @@ public class InitLocalUsers {
 		String dbName = "jdbc:hsqldb:file:" + myHSQLDBPath;
 		try (Connection conn = DriverManager.getConnection(dbName, "digiheals", "digiheals"); // username, pw
 		     Statement stmt = conn.createStatement()) {
-			stmt.execute("CREATE TABLE IF NOT EXISTS LocalUsers (" +
-				      "USERNAME VARCHAR(255) NOT NULL PRIMARY KEY, " +
-				      "PASSWORD VARCHAR(255) NOT NULL, " +
-				      "ALGORITHM VARCHAR(255) DEFAULT 'SHA-256' NOT NULL)" );
-			stmt.executeUpdate("INSERT INTO LocalUsers (USERNAME, PASSWORD, ALGORITHM) " +
+			stmt.execute("CREATE TABLE IF NOT EXISTS JAMES_USER (" +
+				      "USERNAME VARCHAR(100) NOT NULL PRIMARY KEY, " +
+				      "PASSWORD_HASH_ALGORITHM VARCHAR(100) DEFAULT 'SHA-256' NOT NULL, " +
+				      "PASSWORD VARCHAR(128) NOT NULL, " +
+				      "version INTEGER)");
+			stmt.executeUpdate("INSERT INTO JAMES_USER (USERNAME, PASSWORD_HASH_ALGORITHM, PASSWORD, version) " +
 					     "VALUES ('user1', " +
+					     "'SHA-256', " +
 					     "'9a1da060b18ba18608a1730a8f37921a302a4ad29a97dc45bd3b18da27b069c3', " +
-					     "'SHA-256')");
-			stmt.executeUpdate("INSERT INTO LocalUsers (USERNAME, PASSWORD, ALGORITHM) " +
-					     "VALUES ('user2', " +
+					     "1)");
+			stmt.executeUpdate("INSERT INTO JAMES_USER VALUES (" +
+					     "'user2', " +
+					     "'SHA-256', " +
 					     "'9a1da060b18ba18608a1730a8f37921a302a4ad29a97dc45bd3b18da27b069c3', " +
-					     "'SHA-256')");
+					     "1)");
 			stmt.execute("SHUTDOWN");
 		}
 	}
