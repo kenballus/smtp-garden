@@ -93,7 +93,9 @@
             <processor>bounces</processor>
             <notice>550 - Requested action not taken: no such user here</notice>
          </mailet>
- 
+
+
+	 <!-- Problem: relay-to-peer seems to match everything non-local, not just garden domains -->
          <mailet match="relay-to-peer" class="RemoteDelivery">
            <outgoing>outgoingQueue</outgoing>
            <delayTime>200</delayTime>
