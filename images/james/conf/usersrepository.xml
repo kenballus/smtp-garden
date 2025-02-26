@@ -20,7 +20,7 @@
 
 <!-- Read https://james.apache.org/server/config-users.html for further details -->
 
-<usersrepository name="LocalUsers" class="org.apache.james.user.jpa.JPAUsersRepository">
+<usersrepository name="LocalUsers" class="org.apache.james.user.file.UsersFileRepository">
     <algorithm>SHA-256</algorithm>
     <enableVirtualHosting>false</enableVirtualHosting>    
 </usersrepository>

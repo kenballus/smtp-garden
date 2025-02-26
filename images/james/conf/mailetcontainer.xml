@@ -82,7 +82,13 @@
            <matcher match="HostIs=sendmail"/>
            <matcher match="HostIs=sendmail.smtp.garden"/>
          </matcher>
-	    
+
+
+         <matcher name="not-relay-to-peer" match="org.apache.james.mailetcontainer.impl.matchers.Not">
+           <matcher match="relay-to-peer"/>
+         </matcher>
+
+
          <mailet match="All" class="RemoveMimeHeader">
            <name>bcc</name>
            <onMailetException>ignore</onMailetException>
@@ -90,13 +96,25 @@
 
 	 <mailet match="RecipientIsLocal" class="LocalDelivery"/>
          <mailet match="HostIsLocal" class="ToProcessor">
-            <processor>bounces</processor>
             <notice>550 - Requested action not taken: no such user here</notice>
+            <processor>bounces</processor>
          </mailet>
 
+         <mailet match="not-relay-to-peer" class="RemoteDelivery">
+            <gateway>__RELAYHOST__:25</gateway>
+            <outgoing>outgoingQueue</outgoing>
+            <delayTime>200</delayTime>
+            <maxRetries>1</maxRetries>
+            <maxDnsProblemRetries>0</maxDnsProblemRetries>
+            <deliveryThreads>10</deliveryThreads>
+            <sendpartial>true</sendpartial>
+            <bounceProcessor>bounces-null</bounceProcessor>
+	    <passThrough>false</passThrough>
+         </mailet>
 
-	 <!-- Problem: relay-to-peer seems to match everything non-local, not just garden domains -->
-         <mailet match="relay-to-peer" class="RemoteDelivery">
+         <!-- Problem: relay-to-peer seems to match everything non-local, not
+         just garden domains, so this needs to follow "not relay-to-peer" -->
+	 <!--         <mailet match="relay-to-peer" class="RemoteDelivery">
            <outgoing>outgoingQueue</outgoing>
            <delayTime>200</delayTime>
            <maxRetries>1</maxRetries>
@@ -105,7 +123,14 @@
            <sendpartial>true</sendpartial>
            <bounceProcessor>bounces</bounceProcessor>
          </mailet>
+	 -->
 
+	 <mailet match="All" class="ToProcessor">
+            <notice>550 - Did not match any mailets</notice>
+            <processor>bounces</processor>
+	 </mailet>
+
+	 <!-- for testing
 	 <mailet match="All" class="RemoteDelivery">
             <gateway>__RELAYHOST__:25</gateway>
             <outgoing>outgoingQueue</outgoing>
@@ -115,7 +140,7 @@
             <deliveryThreads>10</deliveryThreads>
             <sendpartial>true</sendpartial>
             <bounceProcessor>bounces-null</bounceProcessor>
-	 </mailet>
+	 </mailet> -->
 
       </processor>
 

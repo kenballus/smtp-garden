@@ -10,15 +10,6 @@ RUN apt -y update && apt -y upgrade \
     && cd /app/james-project \
     && git checkout "$APP_VERSION"
 
-# Update dependencies
-RUN sed -i '/<dependencies>/a \
-    <dependency>\n\
-        <groupId>org.hsqldb</groupId>\n\
-        <artifactId>hsqldb</artifactId>\n\
-        <version>2.7.2</version>\n\
-        <scope>compile</scope>\n\
-    </dependency>' /app/james-project/server/apps/jpa-app/pom.xml
-
 # Fix broken hardlink
 RUN sed -i "s|conf/jvm.properties|/app/james/conf/jvm.properties|" \
     /app/james-project/server/container/guice/common/src/main/java/org/apache/james/ExtraProperties.java 
@@ -44,21 +35,21 @@ RUN sed -i "s/<gateway>__RELAYHOST__/<gateway>${RELAYHOST}/" /app/james/conf/mai
 RUN useradd --create-home user1 && useradd --create-home user2 \
   && usermod --append --groups users user1 \
   && usermod --append --groups users user2 \
-  && mkdir -p /home/user1 \
-  && mkdir -p /home/user2 \
   && chown -R user1:users /home/user1 \
   && chown -R user2:users /home/user2 \
-#  && chgrp -R users /home/user1 \
-#  && chgrp -R users /home/user2 \
   && chmod -R 770 /home/user1 \
-  && chmod -R 770 /home/user2
+  && chmod -R 770 /home/user2 \
+  && chmod +x /app/james-project/server/apps/spring-app/target/appassembler/bin/james-cli.sh
+
 
 # Go
-CMD ["java", \
-     "--enable-preview", \
-     "--add-modules", "jdk.incubator.vector", \
-     "-javaagent:/app/james/james-server-jpa-app.lib/openjpa-4.0.0.jar", \
-     "-Dlogback.configurationFile=/app/james/conf/logback.xml", \
-     "-Dworking.directory=/app/james", \
-     "--enable-native-access=ALL-UNNAMED", \
-     "-jar", "/app/james/james-server-jpa-app.jar"]
+ADD start-james.sh /app/james/start-james.sh
+CMD ["/app/james/start-james.sh"]
+#CMD ["java", \
+#     "--enable-preview", \
+#     "--add-modules", "jdk.incubator.vector", \
+#     "-javaagent:/app/james/james-server-jpa-app.lib/openjpa-4.0.0.jar", \
+#     "-Dlogback.configurationFile=/app/james/conf/logback.xml", \
+#     "-Dworking.directory=/app/james", \
+#     "--enable-native-access=ALL-UNNAMED", \
+#     "-jar", "/app/james/james-server-jpa-app.jar"]
