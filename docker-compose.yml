@@ -57,7 +57,7 @@ services:
       context: "./images/james"
       args:
         APP_VERSION: "master"
-        RELAYHOST: "echo"
+        RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-james:latest
     hostname: james.smtp.garden
     networks:

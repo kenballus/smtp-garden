@@ -53,8 +53,9 @@
         <authorizedAddresses>*</authorizedAddresses>
         <verifyIdentity>false</verifyIdentity>
         <maxmessagesize>0</maxmessagesize>
-        <addressBracketsEnforcement>true</addressBracketsEnforcement>
-        <smtpGreeting>Apache JAMES SMTP Server - SMTP Garden Edition (3.8.1)</smtpGreeting>
+	<addressBracketsEnforcement>true</addressBracketsEnforcement>
+	<helloName autodetect="true">manually set to james.smtp.garde...n</helloName> 	
+	<smtpGreeting>Apache JAMES SMTP Server - ${env:HOSTNAME} - SMTP Garden Edition (3.8.1)</smtpGreeting>
         <handlerchain>
             <handler class="org.apache.james.smtpserver.fastfail.ValidRcptHandler"/>
             <handler class="org.apache.james.smtpserver.CoreCmdHandlerLoader"/>

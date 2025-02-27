@@ -4,37 +4,38 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 2/12/2025)
+## Status (as of 2/27/2025)
 - Configuration of SMTP servers is ongoing.
 - Relay-only / MTA servers
-  - aiosmtpd, Apache James\*, msmtp\*, nullmailer\*, OpenSMTPD\*, Sendmail\*
-  - \*Configuration underway for local delivery to Maildir, stay tuned
+  - aiosmtpd, msmtp\*, nullmailer\*, OpenSMTPD\*, Sendmail\*
+  - \*Configuration underway for local delivery to file repository, stay tuned
 - SMTP with relay and local delivery
-  - Exim, Postfix
+  - Exim, Postfix, Apache James
 - Configuration of LMTP Servers: in progress
   - Dovecot
 - Configuration of Submission Servers: in progress
   - Dovecot
 - Other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
 - Support containers:
-  - echo server improved with async methods.  An output filter/beautifier would be nice.
+  - echo server improved with async methods.  An output filter/beautifier and a batch sending ability would be nice.
   - DNS container for MX records ("dns-mx" running dnsmasq) on standby, but docker built-in DNS has been sufficient so far
-    - Some remaining docker networking issues
-    - Most servers seem to happily fall back on A records if MX record not available, so this may not be needed
+    - Most servers seem to happily fall back on A records if MX record not available
+    - This container will be removed if not needed
   - An adversary container concept proposed, needs development
 - Fuzzing: early development
   - A simple, payload delivery script is functional (`sendmsg.py`)
   - Preliminary testing has identified a few server bugs so far
   - Future: docker volume-ized Maildir files for each container, for easy diff'ing and parsing.
 
-## TODO (as of 2/12/2025)
+## TODO (as of 2/27/2025)
 - Update eligible servers to support local mail delivery (in progress)
-- Update eligible images to volumize Maildir tree
+- Update eligible images to volumize Maildir (or other file repository) tree
 - Script to automatically update all image configurations when new servers are added or other routing rules change
 - See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers.
 - All containers
   - Continue Dockerfile migration to a standard style
 - Add alias support to `sendmsg.py` to avoid needing to cross reference port numbers
+- Batch mode for `sendmsg.py`
 
 ## Deployment (volatile)
 
