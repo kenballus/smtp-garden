@@ -1,8 +1,8 @@
 #!/bin/bash
-#Helper script for image development, gets james-cli.sh prepared
-#Helpful for troubleshooting
+# Helper script for image development
+# Prints the expected location of james-cli.sh as a friendly reminder
+# Also prints the required username and password to use with the script
 
-ln /app/james-project/server/apps/spring-app/target/appassembler/bin/james-cli.sh /app/james/conf/james-cli.sh
 chmod +x /app/james-project/server/apps/spring-app/target/appassembler/bin/james-cli.sh
-chmod +x /app/james/conf/james-cli.sh
+echo "/app/james-project/server/apps/spring-app/target/appassembler/bin/james-cli.sh"
 cat /app/james/conf/jmxremote.password
