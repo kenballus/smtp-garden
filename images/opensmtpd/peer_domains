@@ -1,0 +1,16 @@
+aiosmtpd
+dovecot
+exim
+james
+msmtp
+nullmailer
+postfix
+sendmail
+aiosmtpd.smtp.garden
+dovecot.smtp.garden
+exim.smtp.garden
+james.smtp.garden
+msmtp.smtp.garden
+nullmailer.smtp.garden
+postfix.smtp.garden
+sendmail.smtp.garden

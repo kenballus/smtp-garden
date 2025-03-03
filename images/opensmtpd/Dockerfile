@@ -14,6 +14,7 @@ RUN apt -y update && apt -y upgrade \
 
 # Configure
 COPY smtpd.conf /usr/local/etc/smtpd.conf
+COPY peer_domains /usr/local/etc/peer_domains
 ARG RELAYHOST
 RUN ln -s /usr/sbin/smtpctl sendmail \
   && ln -s /usr/sbin/smtpctl send-mail \
@@ -23,9 +24,12 @@ RUN ln -s /usr/sbin/smtpctl sendmail \
   && mkdir /var/empty \
   && useradd -c "SMTP Daemon" -d /var/empty -s /sbin/nologin _smtpd \
   && useradd -c "SMTPD Queue" -d /var/empty -s /sbin/nologin _smtpq \
-  && sed -i "s/__RELAYHOST__/${RELAYHOST}/" /usr/local/etc/smtpd.conf
+  && sed -i "s/__RELAYHOST__/${RELAYHOST}/" /usr/local/etc/smtpd.conf \
+  && useradd user1 && useradd user2 \
+  && mkdir -p /home/user1/Maildir/cur && mkdir /home/user1/Maildir/new && mkdir /home/user1/Maildir/tmp && chown -R user1:user1 /home/user1 \
+  && mkdir -p /home/user2/Maildir/cur && mkdir /home/user2/Maildir/new && mkdir /home/user2/Maildir/tmp && chown -R user2:user2 /home/user2
 
 # Go
-CMD ["smtpd", "-d"]
+CMD ["smtpd", "-d", "-T", "all"]
 
 
