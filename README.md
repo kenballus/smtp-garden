@@ -7,10 +7,10 @@ A containerized arrangement of various open-source SMTP and SMTP-like servers fo
 ## Status (as of 2/27/2025)
 - Configuration of SMTP servers is ongoing.
 - Relay-only / MTA servers
-  - aiosmtpd, msmtp\*, nullmailer\*, OpenSMTPD\*, Sendmail\*
+  - aiosmtpd, msmtp, nullmailer, OpenSMTPD, Sendmail
   - \*Configuration underway for local delivery to file repository, stay tuned
 - SMTP with relay and local delivery
-  - Exim, Postfix, Apache James
+  - Exim, Postfix, Apache James, OpenSMTPD
 - Configuration of LMTP Servers: in progress
   - Dovecot
 - Configuration of Submission Servers: in progress
@@ -27,8 +27,7 @@ A containerized arrangement of various open-source SMTP and SMTP-like servers fo
   - Preliminary testing has identified a few server bugs so far
   - Future: docker volume-ized Maildir files for each container, for easy diff'ing and parsing.
 
-## TODO (as of 2/27/2025)
-- Update eligible servers to support local mail delivery (in progress)
+## TODO (as of 3/2/2025)
 - Update eligible images to volumize Maildir (or other file repository) tree
 - Script to automatically update all image configurations when new servers are added or other routing rules change
 - See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers.
