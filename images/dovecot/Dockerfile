@@ -11,7 +11,7 @@ RUN git checkout $APP_VERSION
 # Build
 RUN ./autogen.sh \
   && ./configure --enable-maintainer-mode \
-  && make \
+  && make -j"$(nproc)"\
   && make install
 
 # Configure
@@ -23,10 +23,6 @@ RUN groupadd dovecot && useradd -g dovecot dovecot \
   && touch /var/log/dovecot.log \
   && touch /var/log/dovecot-info.log \
   && chown dovecot:dovecot /var/log/dovecot.log /var/log/dovecot-info.log
-#  && groupadd vmail && useradd -g vmail -m vmail \
-#  && mkdir /home/vmail/Maildir && chown vmail:vmail /home/vmail/Maildir \
-#  && useradd -g users -m user1 && useradd -g users -m user2 \
-#  && chown vmail:vmail /var/log/dovecot.log /var/log/dovecot-info.log
 
 ARG RELAYHOST
 COPY dovecot.conf /usr/local/etc/dovecot/dovecot.conf
