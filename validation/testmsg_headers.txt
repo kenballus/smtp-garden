@@ -1,0 +1,17 @@
+HELO smtpgarden\r\n
+MAIL FROM:<admin@root.edu>\r\n
+RCPT TO:<echo@echo.com>\r\n
+DATA\r\n
+Content-Transfer-Encoding: quoted-printable\r\n
+Content-Type: text/html; charset="UTF-8"\r\n
+To: echo@echo.com\r\n
+Message-ID: <1234@mail.processing.server>\r\n
+Date: Mon, 26 Aug 2024 20:59:01 +0000\r\n
+MIME-Version: 1.0\r\n
+Reply-To: root@root.edu\r\n
+Subject: Test mail with headers\r\n
+From: admin <admin@root>\r\n
+This is a test message body.\r\n
+\r\n
+\r\n.\r\n
+QUIT\r\n
