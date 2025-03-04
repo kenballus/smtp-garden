@@ -4,16 +4,15 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 2/27/2025)
+## Status (as of 3/4/2025)
 - Configuration of SMTP servers is ongoing.
 - Relay-only / MTA servers
   - aiosmtpd, msmtp, nullmailer, OpenSMTPD, Sendmail
-  - \*Configuration underway for local delivery to file repository, stay tuned
 - SMTP with relay and local delivery
   - Exim, Postfix, Apache James, OpenSMTPD
-- Configuration of LMTP Servers: in progress
+- Configuration of LMTP Servers:
   - Dovecot
-- Configuration of Submission Servers: in progress
+- Configuration of Submission Servers:
   - Dovecot
 - Other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
 - Support containers:
@@ -28,6 +27,7 @@ A containerized arrangement of various open-source SMTP and SMTP-like servers fo
   - Future: docker volume-ized Maildir files for each container, for easy diff'ing and parsing.
 
 ## TODO (as of 3/2/2025)
+- Add folder of email test payloads (for validating server behavior, not for fuzzing)
 - Update eligible images to volumize Maildir (or other file repository) tree
 - Script to automatically update all image configurations when new servers are added or other routing rules change
 - See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers.
