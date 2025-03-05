@@ -44,8 +44,8 @@ services:
     image: smtp-garden-exim:latest
     hostname: exim.smtp.garden
     volumes:
-       - ./images/exim/smtp-garden-domains:/etc/smtp-garden-domains
-       - ./images/exim/home:/home
+      - ./images/exim/smtp-garden-domains:/etc/smtp-garden-domains
+      - ./images/exim/home:/home
     networks:
       smtp:
         aliases:
@@ -62,7 +62,7 @@ services:
     image: smtp-garden-james:latest
     hostname: james.smtp.garden
     volumes:
-       - ./images/james/home:/home
+      - ./images/james/home:/home
     networks:
       smtp:
         aliases:
@@ -80,7 +80,7 @@ services:
     image: smtp-garden-postfix:latest
     hostname: postfix.smtp.garden
     volumes:
-       - ./images/postfix/home:/home
+      - ./images/postfix/home:/home
     networks:
       smtp:
         aliases:
@@ -124,7 +124,7 @@ services:
     image: smtp-garden-opensmtpd:latest
     hostname: opensmtpd.smtp.garden
     volumes:
-       - ./images/opensmtpd/home:/home
+      - ./images/opensmtpd/home:/home
     networks:
       smtp:
         aliases:
@@ -171,7 +171,7 @@ services:
     image: smtp-garden-dovecot:latest
     hostname: dovecot.smtp.garden
     volumes:
-       - ./images/dovecot/home:/home
+      - ./images/dovecot/home:/home
     networks:
       smtp:
         aliases:
