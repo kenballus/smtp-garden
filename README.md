@@ -5,7 +5,7 @@
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
 ## Status (as of 3/5/2025)
-The SMTP garden is ready for fuzzing development.
+The SMTP garden is ready for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
     - aiosmtpd, msmtp, nullmailer, Sendmail
@@ -16,6 +16,7 @@ The SMTP garden is ready for fuzzing development.
   - Configuration of Submission Servers (i.e. "smarthost-only"):
     - Dovecot
   - Other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
+    - Courier MTA is under active development
   - Support containers:
     - `echo` server improved with async methods.  An output filter/beautifier and a batch sending ability would be nice.
     - DNS container for MX records ("dns-mx" running dnsmasq) on standby, but docker built-in DNS has been sufficient so far
@@ -91,13 +92,14 @@ SMTP (mostly arbitrary order)
 - 2506 - opensmtpd
 - 2507 - nullmailer
 - 2508 - msmtp
+- 2509 - courier (incomplete)
 
 LMTP
 - 2401 - dovecot
 
 Submission Servers
 - 2601 - dovecot (see [special AUTH notes](images/dovecot))
-
+- 2602 - courier (incomplete)
 (subject to change)
 
 ### Provisional payload delivery

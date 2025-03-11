@@ -1,0 +1,7 @@
+HELO sendmsg.py\r\n
+MAIL FROM:<couriertester@example.com>\r\n
+RCPT TO:<user1@courier.smtp.garden>\r\n
+DATA\r\n
+This message was sent to user1@courier.smtp.garden.\r\n
+\r\n.\r\n
+QUIT\r\n
