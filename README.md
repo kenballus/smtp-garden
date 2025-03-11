@@ -4,7 +4,7 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 3/5/2025)
+## Status (as of 3/11/2025)
 The SMTP garden is ready for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
@@ -27,9 +27,10 @@ The SMTP garden is ready for fuzzing development.  New servers may be added any 
   - see TODO below / [issues](https://github.com/kenballus/smtp-garden/issues)
   - Pre-fuzzing testing identified a few server bugs
 
-## TODO (as of 3/5/2025)
+## TODO (as of 3/11/2025)
 - __HIGH__ Payload generator: Need a generator; Concept design stage.
 - __HIGH__ Output comparator: Need automation and a screening method for false-positives; Concept design stage
+- MEDIUM Finish configuring and testing Courier container
 - MEDIUM Streamline permissions for host accessing the files created in bind-mounted directories
 - MEDIUM Batch mode for `sendmsg.py`
 - LOW Script to automatically update all image configurations when new servers are added or other routing rules change
