@@ -2,54 +2,96 @@
 # By Malcolm Schongalla - SMTP Garden Apache Courier-MTA
 # Version 1
 
-# Use this script until a way to run Courier-MTA in the foreground is established
+authdaemond_cmd="/usr/local/sbin/authdaemond"
+esmtpd_cmd="/usr/lib/courier/share/esmtpd"
+self="[start-courier]"
 
 finished=false
-ready=false
+ready_authdaemon=false
+ready_esmtp=false
 
 # Signal handling
 stop_courier()
 {
-    echo '[start-courier] TERM or INT received...'
-    courierlogger -stop -pid=/home/courierlog
+    echo "$self TERM or INT received..."
+    $esmtpd_cmd stop
+    $authdaemond_cmd stop
     finished=true
 }
 
 trap 'stop_courier' TERM INT
 
-echo '[start-courier] starting...'
-cd /usr/lib/courier/sbin/
+echo "$self starting..."
+#cd /usr/lib/courier/share
 
-# The -pid flag is not supposed to be a PID. It is supposed to be a file to which syslog messages are saved.
-# Putting it in /home conveniently puts it in the Docker volume.
+$authdaemond_cmd start 2>&1
+$esmtpd_cmd start 2>&1
 
-courierlogger -pid=/home/courierlog -name=TestLog -start /usr/lib/courier/sbin/courier start
-
-while ! $ready ; do
+while ! $ready_authdaemon -a ! $ready_esmtp; do
     sleep 1
+
+    pgrep authdaemond > /dev/null
+    if [ $? -eq 0 ]; then
+        ready_authdaemon=true
+    fi
+
     pgrep courier > /dev/null
     if [ $? -eq 0 ]; then
-        ready=true
+        ready_esmtp=true
     fi
 done
 
-echo '[start-courier] online'
+echo "$self authdaemond and esmtp online"
 
 # Wait for TERM signal
 while ! $finished ; do
     pgrep courier > /dev/null
-    if [ $? -ne 0 ]; then
-        echo '[start-courier] courier unexpectedly quit'
+    esmtp_running=$?
+    pgrep authdaemond > /dev/null
+    authdaemond_running=$?
+
+    # if both processed quit
+    if [ $esmtp_running -ne 0 -a $authdaemond_running -ne 0 ]; then
+        echo "$self esmtp and authdaemond unexpectedly quit"
+        exit 6
+    fi
+
+    # if esmtp only quit
+    if [ $esmtp_running -ne 0 ]; then
+        echo "$self esmtp unexpectedly quit"
+        echo "$self - stopping authdaemond"
+        $authdaemond_cmd stop
         exit 2
     fi
+
+    # if authdaemond quit
+    if [ $authdaemond_running -ne 0 ]; then
+        echo "$self authdaemond unexpectedly quit"
+        echo "$self - stopping esmtpd"
+        $esmtpd_cmd stop
+        exit 4
+    fi
+
     sleep 1
 done
 
 # Confirm it's exited, or die trying
 sleep 1
+
+exitcode=0
+
+pgrep authdaemond > /dev/null
+if [ $? -eq 0 ]; then
+    echo "$self sending SIGKILL to authdaemond"
+    pkill -9 authdaemond
+    exitcode=4
+fi
+
 pgrep courier > /dev/null
 if [ $? -eq 0 ]; then
-    echo '[start-courier] sending SIGKILL to courier'
+    echo "$self sending SIGKILL to courier"
     pkill -9 courier
-    exit 3
+    exitcode=$(expr $exitcode + 8)
 fi
+
+echo $exitcode
