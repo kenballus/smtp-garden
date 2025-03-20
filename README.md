@@ -4,19 +4,20 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 3/11/2025)
+## Status (as of 3/20/2025)
 The SMTP garden is ready for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
     - aiosmtpd, msmtp, nullmailer, Sendmail
   - SMTP with relay and local delivery
-    - Exim, Postfix, Apache James, OpenSMTPD
-  - Configuration of LMTP Servers:
+    - Exim, Postfix, Apache James, OpenSMTPD, Courier MTA
+    - NOTE: error discovered in Exim local delivery. Stand by.
+- Configuration of LMTP Servers:
     - Dovecot
   - Configuration of Submission Servers (i.e. "smarthost-only"):
     - Dovecot
+    - Courier MTA (in progress, needs testing)
   - Other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
-    - Courier MTA is under active development
   - Support containers:
     - `echo` server improved with async methods.  An output filter/beautifier and a batch sending ability would be nice.
     - DNS container for MX records ("dns-mx" running dnsmasq) on standby, but docker built-in DNS has been sufficient so far
@@ -27,10 +28,11 @@ The SMTP garden is ready for fuzzing development.  New servers may be added any 
   - see TODO below / [issues](https://github.com/kenballus/smtp-garden/issues)
   - Pre-fuzzing testing identified a few server bugs
 
-## TODO (as of 3/11/2025)
+## TODO (as of 3/20/2025)
 - __HIGH__ Payload generator: Need a generator; Concept design stage.
 - __HIGH__ Output comparator: Need automation and a screening method for false-positives; Concept design stage
-- MEDIUM Finish configuring and testing Courier container
+- MEDIUM Troubleshoot Exim local delivery errors (3/20/25)
+- MEDIUM Finish configuring and testing Courier container (test port 587) (3/20/25)
 - MEDIUM Streamline permissions for host accessing the files created in bind-mounted directories
 - MEDIUM Batch mode for `sendmsg.py`
 - LOW Script to automatically update all image configurations when new servers are added or other routing rules change
