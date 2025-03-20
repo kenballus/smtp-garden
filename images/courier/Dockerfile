@@ -51,12 +51,10 @@ RUN cd /app/courier-${RELEASE_VER} \
   && make install && make install-configure
 
 # Configure 
-COPY courierconf.tar.gz /usr/lib/courier/etc/courierconf.tar.gz
+COPY ./courierconf /usr/lib/courier/etc
 ARG RELAYHOST
 RUN cd /usr/lib/courier/etc \
-  && tar -xvf courierconf.tar.gz \
   && sed -i "s/__RELAYHOST__/${RELAYHOST}/" /usr/lib/courier/etc/esmtproutes \
-  && sed -i "s/ESMTP_LOG_DIALOG=0/ESMTP_LOG_DIALOG=1/" /usr/lib/courier/etc/esmtpd \
   && sed -i "s/daemons=5/daemons=1/" /usr/local/etc/authlib/authdaemonrc \
   && sed -i "s/DEBUG_LOGIN=0/DEBUG_LOGIN=2/" /usr/local/etc/authlib/authdaemonrc \
   && /usr/lib/courier/sbin/makesmtpaccess-msa \

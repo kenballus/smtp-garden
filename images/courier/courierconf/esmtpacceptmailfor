@@ -1,0 +1,17 @@
+localhost
+aiosmtpd
+courier
+dovecot
+echo
+exim
+james
+msmtp
+nullmailer
+opensmtp
+postfix
+sendmail
+.smtp.garden
+smtp.garden
+.garden
+garden
+.smtp

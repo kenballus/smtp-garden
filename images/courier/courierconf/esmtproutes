@@ -1,0 +1,11 @@
+aiosmtpd.smtp.garden:aiosmtpd.smtp.garden
+dovecot.smtp.garden:dovecot.smtp.garden
+echo.smtp.garden:echo.smtp.garden
+exim.smtp.garden:exim.smtp.garden
+james.smtp.garden:james.smtp.garden
+msmtp.smtp.garden:msmtp.smtp.garden
+nullmailer.smtp.garden:nullmailer.smtp.garden
+opensmtp.smtp.garden:opensmtp.smtp.garden
+postfix.smtp.garden:postfix.smtp.garden
+sendmail.smtp.garden:sendmail.smtp.garden
+ :echo.smtp.garden
