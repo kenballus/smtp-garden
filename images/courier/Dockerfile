@@ -4,9 +4,6 @@ ARG RELEASE_VER="1.3.13"
 
 # Dev environment & dependencies
 WORKDIR /app
-# Removed courier-authlib and courier-authlib-dev from apt install
-# - Did not seem to install everything necessary
-# - will build authlib from source
 RUN apt -y update && apt -y upgrade \
   && apt -y --no-install-recommends install autoconf automake bzip2 \
      docbook docbook-xml docbook-xsl \
@@ -14,10 +11,10 @@ RUN apt -y update && apt -y upgrade \
      libgdbm-dev libidn12 libidn2-dev libldap2-dev libltdl-dev \
      libmariadb-dev libpam0g-dev libpcre2-dev libperl-dev libpq-dev \
      libsqlite3-dev libtool libz-dev pcre2-utils pkg-config sysconftool \
-     tidy w3c-sgml-lib wget xsltproc \
+     tidy w3c-sgml-lib wget xsltproc socat \
   && chmod 777 /app
 
-# Local user inboxes
+# Local user inboxes, in case volumes aren't used
 RUN adduser user1 && adduser user2 \
   && mkdir -p /home/user1/Maildir/{new,cur,tmp} \
   && chown -R user1:user1 /home/user1/Maildir \
@@ -25,11 +22,8 @@ RUN adduser user1 && adduser user2 \
   && mkdir -p /home/user2/Maildir/{new,cur,tmp} \
   && chown -R user2:user2 /home/user2/Maildir \
   && chmod -R 744 /home/user2/Maildir
-# moved from after mkdir
-#  && printf "| /usr/bin/id >ID\n| /usr/bin/env >ENV\n" > /home/user1/Maildir/.courier \
-#  && printf "| /usr/bin/id >ID\n| /usr/bin/env >ENV\n" > /home/user2/Maildir/.courier \
 
-# Set up authlib from scratch
+# Set up authlib from scratch. Apt repo doesn't have everything necessary.
 USER user1
 ARG AUTHLIB_VER="0.72.3"
 RUN cd /app \
@@ -62,6 +56,7 @@ ARG RELAYHOST
 RUN cd /usr/lib/courier/etc \
   && tar -xvf courierconf.tar.gz \
   && sed -i "s/__RELAYHOST__/${RELAYHOST}/" /usr/lib/courier/etc/esmtproutes \
+  && sed -i "s/ESMTP_LOG_DIALOG=0/ESMTP_LOG_DIALOG=1/" /usr/lib/courier/etc/esmtpd \
   && sed -i "s/daemons=5/daemons=1/" /usr/local/etc/authlib/authdaemonrc \
   && sed -i "s/DEBUG_LOGIN=0/DEBUG_LOGIN=2/" /usr/local/etc/authlib/authdaemonrc \
   && /usr/lib/courier/sbin/makesmtpaccess-msa \
@@ -74,4 +69,3 @@ RUN cd /usr/lib/courier/etc \
 COPY start-courier.sh /app/start-courier.sh
 WORKDIR /app
 CMD ["/app/start-courier.sh"]
-# TODO: update the start script to start authdaemond too

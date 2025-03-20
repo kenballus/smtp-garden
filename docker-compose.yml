@@ -187,6 +187,9 @@ services:
         APP_VERSION: "1.3.13"
         RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-courier:latest
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
     hostname: courier.smtp.garden
     volumes:
       - ./images/courier/home:/home
