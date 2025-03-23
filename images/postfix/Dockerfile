@@ -22,11 +22,12 @@ RUN apt -y update && apt -y upgrade \
   && make install POSTFIX_INSTALL_OPTS=-non-interactive
 
 # Configure
-COPY main.cf /etc/postfix/
-COPY master.cf /etc/postfix/
-COPY relay_domains /etc/postfix/
-COPY transport /etc/postfix/
-COPY recipient_canonical /etc/postfix/
+COPY conf /etc/postfix/
+#COPY main.cf /etc/postfix/
+#COPY master.cf /etc/postfix/
+#COPY relay_domains /etc/postfix/
+#COPY transport /etc/postfix/
+#COPY recipient_canonical /etc/postfix/
 ARG RELAYHOST
 ENV RELAYHOST=$RELAYHOST
 RUN chmod 644 /etc/postfix/main.cf \
@@ -36,17 +37,9 @@ RUN chmod 644 /etc/postfix/main.cf \
   && /usr/bin/newaliases \
   && postmap /etc/postfix/transport \
   && postmap /etc/postfix/relay_domains \
-  && postmap /etc/postfix/recipient_canonical
+  && postmap /etc/postfix/recipient_canonical \
+  && adduser user1 && adduser user2
 
-# Establish local email targets
-RUN adduser user1 && adduser user2
-#RUN useradd --create-home user1 && useradd --create-home user2 \
-#  && usermod --append --groups users user1 \
-#  && usermod --append --groups users user2 \
-#  && chgrp -R users /home/user1 \
-#  && chgrp -R users /home/user2 \
-#  && chmod -R 770 /home/user1 \
-#  && chmod -R 770 /home/user2 \
-#  && usermod -a -G users exim
-
-CMD ["postfix", "start-fg"]
+# Go
+COPY start-postfix.sh /app/start-postfix.sh
+CMD ["/app/start-postfix.sh"]

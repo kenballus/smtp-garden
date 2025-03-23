@@ -68,17 +68,19 @@
 
          <!-- Custom SMTP Garden matchers -->
          <matcher name="relay-to-peer" match="org.apache.james.mailetcontainer.impl.matchers.Or">
-           <matcher match="HostIs=exim.smtp.garden"/>
            <matcher match="HostIs=aiosmtpd.smtp.garden"/>
+           <matcher match="HostIs=courier.smtp.garden"/>
            <matcher match="HostIs=dovecot.smtp.garden"/>
+           <matcher match="HostIs=exim.smtp.garden"/>
            <matcher match="HostIs=msmtp.smtp.garden"/>
            <matcher match="HostIs=nullmailer.smtp.garden"/>
            <matcher match="HostIs=opensmtp.smtp.garden"/>
            <matcher match="HostIs=postfix.smtp.garden"/>
            <matcher match="HostIs=sendmail.smtp.garden"/>
-           <matcher match="HostIs=exim"/>
            <matcher match="HostIs=aiosmtpd"/>
+           <matcher match="HostIs=courier"/>
            <matcher match="HostIs=dovecot"/>
+           <matcher match="HostIs=exim"/>
            <matcher match="HostIs=msmtp"/>
            <matcher match="HostIs=nullmailer"/>
            <matcher match="HostIs=opensmtp"/>

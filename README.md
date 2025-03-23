@@ -31,6 +31,7 @@ The SMTP garden is ready for fuzzing development.  New servers may be added any 
 ## TODO (as of 3/20/2025)
 - __HIGH__ Payload generator: Need a generator; Concept design stage.
 - __HIGH__ Output comparator: Need automation and a screening method for false-positives; Concept design stage
+- MEDIUM Standardized test message library and validation script
 - MEDIUM Troubleshoot Exim local delivery errors (3/20/25)
 - MEDIUM Finish configuring and testing Courier container (test port 587) (3/20/25)
 - MEDIUM Streamline permissions for host accessing the files created in bind-mounted directories
@@ -55,7 +56,17 @@ The SMTP garden is ready for fuzzing development.  New servers may be added any 
 
 ### Host environment
 
-Ensure the appropriate `images/<image>/home/` trees have `user1/Maildir` and `user2/Maildir` and necessary subdirectories intact, with all folder permissions set to 666.
+File tree permission management is necessary for __local user email delivery__ and __Maildir content retrieval from the host__.
+- Update the values in your `.env` file to reflect your desired host user UID and GID.
+- `images/<image>/home` trees get volumized by docker-compose, so ensure the appropriate `user{1|2}/Maildir/{new|cur|tmp}` subdirectories are intact.
+- Server start scripts within each Docker image should take care of file system permissions automatically.
+- Those same start scripts trap SIGINT and SIGTERM, and will reassign ownership to the UID and GID set in `.env` upon container shutdown
+  - In some environments CTRL-C (instead of `docker-compose {down | stop}`) may not get trapped
+- The fix, if file ownership has been mangled, and you can't access Maildirs from the host:
+  - Re-launch the container and ensure the volume is attached
+  - Within the container, run `chown -R <UID>:<GID> /home`
+  - This will temporarily break the server's local mail delivery, but you can now access `images/<image>/home` contents at will, as the host user
+  - Start script will reset permissions correctly next time the container is started.
 
 ### Build and tag containers
 
@@ -71,7 +82,7 @@ images/smtp-garden-exim$ docker build -t smtp-garden-exim:latest --build-arg=APP
 # etc for additional images.  The build-args are required.
 ```
 
-- Some servers require an alternate `APP_VERSION`, so check the YAML and don't assume it is always "master".
+- Some servers require an alternate `APP_VERSION`, so check the YAML and the repo, and don't assume it is always "master".
 - See subfolder READMEs for each image for a configuration quick reference and brief overview.
 - By modifying RELAYHOST for each image, servers can be arbitrarily "daisy chained," if desired.
 - If an image won't build or a container won't start, check for new commits and revert to an earlier commit, if necessary.  Everything builds well as of this README.
@@ -128,11 +139,7 @@ Submission Servers
 - `echo` outputs all sent/received traffic to stdout
 - Host's `image/<image_name>/home` folders are bind mounted to each container's `/home` for Docker host-based access.
   - i.e. `images/exim/home/user1/Maildir` binds Exim container's `/home/user1/Maildir`
-  - Make sure the host directory tree is permissively (666) configured, or servers will probably fail to write to file.
-  - The container user's UID:GID is assigned to all files created by the container, which likely are assigned permission 600.  This stands in the way of the host user access.
-  - Workaround: before extracting the outputs from the container, change ownership from within the container
-    - Remember, its UID and GID that matter, not username or groupname
-    - `docker exec -it <container> chown -R $(id -u):$(id -g) /home/*`
+  - Server start scripts in each Docker image should take care of file system and volume permissions (see "Deployment:Host Environment" above)
 
 ## Issues/Troubleshooting
 Please submit a new github issue or contact the maintainers directly.

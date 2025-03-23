@@ -42,6 +42,9 @@ services:
         APP_VERSION: "master"
         RELAYHOST: "echo"
     image: smtp-garden-exim:latest
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
     hostname: exim.smtp.garden
     volumes:
       - ./images/exim/smtp-garden-domains:/etc/smtp-garden-domains
@@ -60,6 +63,9 @@ services:
         APP_VERSION: "master"
         RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-james:latest
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
     hostname: james.smtp.garden
     volumes:
       - ./images/james/home:/home
@@ -78,6 +84,9 @@ services:
         MYDESTINATION: "postfix"
         RELAYHOST: "echo"
     image: smtp-garden-postfix:latest
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
     hostname: postfix.smtp.garden
     volumes:
       - ./images/postfix/home:/home
@@ -122,6 +131,9 @@ services:
         APP_VERSION: "master"
         RELAYHOST: "echo"
     image: smtp-garden-opensmtpd:latest
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
     hostname: opensmtpd.smtp.garden
     volumes:
       - ./images/opensmtpd/home:/home
@@ -169,6 +181,9 @@ services:
         APP_VERSION: "main"
         RELAYHOST: "echo"
     image: smtp-garden-dovecot:latest
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
     hostname: dovecot.smtp.garden
     volumes:
       - ./images/dovecot/home:/home

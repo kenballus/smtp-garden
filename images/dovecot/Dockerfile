@@ -29,5 +29,6 @@ COPY dovecot.conf /usr/local/etc/dovecot/dovecot.conf
 RUN sed -i "s/__RELAYHOST__/${RELAYHOST}/" /usr/local/etc/dovecot/dovecot.conf
 
 # Go
-CMD ["dovecot", "-F"]
+COPY start-dovecot.sh /app/start-dovecot.sh
+CMD ["/app/start-dovecot.sh"]
 

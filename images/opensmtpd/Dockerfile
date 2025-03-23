@@ -30,6 +30,7 @@ RUN ln -s /usr/sbin/smtpctl sendmail \
   && mkdir -p /home/user2/Maildir/cur && mkdir /home/user2/Maildir/new && mkdir /home/user2/Maildir/tmp && chown -R user2:user2 /home/user2
 
 # Go
-CMD ["smtpd", "-d", "-T", "all"]
-
+#CMD ["smtpd", "-d", "-T", "all"]
+COPY start-opensmtpd.sh /app
+CMD ["/app/start-opensmtpd.sh"]
 

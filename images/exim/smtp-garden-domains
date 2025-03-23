@@ -2,6 +2,8 @@
 !exim.smtp.garden
 aiosmtpd
 aiosmtpd.smtp.garden
+courier
+courier.smtp.garden
 dovecot
 dovecot.smtp.garden
 james

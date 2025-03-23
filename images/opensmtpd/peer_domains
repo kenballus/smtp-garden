@@ -1,4 +1,5 @@
 aiosmtpd
+courier
 dovecot
 exim
 james
@@ -7,6 +8,7 @@ nullmailer
 postfix
 sendmail
 aiosmtpd.smtp.garden
+courier.smtp.garden
 dovecot.smtp.garden
 exim.smtp.garden
 james.smtp.garden

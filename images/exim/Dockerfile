@@ -33,4 +33,5 @@ RUN useradd --create-home user1 && useradd --create-home user2 \
 RUN touch /etc/smtp-garden-domains
 
 # Go
-CMD ["/usr/exim/bin/exim", "-bdf"]
+COPY start-exim.sh /app
+CMD ["/app/start-exim.sh"]
