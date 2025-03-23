@@ -4,7 +4,7 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 3/20/2025)
+## Status (as of 3/22/2025)
 The SMTP garden is ready for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
@@ -39,7 +39,6 @@ The SMTP garden is ready for fuzzing development.  New servers may be added any 
 - LOW Script to automatically update all image configurations when new servers are added or other routing rules change
 - LOW See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers.
 - LOW Optimize Dockerfiles for image size (i.e., James is huge)
-- LOW Add alias support to `sendmsg.py` to avoid needing to cross reference port numbers
 
 ## Validation
 - Expected behavior:
@@ -112,7 +111,7 @@ SMTP (mostly arbitrary order)
 LMTP
 - 2401 - dovecot
 
-Submission Serveirs
+Submission Servers
 - 2601 - courier (incomplete)
 - 2602 - dovecot (see [special AUTH notes](images/dovecot))
 (subject to change)
@@ -135,6 +134,11 @@ Submission Serveirs
 - See leading script comments/description for `message_file` formatting details.
 - Note: Escape character parsing uses `codecs.escape_decode()`, an undocumented Python function, please report any unexpected results.
 - The example payload file works fine for SMTP servers, but LMTP and Submission payloads require modification (i.e. LHLO, AUTH)
+- __Pro Tip:__ set appropriately-named environment variables to respective ports, so you don't have to remember container-to-port mapping:
+```
+aiosmtpd=2501
+./sendmsg.py message_file $aiosmtpd
+```
 
 ## Output Collection
 - `echo` outputs all sent/received traffic to stdout
