@@ -17,16 +17,16 @@ RUN sh ./autogen.sh \
   && ./configure \
   && make \
   && make install install-root
-COPY start.sh .
+COPY start-nullmailer.sh /app/
 
 # Configure
 ARG RELAYHOST
 RUN echo "${RELAYHOST} smtp" > /usr/local/etc/nullmailer/remotes \
   && echo "smtp-garden-nullmailer" > /usr/local/etc/nullmailer/me \
-  && chmod +x start.sh
+  && chmod +x /app/start-nullmailer.sh
 
 # Go
-CMD ["./start.sh", "25"]
+CMD ["/app/start-nullmailer.sh", "25"]
 
 # Alternate invocation, without signal handling:
 #CMD nullmailer-send & nc -lk -p 25 -c nullmailer-smtpd

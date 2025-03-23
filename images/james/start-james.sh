@@ -10,7 +10,7 @@ self="[start-james]"
 # Signal handling
 stop_james()
 {
-    echo '$self TERM or INT received...'
+    echo "$self TERM or INT received..."
     pkill -15 java > /dev/null
     finished=true
 }
@@ -46,7 +46,7 @@ chown root:root /home
 chown -R user1:user1 /home/user1
 chown -R user2:user2 /home/user2
 
-echo '$self starting...'
+echo "$self starting..."
 cd /app/james
 java --enable-preview --add-modules jdk.incubator.vector \
      -javaagent:/app/james/james-server-jpa-app.lib/openjpa-4.0.0.jar \
@@ -67,7 +67,7 @@ java --enable-preview --add-modules jdk.incubator.vector \
 #done
 sleep 10
 
-echo '$self online ...presumably'
+echo "$self online ...presumably"
 
 # Add local users. Assumes Dockerfile took care of +x james-cli.sh
 GETAUTH=$(cat /app/james/conf/jmxremote.password)
@@ -80,7 +80,7 @@ read UNAME PWORD <<< "$GETAUTH"
 while ! $finished; do
     pgrep java > /dev/null
     if [ $? -ne 0 ]; then
-        echo '$self james unexpectedly quit'
+        echo "$self james unexpectedly quit"
         exit 2
     fi
     sleep 1
@@ -91,7 +91,7 @@ exitcode=0
 sleep 1
 pgrep java > /dev/null
 if [ $? -eq 0 ]; then
-    echo '$self sending SIGKILL to james'
+    echo "$self sending SIGKILL to james"
     pkill -9 java
     exitcode=4
 fi

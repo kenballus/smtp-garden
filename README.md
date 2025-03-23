@@ -98,22 +98,23 @@ docker compose up [--build] [-d] [echo] [postfix] [james] [exim] [...]
 ### Provisional localhost port assignment:
 SMTP (mostly arbitrary order)
 - 25 - echo
-- 2501 - postfix
-- 2502 - james
+- 2501 - aiosmtpd 
+- 2502 - courier
 - 2503 - exim
-- 2504 - aiosmtpd
-- 2505 - sendmail
-- 2506 - opensmtpd
+- 2504 - james
+- 2505 - msmtp
+- 2506 - (reserved)
 - 2507 - nullmailer
-- 2508 - msmtp
-- 2509 - courier (incomplete)
+- 2508 - opensmtpd
+- 2509 - postfix
+- 2510 - sendmail
 
 LMTP
 - 2401 - dovecot
 
-Submission Servers
-- 2601 - dovecot (see [special AUTH notes](images/dovecot))
-- 2602 - courier (incomplete)
+Submission Serveirs
+- 2601 - courier (incomplete)
+- 2602 - dovecot (see [special AUTH notes](images/dovecot))
 (subject to change)
 
 ### Provisional payload delivery
