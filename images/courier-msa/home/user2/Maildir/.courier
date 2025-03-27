@@ -1,0 +1,4 @@
+| /usr/bin/id >ID
+| /usr/bin/env >ENV
+| /usr/bin/whoami >WHOAMI
+./Maildir

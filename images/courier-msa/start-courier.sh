@@ -1,12 +1,11 @@
 #!/bin/bash
-# By Malcolm Schongalla - SMTP Garden Apache Courier-MTA
-# Version 1.1 - fix_permission() added; avoid shutdown race
-# Version 1.0 - original
+# By Malcolm Schongalla - SMTP Garden Apache Courier-MTA, MSA version
+# Version 1.0 - original (based on 'courier' start script v1.1)
 
 authdaemond_cmd="/usr/local/sbin/authdaemond"
-esmtpd_cmd="/usr/lib/courier/sbin/esmtpd"
+esmtpd_cmd="/usr/lib/courier/sbin/esmtpd-msa"
 courier_cmd="/usr/lib/courier/sbin/courier"
-self="[start-courier]"
+self="[start-courier-msa]"
 
 # Signal handling
 stop_courier()
@@ -118,7 +117,7 @@ while ! $finished ; do
     # if processes unexpectedly quit
     if [ $courierd_running -ne 0 ]; then
         echo -e "\n$self courierd unexpectedly quit"
-        echo "$self - stopping esmtpd and authdaemond, aborting"
+        echo "$self - stopping esmtpd-msa and authdaemond, aborting"
         $authdaemond_cmd stop
         $esmtpd_cmd stop
         fix_permissions
@@ -136,7 +135,7 @@ while ! $finished ; do
 
     if [ $authdaemond_running -ne 0 ]; then
         echo -e "\n$self authdaemond unexpectedly quit"
-        echo "$self - stopping courierd and esmtpd, aborting"
+        echo "$self - stopping courierd and esmtpd-msa, aborting"
         $courier_cmd stop
         $esmtpd_cmd stop
         fix_permissions

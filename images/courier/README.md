@@ -1,6 +1,7 @@
 ## Courier-MTA
 
 Courier MTA is highly modular.  It has thorough documentation, but it is more reference than "how-to."
+- This image runs the SMTP server, not the MSA.  See [courier-msa](../courier-msa)
 - Main config files are deployed to [/usr/lib/courier/etc](courierconf/)
 - Main reference https://www.courier-mta.org/courier.html
 - Provided in the repo:
@@ -21,3 +22,6 @@ Building:
 
 Other:
 - New feature! When the container is shut down properly, the start script will attempt to reassign ownership of contents of /home for host user access (instead of leaving Docker's leftover UID/GID settings)
+
+### History
+- 2025-03-27: reflects trixie repository change from `libcourier-unicode4` to `libcourier-unicode8`

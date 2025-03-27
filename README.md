@@ -4,7 +4,7 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 3/22/2025)
+## Status (as of 3/27/2025)
 The SMTP garden is ready for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
@@ -14,9 +14,9 @@ The SMTP garden is ready for fuzzing development.  New servers may be added any 
     - NOTE: error discovered in Exim local delivery. Stand by.
 - Configuration of LMTP Servers:
     - Dovecot
-  - Configuration of Submission Servers (i.e. "smarthost-only"):
-    - Dovecot
-    - Courier MTA (in progress, needs testing)
+  - Configuration of Submission Servers:
+    - Dovecot ("smarthost-only")
+    - Courier MSA (Same as Courier MTA, but RFC 2476 compliant)
   - Other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
   - Support containers:
     - `echo` server improved with async methods.  An output filter/beautifier and a batch sending ability would be nice.
@@ -31,9 +31,8 @@ The SMTP garden is ready for fuzzing development.  New servers may be added any 
 ## TODO (as of 3/20/2025)
 - __HIGH__ Payload generator: Need a generator; Concept design stage.
 - __HIGH__ Output comparator: Need automation and a screening method for false-positives; Concept design stage
-- MEDIUM Standardized test message library and validation script
+- __HIGH__ Standardized test message library and validation script
 - MEDIUM Troubleshoot Exim local delivery errors (3/20/25)
-- MEDIUM Finish configuring and testing Courier container (test port 587) (3/20/25)
 - MEDIUM Streamline permissions for host accessing the files created in bind-mounted directories
 - MEDIUM Batch mode for `sendmsg.py`
 - LOW Script to automatically update all image configurations when new servers are added or other routing rules change
@@ -69,7 +68,7 @@ File tree permission management is necessary for __local user email delivery__ a
 
 ### Build and tag containers
 
-Servers build from source, and which be time-consuming.  Expect up to 8-10 minutes for James and Dovecot on a reasonably fast machine.  The target images can conveniently be built with docker compose, starting with [smtp-garden-soil](images/smtp-garden-soil):
+Servers build from source, and which be time-consuming.  Expect up to 8-10+ minutes for Courier [MSA], James and Dovecot on a reasonably fast machine.  The target images can conveniently be built with docker compose, starting with [smtp-garden-soil](images/smtp-garden-soil):
 ```
 smtp-garden$ docker compose build soil
 smtp-garden$ docker compose build [echo] [msmtp] [...]
@@ -112,7 +111,7 @@ LMTP
 - 2401 - dovecot
 
 Submission Servers
-- 2601 - courier (incomplete)
+- 2601 - courier-msa
 - 2602 - dovecot (see [special AUTH notes](images/dovecot))
 (subject to change)
 

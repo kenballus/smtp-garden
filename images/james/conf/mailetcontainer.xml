@@ -70,6 +70,7 @@
          <matcher name="relay-to-peer" match="org.apache.james.mailetcontainer.impl.matchers.Or">
            <matcher match="HostIs=aiosmtpd.smtp.garden"/>
            <matcher match="HostIs=courier.smtp.garden"/>
+           <matcher match="HostIs=courier-msa.smtp.garden"/>
            <matcher match="HostIs=dovecot.smtp.garden"/>
            <matcher match="HostIs=exim.smtp.garden"/>
            <matcher match="HostIs=msmtp.smtp.garden"/>
@@ -79,6 +80,7 @@
            <matcher match="HostIs=sendmail.smtp.garden"/>
            <matcher match="HostIs=aiosmtpd"/>
            <matcher match="HostIs=courier"/>
+           <matcher match="HostIs=courier-msa"/>
            <matcher match="HostIs=dovecot"/>
            <matcher match="HostIs=exim"/>
            <matcher match="HostIs=msmtp"/>
@@ -134,7 +136,7 @@
       <processor state="ToPeer" enableJmx="true">
          <mailet match="All" class="RemoteDelivery">
             <!-- uses default DNS (docker) for destination -->
-            <message>[James custom processor]: ToPeer</message>
+                         <message>[James custom processor]: ToPeer</message>
             <outgoing>peerQueue</outgoing>
             <delayTime>200</delayTime>
             <maxRetries>1</maxRetries>

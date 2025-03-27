@@ -1,9 +1,13 @@
 # Tells postfix which peers it can relay directly to
-exim.smtp.garden OK
 aiosmtpd.smtp.garden OK
+courier.smtp.garden OK
+courier-msa.smtp.garden OK
+dovecot.smtp.garden OK
+echo.smtp.garden OK
 exim.smtp.garden OK
 james.smtp.garden OK
 msmtp.smtp.garden OK
 nullmailer.smtp.garden OK
 opensmtpd.smtp.garden OK
+postfix.smtp.garden OK
 sendmail.smtp.garden OK

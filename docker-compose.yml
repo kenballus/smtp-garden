@@ -66,6 +66,25 @@ services:
           - courier.smtp.garden
     ports:
       - 127.0.0.1:2502:25
+
+  courier-msa:
+    build:
+      context: "./images/courier-msa"
+      args:
+        APP_VERSION: "1.3.13"
+        RELAYHOST: "echo.smtp.garden"
+    image: smtp-garden-courier-msa:latest
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
+    hostname: courier-msa.smtp.garden
+    volumes:
+      - ./images/courier-msa/home:/home
+    networks:
+      smtp:
+        aliases:
+          - courier-msa.smtp.garden
+    ports:
       - 127.0.0.1:2601:587
 
   dovecot:

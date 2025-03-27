@@ -1,5 +1,6 @@
 aiosmtpd
 courier
+courier-msa
 dovecot
 exim
 james
@@ -9,6 +10,7 @@ postfix
 sendmail
 aiosmtpd.smtp.garden
 courier.smtp.garden
+courier-msa.smtp.garden
 dovecot.smtp.garden
 exim.smtp.garden
 james.smtp.garden
