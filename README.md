@@ -4,14 +4,13 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 3/27/2025)
-The SMTP garden is ready for fuzzing development.  New servers may be added any time.
+## Status (as of 3/31/2025)
+The SMTP garden is undergoing formal validation and final routing troubleshooting.  It is ready for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
     - aiosmtpd, msmtp, nullmailer, Sendmail
   - SMTP with relay and local delivery
     - Exim, Postfix, Apache James, OpenSMTPD, Courier MTA
-    - NOTE: error discovered in Exim local delivery. Stand by.
 - Configuration of LMTP Servers:
     - Dovecot
   - Configuration of Submission Servers:
@@ -31,10 +30,7 @@ The SMTP garden is ready for fuzzing development.  New servers may be added any 
 ## TODO (as of 3/20/2025)
 - __HIGH__ Payload generator: Need a generator; Concept design stage.
 - __HIGH__ Output comparator: Need automation and a screening method for false-positives; Concept design stage
-- __HIGH__ Standardized test message library and validation script
-- MEDIUM Troubleshoot Exim local delivery errors (3/20/25)
-- MEDIUM Streamline permissions for host accessing the files created in bind-mounted directories
-- MEDIUM Batch mode for `sendmsg.py`
+- __HIGH__ Establish scope of rejection by servers receiving payloads from Courier, Exim, etc
 - LOW Script to automatically update all image configurations when new servers are added or other routing rules change
 - LOW See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers.
 - LOW Optimize Dockerfiles for image size (i.e., James is huge)

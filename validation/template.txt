@@ -1,0 +1,13 @@
+HELO validation.smtp.garden\r\n
+MAIL FROM:<__SOURCE__>\r\n
+RCPT TO:<__DEST__>\r\n
+DATA\r\n
+MIME-Version: 1.0\r
+From: "Validator" __SOURCE__\r
+To: "__USER__" __DEST__\r
+Date: __DATE__\r
+Subject: Formal validation\r
+Validation message via __SOURCE__ to __DEST__.\r
+\r
+\r\n.\r\n
+QUIT\r\n
