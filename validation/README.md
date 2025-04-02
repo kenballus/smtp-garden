@@ -2,7 +2,7 @@
 
 - The following basic functionalities of SMTP Garden should be validated prior to formal testing of garden servers:
   - Routing functionality between all peers
-  - Local Maildir delivery, for supporting servers
+  - Local Maildir delivery, for supporting servers (`inbox/` for Apache James)
 - The `gen.py` script and associated files (`config.py` and `template.txt`) can be used to automatically generate testing payloads.
   - Script tested under Python 3.10.12 and 3.13.2, and it should work on >=3.9
   - Be careful which folder you run it in, it is capable of generating a __lot__ of files.
@@ -10,6 +10,10 @@
   - The config file maps `__SOURCEPEER__` to source host, `__PEER__` to target host, and `__USER__` to username, but feel free to modify.
   - Want to change the filename format?  See `filename` in `TokenTree.self_to_file()` method.
   - a separate `template-dovecot.txt` file, provided, may be used for testing Dovecot MSA, which requires `AUTH`
+  - __Use caution with headers:__
+    - Adding the wrong header(s) to your template can cause all subsequent `DATA` content to be ignored and mimic a delivery error or server malfunction.
+    - OpenSMTP requires at least one header to consider the email valid.
+    - Other unexpected behavior is among what we are looking for.
 - Batch send the payload files to the SMTP Garden, then:
   - Verify expected number of Maildir products,
   - Verify echo server outputs,

@@ -40,10 +40,10 @@ How it works: message processing is defined primarily by contents of `conf/maile
   - Usernames are `user1` and `user2`, and they are manually added during container startup
   - __Ideally__, local user inboxes could be statically configured via a pre-made, "drop-in" database.  Since that has not been solved, a functional alternative is to use the script `james-cli.sh` to manually add local user accounts after the James server is running.
   - The container's startup script anticipates __10 seconds__ required before this can be done, and `sleep`s accordingly.  Depending on your system, you may need to modify the sleep time.  The alternative would be to loop a healthcheck until it indicates the server is ready, but the developer-suggested method \([`curl -XGET http://172.17.0.2:8000/healthcheck`](https://james.apache.org/howTo/custom-healthchecks.html)\) does not work well for these purposes.
-- Maildir format was deprecated.  Locally stored emails are in a binary format, with human-readable headers/metadata. (see /james/app/mail/inbox/)
+- Maildir format was deprecated.  Locally stored emails are in a binary format, with basically human-readable content. (see /james/app/mail/inbox/)
   - `inbox/` is volumized, maps to `/james/app/mail/inbox` within the container.
   - Deprecated: `home/.../Maildir/...` was created and volumized for an earlier version of James, and remains enabled (but unused) until it is decided to remove it.  __No mail is currently delivered here.__
-  - A robust method for retrieving mailbox content is not yet implemented: Consider enabling IMAP/POP/James Mailbox/custom instrumentation
+  - A better method for retrieving mailbox content is desirable: Consider enabling IMAP/POP/custom instrumentation
 
 ## Useful links
 http://james.apache.org/server/3/config.html

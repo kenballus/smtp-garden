@@ -27,15 +27,16 @@ The SMTP garden is undergoing formal validation and final routing troubleshootin
   - see TODO below / [issues](https://github.com/kenballus/smtp-garden/issues)
   - Pre-fuzzing testing identified a few server bugs
 
-## TODO (as of 3/20/2025)
+## TODO (as of 4/1/2025)
 - __HIGH__ Payload generator: Need a generator; Concept design stage.
 - __HIGH__ Output comparator: Need automation and a screening method for false-positives; Concept design stage
-- __HIGH__ Establish scope of rejection by servers receiving payloads from Courier, Exim, etc
+- __HIGH__ Finish formal validation
 - LOW Script to automatically update all image configurations when new servers are added or other routing rules change
 - LOW See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers.
 - LOW Optimize Dockerfiles for image size (i.e., James is huge)
 
-## Validation
+## Validation (as of 4/1/2025)
+Verification of expected __SMTP routing__ and __email delivery__ behavior is recommended prior to formal testing.
 - Expected behavior:
   - Emails for *recognized users*, received by servers with local user inboxes, are delivered locally in Maildir format
   - Emails for *unrecognized users*, recevied by servers with local user inboxes, are rejected (DSN to fallback server)
@@ -44,11 +45,14 @@ The SMTP garden is undergoing formal validation and final routing troubleshootin
     - i.e., Dovecot submission server
   - Emails for any user, at *any unrecognized host*, are delivered to fallback server
   - fallback server is `echo` by default, but each container can be configured individually to use a unique fallback host (allows daisy-chaining)
-- A non-exhaustive collection of test payloads is provided in [validation/](validation)
+- Scripts for template-based generation of testing payloads are provided in [validation/](validation)
+- Note: Dovecot LMTP requires `AUTH` interaction which the other servers are not configured to provide.
+  - So far, nothing can deliver to Dovecot LMTP as a secondary target.
+  - A potential solution is for Dovecot SMA to be the default secondary target, and statically configure the SMA to deliver to the LMTP (*not implemented yet*)
 
 ## Deployment (volatile)
 
-### Host environment
+### Host environment (as of 4/1/2025)
 
 File tree permission management is necessary for __local user email delivery__ and __Maildir content retrieval from the host__.
 - Update the values in your `.env` file to reflect your desired host user UID and GID.
@@ -61,6 +65,7 @@ File tree permission management is necessary for __local user email delivery__ a
   - Within the container, run `chown -R <UID>:<GID> /home`
   - This will temporarily break the server's local mail delivery, but you can now access `images/<image>/home` contents at will, as the host user
   - Start script will reset permissions correctly next time the container is started.
+- Apache James is the exception to this: it uses `james/inbox` for all emails, see the [James README](images/james).
 
 ### Build and tag containers
 

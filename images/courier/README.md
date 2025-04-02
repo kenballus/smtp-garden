@@ -1,4 +1,4 @@
-## Courier-MTA
+## Key Configuration Items
 
 Courier MTA is highly modular.  It has thorough documentation, but it is more reference than "how-to."
 - This image runs the SMTP server, not the MSA.  See [courier-msa](../courier-msa)
@@ -16,12 +16,16 @@ Courier MTA is highly modular.  It has thorough documentation, but it is more re
 - Updated in Dockerfile:
   - authdaemonrc - minor tweaks
 
-Building:
+## Building
 - Could not get Github repo to build correctly, but tarball from Sourceforge works fine.
 - Courier Authlib from debian repo did not have everything needed, so built from scratch (Also Sourceforge)
 
-Other:
-- New feature! When the container is shut down properly, the start script will attempt to reassign ownership of contents of /home for host user access (instead of leaving Docker's leftover UID/GID settings)
+## Mailboxes
+Two local mailboxes have been created, to serve as local delivery targets
+- Usernames are user1 and user2
+- Uses the Maildir directory format (~/Maildir/{cur, new, tmp})
+- Container `/home` is volumized and mapped to `courier/home/` on the host
+- Container start script manages filesystem permissions
 
-### History
+## History
 - 2025-03-27: reflects trixie repository change from `libcourier-unicode4` to `libcourier-unicode8`
