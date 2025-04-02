@@ -45,6 +45,7 @@ echo "$self preparing /home tree..."
 chown root:root /home
 chown -R user1:user1 /home/user1
 chown -R user2:user2 /home/user2
+chown root:root /app/james/mail/inbox
 
 echo "$self starting..."
 cd /app/james
@@ -99,6 +100,7 @@ fi
 if $has_UID && $has_GID; then
     echo "$self reassigning home folder ownership..."
     chown -R "$HOST_UID":"$HOST_GID" /home
+    chown -R "$HOST_UID":"$HOST_GID" /app/james/mail/inbox
 fi
 
 exit $exitcode

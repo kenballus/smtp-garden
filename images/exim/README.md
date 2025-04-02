@@ -15,5 +15,9 @@
 - Main documentation at: https://www.exim.org/exim-html-current/doc/html/spec_html/index.html
 - Local logs in /var/spool/exim/log
 
-TODO:
-- [ ] Docker volumize Maildir
+## Mailboxes
+- Two local mailboxes have been created, to serve as local delivery targets
+  - Usernames are user1 and user2
+  - Uses the Maildir directory format (~/Maildir/{cur, new, tmp})
+  - Container `/home` is volumized and mapped to `exim/home/` on the host
+  - Container start script manages filesystem permissions

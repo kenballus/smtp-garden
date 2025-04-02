@@ -142,6 +142,7 @@ services:
     hostname: james.smtp.garden
     volumes:
       - ./images/james/home:/home
+      - ./images/james/inbox:/app/james/mail/inbox
     networks:
       smtp:
         aliases:

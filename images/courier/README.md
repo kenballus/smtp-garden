@@ -2,10 +2,10 @@
 
 Courier MTA is highly modular.  It has thorough documentation, but it is more reference than "how-to."
 - This image runs the SMTP server, not the MSA.  See [courier-msa](../courier-msa)
-- Main config files are deployed to [/usr/lib/courier/etc](courierconf/)
+- Main config files are deployed to [/usr/lib/courier/etc](conf/)
 - Main reference https://www.courier-mta.org/courier.html
 - Provided in the repo:
-  - courierconf/esmtpacceptmailfor - SMTP accepts emails for these domains. (running `makesmtpaccess` is optional if using this)
+  - conf/esmtpacceptmailfor - SMTP accepts emails for these domains. (running `makesmtpaccess` is optional if using this)
   - esmtpd and esmtpd-msa - main server settings
   - emsptphelo - self explanatory
   - esmtproutes - routing in the absence of MX records. Including updating `RELAYHOST`

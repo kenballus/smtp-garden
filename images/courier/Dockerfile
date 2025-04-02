@@ -51,7 +51,7 @@ RUN cd /app/courier-${RELEASE_VER} \
   && make install && make install-configure
 
 # Configure 
-COPY ./courierconf /usr/lib/courier/etc
+COPY ./conf /usr/lib/courier/etc
 ARG RELAYHOST
 RUN cd /usr/lib/courier/etc \
   && sed -i "s/__RELAYHOST__/${RELAYHOST}/" /usr/lib/courier/etc/esmtproutes \
