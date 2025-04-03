@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Purge inboxes of old messages (i.e., all non-essential files in Docker
+# volumes).  Update $GARDEN_DIR for your system.
+
 GARDEN_DIR=~/smtp-garden/images
 
 find "$GARDEN_DIR"/dovecot/home -type f -not -name '.gitignore' -delete
