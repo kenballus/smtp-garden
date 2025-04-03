@@ -8,9 +8,9 @@ RUN apt -y update && apt -y upgrade \
   && useradd -g nullmail nullmail
 WORKDIR /app/nullmailer
 ARG APP_VERSION
-RUN git checkout "$APP_VERSION" \
-# patch for segfault bug:
-  && sed -i 's/extern const char cli_program\[\] = "nullmailer-smtpd";/extern const char* cli_program = "nullmailer-smtpd";/' /app/nullmailer/src/smtpd.cc
+RUN git checkout "$APP_VERSION"
+# patch for segfault bug: (should be fixed a/o 2024-11-03 commit 79a8a45
+#  && sed -i 's/extern const char cli_program\[\] = "nullmailer-smtpd";/extern const char* cli_program = "nullmailer-smtpd";/' /app/nullmailer/src/smtpd.cc
 
 # Build
 RUN sh ./autogen.sh \
