@@ -84,7 +84,7 @@ ADDRESS=0.0.0.0
 #  The ADDRESS setting, if given, is a default for ports that do not have
 #  a specified IP address.
 
-PORT=587
+PORT=587,25
 
 ##NAME: PIDFILE:0
 #

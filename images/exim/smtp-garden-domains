@@ -4,6 +4,8 @@ aiosmtpd
 aiosmtpd.smtp.garden
 courier
 courier.smtp.garden
+courier-msa
+courier-msa.smtp.garden
 dovecot
 dovecot.smtp.garden
 james
