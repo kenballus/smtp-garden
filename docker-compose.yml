@@ -37,7 +37,7 @@ services:
       context: "./images/aiosmtpd"
       args:
         APP_VERSION: "master"
-        RELAYHOST: "echo"
+        RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-aiosmtpd:latest
     hostname: aiosmtpd.smtp.garden
     networks:
@@ -92,7 +92,7 @@ services:
       context: "./images/dovecot"
       args:
         APP_VERSION: "main"
-        RELAYHOST: "echo"
+        RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-dovecot:latest
     environment:
       - HOST_UID=${HOST_UID}
@@ -106,14 +106,14 @@ services:
           - dovecot.smtp.garden
     ports:
       - 127.0.0.1:2401:24
-      - 127.0.0.1:2602:587
+      - 127.0.0.1:2602:25
 
   exim:
     build:
       context: "./images/exim"
       args:
         APP_VERSION: "master"
-        RELAYHOST: "echo"
+        RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-exim:latest
     environment:
       - HOST_UID=${HOST_UID}
@@ -155,7 +155,7 @@ services:
       context: "./images/msmtp"
       args:
         APP_VERSION: "master"
-        RELAYHOST: "echo"
+        RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-msmtp:latest
     hostname: msmtp.smtp.garden
     networks:
@@ -170,7 +170,7 @@ services:
       context: "./images/nullmailer"
       args:
         APP_VERSION: "master"
-        RELAYHOST: "echo"
+        RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-nullmailer:latest
     hostname: nullmailer.smtp.garden
     networks:
@@ -185,7 +185,7 @@ services:
       context: "./images/opensmtpd"
       args:
         APP_VERSION: "master"
-        RELAYHOST: "echo"
+        RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-opensmtpd:latest
     environment:
       - HOST_UID=${HOST_UID}
@@ -206,7 +206,7 @@ services:
       args:
         APP_VERSION: "master"
         MYDESTINATION: "postfix"
-        RELAYHOST: "echo"
+        RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-postfix:latest
     environment:
       - HOST_UID=${HOST_UID}
@@ -226,7 +226,7 @@ services:
       context: "./images/sendmail"
       args:
         APP_VERSION: "8.18.1"
-        RELAYHOST: "echo"
+        RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-sendmail:latest
     hostname: sendmail.smtp.garden
     networks:
@@ -235,5 +235,4 @@ services:
           - sendmail.smtp.garden
     ports:
       - 127.0.0.1:2510:25
-
 
