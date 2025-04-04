@@ -106,7 +106,22 @@ services:
           - dovecot.smtp.garden
     ports:
       - 127.0.0.1:2401:24
-      - 127.0.0.1:2602:25
+      - 127.0.0.1:2602:587
+  
+  dovecot-msa:
+    build:
+      context: "./images/dovecot-msa"
+      args:
+        APP_VERSION: "main"
+        RELAYHOST: "echo.smtp.garden"
+    image: smtp-garden-dovecot-msa:latest
+    hostname: dovecot-msa.smtp.garden
+    networks:
+      smtp:
+        aliases:
+          - dovecot-msa.smtp.garden
+    ports:
+      - 127.0.0.1:2603:587
 
   exim:
     build:
