@@ -23,12 +23,12 @@ Example usages:
 ```
 # Test one server at a time, given by $PORT_NUM, for delivery to itself and to all peers:
 $ python gen.py [options]
-$ for file in $(ls test*.txt); do ../sendmsg.py $file $PORT_NUM; done
+$ for file in test*.txt; do ../sendmsg.py $file $PORT_NUM; done
 
 
 # Test Dovecot MSA, which requires AUTH line:
 $ python gen.py -t template-dovecot.txt --assign __SOURCEPEER__="['auth']"
-$ for file in $(ls test_auth*.txt); do ../sendmsg.py $file 2602; done
+$ for file in test_auth*.txt; do ../sendmsg.py $file 2602; done
 
 # NOTE: --assign uses '=' instead of ':' (the standard python key-value separator)
 
