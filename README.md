@@ -4,13 +4,14 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 3/31/2025)
+## Status (as of 4/8/2025)
 The SMTP garden is undergoing formal validation and final routing troubleshooting.  It is ready for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
-    - aiosmtpd, msmtp, nullmailer, Sendmail
+    - msmtp, nullmailer
   - SMTP with relay and local delivery
-    - Exim, Postfix, Apache James, OpenSMTPD, Courier MTA
+    - Maildir format: aiosmtpd, Exim, Postfix, OpenSMTPD, Courier MTA
+    - Other formats: Apache James, Sendmail
 - Configuration of LMTP Servers:
     - Dovecot
   - Configuration of Submission Servers:
@@ -22,24 +23,33 @@ The SMTP garden is undergoing formal validation and final routing troubleshootin
     - DNS container for MX records ("dns-mx" running dnsmasq) on standby, but docker built-in DNS has been sufficient so far
       - Most servers seem to happily fall back on A records if MX record not available
       - This container will be removed if not needed
+- Validation:
+  - aiosmtpd tested against all other servers.  Other servers partially tested; in progress.
 - Fuzzing: early development
   - A simple, payload delivery script is functional (`sendmsg.py`)
+  - Multiplexer server (`mux`) in concept development
+    - Serves as a proxy between the primary peer and all other secondary peers
+    - `mux` identifies the primary peer source, and sends the received message to all other peers.
+    - Some email reprocessing may be involved, TBD.
+    - Functionally, this allows the single primary peer to relay to multiple smart hosts simultaneously
   - see TODO below / [issues](https://github.com/kenballus/smtp-garden/issues)
   - Pre-fuzzing testing identified a few server bugs
 
 ## TODO (as of 4/1/2025)
-- __HIGH__ Payload generator: Need a generator; Concept design stage.
-- __HIGH__ Output comparator: Need automation and a screening method for false-positives; Concept design stage
 - __HIGH__ Finish formal validation
+- __MEDIUM__ Payload generator: Need a generator; Concept design stage.
+- __MEDIUM__ Output comparator: Need automation and a screening method for false-positives; Concept design stage
+- __MEDIUM__ Development of `mux` server
+- LOW Automated method to gather and post-process received Maildir contents for comparison
 - LOW Script to automatically update all image configurations when new servers are added or other routing rules change
 - LOW See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers.
 - LOW Optimize Dockerfiles for image size (i.e., James is huge)
 
-## Validation (as of 4/1/2025)
+## Validation (as of 4/8/2025)
 Verification of expected __SMTP routing__ and __email delivery__ behavior is recommended prior to formal testing.
 - Expected behavior:
   - Emails for *recognized users*, received by servers with local user inboxes, are delivered locally in Maildir format
-  - Emails for *unrecognized users*, recevied by servers with local user inboxes, are rejected (DSN to fallback server)
+  - Emails for *unrecognized users*, recevied by servers with local user inboxes, are rejected (DSN to fallback server, in some cases)
   - Emails for any user, at a *recognized peer host*, are delivered directly to that host
     - Exception: submission / smarthost-only servers deliver everything to the designated target (usually, `echo`)
     - i.e., Dovecot submission server
@@ -48,11 +58,10 @@ Verification of expected __SMTP routing__ and __email delivery__ behavior is rec
 - Scripts for template-based generation of testing payloads are provided in [validation/](validation)
 - Note: Dovecot LMTP requires `AUTH` interaction which the other servers are not configured to provide.
   - So far, nothing can deliver to Dovecot LMTP as a secondary target.
-  - A potential solution is for Dovecot SMA to be the default secondary target, and statically configure the SMA to deliver to the LMTP (*not implemented yet*)
 
 ## Deployment (volatile)
 
-### Host environment (as of 4/1/2025)
+### Host environment (as of 4/8/2025)
 
 File tree permission management is necessary for __local user email delivery__ and __Maildir content retrieval from the host__.
 - Update the values in your `.env` file to reflect your desired host user UID and GID.
@@ -65,7 +74,9 @@ File tree permission management is necessary for __local user email delivery__ a
   - Within the container, run `chown -R <UID>:<GID> /home`
   - This will temporarily break the server's local mail delivery, but you can now access `images/<image>/home` contents at will, as the host user
   - Start script will reset permissions correctly next time the container is started.
-- Apache James is the exception to this: it uses `james/inbox` for all emails, see the [James README](images/james).
+- Exceptions:
+  - Apache James: it uses `james/inbox` for all emails, see the [James README](images/james).
+  - Sendmail: Since it does not have MDA capacity, locally addressed messages can be gathered from `/var/spool/mqueue`, see [README](images/sendmail).
 
 ### Build and tag containers
 
@@ -140,11 +151,15 @@ aiosmtpd=2501
 ./sendmsg.py message_file $aiosmtpd
 ```
 
-## Output Collection
+## Output Collection (4/8/2025)
+Payloads are ultimately delivered to stdout or a volume.
 - `echo` outputs all sent/received traffic to stdout
-- Host's `image/<image_name>/home` folders are bind mounted to each container's `/home` for Docker host-based access.
+- A host's `image/<image_name>/home` folders are bind mounted to each container's `/home` for Docker host-based access.
   - i.e. `images/exim/home/user1/Maildir` binds Exim container's `/home/user1/Maildir`
-  - Server start scripts in each Docker image should take care of file system and volume permissions (see "Deployment:Host Environment" above)
+  - File system permission management:
+    - Server start scripts in each Docker image should take care of file system and volume permissions (see "Deployment:Host Environment" above)
+    - Without root on host, you may not be able to directly access volume contents while a container is running (without `exec`ing into the container)
+- The `purge.sh` script will clean all volumes of existing mail files.
 
 ## Issues/Troubleshooting
 Please submit a new github issue or contact the maintainers directly.

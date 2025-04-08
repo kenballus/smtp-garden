@@ -39,7 +39,12 @@ services:
         APP_VERSION: "master"
         RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-aiosmtpd:latest
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
     hostname: aiosmtpd.smtp.garden
+    volumes:
+      - ./images/aiosmtpd/home:/home
     networks:
       smtp:
         aliases:
