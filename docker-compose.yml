@@ -243,7 +243,12 @@ services:
         APP_VERSION: "8.18.1"
         RELAYHOST: "echo.smtp.garden"
     image: smtp-garden-sendmail:latest
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
     hostname: sendmail.smtp.garden
+    volumes:
+      - ./images/sendmail/spool:/var/spool
     networks:
       smtp:
         aliases:

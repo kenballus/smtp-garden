@@ -14,7 +14,6 @@ RUN apt -y update && apt -y upgrade \
   && install -v -m700 -d /var/spool/mqueue
 COPY site.config.m4 /app/sendmail/devtools/Site/site.config.m4
 COPY garden_config.mc /app/sendmail/cf/cf/garden_config.mc
-COPY start.sh /app/sendmail/start.sh
 RUN sed -i "s/__RELAYHOST__/${RELAYHOST}/" /app/sendmail/cf/cf/garden_config.mc
 
 # Build & Configure
@@ -30,10 +29,13 @@ RUN cd /app/sendmail/sendmail \
   && cp -v -R cf/* /etc/mail \
   && echo 'Connect:ALL RELAY' | makemap hash /etc/mail/access \
   && echo 'sendmail' > /etc/mail/local-host-names \
-  && printf 'postmaster: nMAILER\root-DAEMON: root\n\n' > /etc/mail/aliases \
-  && cd /app/sendmail \
-  && chmod +x /app/sendmail/start.sh
+  && printf 'postmaster: nMAILER\root-DAEMON: root\n\n' > /etc/mail/aliases
+
+# Add local users
+RUN useradd user1 && useradd user2
 
 # Start
+COPY start-sendmail.sh /app/sendmail/start.sh
+RUN chmod +x /app/sendmail/start.sh
 WORKDIR /app/sendmail
 CMD ["./start.sh"]
