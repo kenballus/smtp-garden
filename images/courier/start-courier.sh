@@ -21,6 +21,9 @@ stop_courier()
 # Permission reset at shutdown
 fix_permissions()
 {
+    # Tucked in here, because courier does not output newlines to the log:
+    perl -pe 's/<22>/\n/g' /home/courier.log > /home/courier.txt
+
     if $has_UID && $has_GID; then
         echo -e "\n$self reassigning home folder ownership..."
         chown -R "$HOST_UID":"$HOST_GID" /home
@@ -174,7 +177,7 @@ if [ $? -eq 0 ]; then
     exitcode=$(expr $exitcode + 16)
 fi
 
-echo "--$(date) END COURIER LOG--" | tee -a /home/courier.log
+echo -e "\n--$(date) END COURIER LOG--" | tee -a /home/courier.log
 
 fix_permissions
 
