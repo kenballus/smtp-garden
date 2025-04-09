@@ -15,9 +15,9 @@ RUN cd msmtp \
   && make install
 
 # Configure
-COPY start.sh .
+COPY start-msmtp.sh /app/start.sh
 ARG RELAYHOST
-RUN printf "account default\nhost ${RELAYHOST}\n" > /usr/local/etc/msmtprc \
+RUN printf 'account default\nhost %s\ndomain %%H\n' "${RELAYHOST}" > /usr/local/etc/msmtprc \
   && chmod +x start.sh
  
 # Go (port number "25" is optional and can be changed)
