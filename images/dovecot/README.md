@@ -7,7 +7,7 @@ Main config files are in `usr/local/etc/dovecot`
   - Numerous breaking changes from 2.3 to 2.4, please report any unexpected behavior.
 
 ## Email Submission Server (SMTP-like)
-- `submission_relay_host` is the name of the MTA to which Dovecot will try to deliver submission mail it receives on port 25
+- `submission_relay_host` is the name of the MTA to which Dovecot will try to deliver submission mail it receives on port 587
 - The Dovecot 2.4 documentation reminds: ["DANGER: Dovecot's submission server is NOT a full-featured SMTP server. It REQUIRES proxying to an external relay SMTP submission server to deliver non-local messages."](https://doc.dovecot.org/2.4.0/core/config/submission.html)
   - In other words, Dovecot does not behave like the SMTP servers in the garden.  Messages sent to this listener will NOT go to a local Dovecot user Maildir folder unless you set `submission_relay_host` to `dovecot` or `dovecot.smtp.garden` and reference the appropriate port for the LMTP server.
   - You could, for instance, set `submission_relay_host` to one of the other SMTP servers in the garden, and configure that server to send Dovecot emails to the LMTP server.

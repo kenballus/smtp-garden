@@ -10,9 +10,9 @@ Main config files are in `usr/local/etc/dovecot`
 - Numerous breaking changes from 2.3 to 2.4, please report any unexpected behavior.
  
 ## Email Submission Server (SMTP-like)
-- `submission_relay_host` is the name of the MTA to which Dovecot will try to deliver submission mail it receives on port 25
+- `submission_relay_host` is the name of the MTA to which Dovecot will try to deliver submission mail it receives on port 587
 - The Dovecot 2.4 documentation reminds: ["DANGER: Dovecot's submission server is NOT a full-featured SMTP server. It REQUIRES proxying to an external relay SMTP submission server to deliver non-local messages."](https://doc.dovecot.org/2.4.0/core/config/submission.html)
-- Authentication is required.  It has been configured as permissiyvely as possible.
+- Authentication is required.  It has been configured as permissively as possible.
   - Authenticate with a valid system user (i.e., `user1` or `user2`)
   - Any password entered will be accepted (but it still needs to be a valid base64 encoding).
   - see <https://doc.dovecot.org/2.3/admin_manual/debugging/debugging_authentication/>
