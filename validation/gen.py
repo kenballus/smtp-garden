@@ -91,7 +91,7 @@ class TokenTree:
 
     """ returns tuple of count of files created, attempted """
     def self_to_file(self) -> (int, int):
-        filename = f"test_{self.replaced_tokens['__SOURCEPEER__']}_{self.replaced_tokens['__PEER__']}_{self.replaced_tokens['__USER__']}.txt"
+        filename = f"test_{self.replaced_tokens['__PRIMARY__']}_{self.replaced_tokens['__PEER__']}_{self.replaced_tokens['__USER__']}.txt"
         v.vprint(VERBOSE, f"TokenTree: writing to file {filename}...", vend="")
         if len(self.children) != 0:
             v.vprint(VERBOSE, "node has children, skipping.", pref=False)
