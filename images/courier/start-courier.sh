@@ -1,7 +1,8 @@
 #!/bin/bash
 # By Malcolm Schongalla - SMTP Garden Apache Courier-MTA
-# Version 1.1 - fix_permission() added; avoid shutdown race
-# Version 1.0 - original
+# Version 1.1.1 - log formatting
+# Version 1.1   - fix_permission() added; avoid shutdown race
+# Version 1.0   - original
 
 authdaemond_cmd="/usr/local/sbin/authdaemond"
 esmtpd_cmd="/usr/lib/courier/sbin/esmtpd"
@@ -22,7 +23,7 @@ stop_courier()
 fix_permissions()
 {
     # Tucked in here, because courier does not output newlines to the log:
-    perl -pe 's/<22>/\n/g' /home/courier.log > /home/courier.txt
+    perl -pe 's/<\d{1,3}>/\n/g' /home/courier.log > /home/courier.txt
 
     if $has_UID && $has_GID; then
         echo -e "\n$self reassigning home folder ownership..."
