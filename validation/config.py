@@ -40,6 +40,6 @@ config.grammar = {
   "opensmtpd",
   "postfix",
   "sendmail",
-  "UNKNOWN"
+  "unknown"
  ]
 }

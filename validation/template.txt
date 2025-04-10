@@ -7,6 +7,7 @@ From: "Validator" __SOURCE__\r\n
 To: "__USER__" __DEST__\r\n
 Date: __DATE__\r\n
 Subject: Formal validation\r\n
+\r\n
 Validation message from __SOURCE__ to __DEST__ via __PRIMARY__.\r\n
 \r\n
 \r\n.\r\n
