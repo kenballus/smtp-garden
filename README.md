@@ -11,7 +11,7 @@ The SMTP garden is undergoing formal validation and final routing troubleshootin
     - msmtp, nullmailer
   - SMTP with relay and local delivery
     - Maildir format: aiosmtpd, Exim, Postfix, OpenSMTPD, Courier MTA
-    - Other formats: Apache James, Sendmail
+    - Pseudo-mailbox formats: Apache James, Sendmail
 - Configuration of LMTP Servers:
     - Dovecot
   - Configuration of Submission Servers:
