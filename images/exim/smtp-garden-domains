@@ -14,8 +14,8 @@ msmtp
 msmtp.smtp.garden
 nullmailer
 nullmailer.smtp.garden
-opensmtp
-opensmtp.smtp.garden
+opensmtpd
+opensmtpd.smtp.garden
 postfix
 postfix.smtp.garden
 sendmail
