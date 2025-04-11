@@ -14,7 +14,8 @@ RUN cd exim \
   && mkdir Local \
   && cp src/EDITME Local/Makefile \
   && sed -i -e 's/^EXIM_USER=/EXIM_USER=exim/' -e 's/^# USE_OPENSSL=/USE_OPENSSL=/' \
-       -e 's/^# USE_OPENSSL_PC=/USE_OPENSSL_PC=/' -e 's/^# SUPPORT_MAILDIR=/SUPPORT_MAILDIR=/' Local/Makefile \
+       -e 's/^# USE_OPENSSL_PC=/USE_OPENSSL_PC=/' -e 's/^# SUPPORT_MAILDIR=/SUPPORT_MAILDIR=/' \
+       Local/Makefile \
   && make -j$(nproc) \
   && make install
 
@@ -33,5 +34,5 @@ RUN useradd --create-home user1 && useradd --create-home user2 \
 RUN touch /etc/smtp-garden-domains
 
 # Go
-COPY start-exim.sh /app
-CMD ["/app/start-exim.sh"]
+COPY start-exim.sh /app/start.sh
+CMD ["/app/start.sh"]
