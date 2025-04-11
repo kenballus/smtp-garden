@@ -23,13 +23,7 @@ RUN apt -y update && apt -y upgrade \
 
 # Configure
 COPY conf /etc/postfix/
-#COPY main.cf /etc/postfix/
-#COPY master.cf /etc/postfix/
-#COPY relay_domains /etc/postfix/
-#COPY transport /etc/postfix/
-#COPY recipient_canonical /etc/postfix/
 ARG RELAYHOST
-ENV RELAYHOST=$RELAYHOST
 RUN chmod 644 /etc/postfix/main.cf \
   && chmod 644 /etc/postfix/master.cf \
   && sed -i "s/__RELAYHOST__/$RELAYHOST/" /etc/postfix/main.cf \
@@ -37,8 +31,13 @@ RUN chmod 644 /etc/postfix/main.cf \
   && /usr/bin/newaliases \
   && postmap /etc/postfix/transport \
   && postmap /etc/postfix/relay_domains \
-  && postmap /etc/postfix/recipient_canonical \
-  && adduser user1 && adduser user2
+  && postmap /etc/postfix/recipient_canonical 
+RUN useradd user1 && useradd user2 \
+  && mkdir -p /home/user1/Maildir/cur && mkdir /home/user1/Maildir/new && mkdir /home/user1/Maildir/tmp && chown -R user1:user1 /home/user1 \
+  && mkdir -p /home/user2/Maildir/cur && mkdir /home/user2/Maildir/new && mkdir /home/user2/Maildir/tmp && chown -R user2:user2 /home/user2 \
+  && chmod -R 744 /home/user1 && chmod -R 744 /home/user2
+
+
 
 # Go
 COPY start-postfix.sh /app/start-postfix.sh

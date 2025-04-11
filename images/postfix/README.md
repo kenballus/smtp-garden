@@ -35,3 +35,10 @@
   - Container `/home` is volumized and mapped to `postfix/home/` on the host
   - Container start script manages filesystem permissions
 
+## Other
+- Troubleshooting notes
+  - `postconf -d` dumps config settings.
+  - `postfix reload` will update config settings while Postfix is running.
+  - You can run `mailq` in the container to see email in the queues
+  - Postfix uses `syslog`, but inside acontainer it's not a great option.
+  - Adding verbosity flag `-v` to lines in `master.cf` seems to interfere with routing

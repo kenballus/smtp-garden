@@ -1,4 +1,5 @@
 # Tells postfix the specific routing to reach other SMTP garden peers
+echo.smtp.garden smtp:[echo.smtp.garden]
 courier.smtp.garden smtp:[courier.smtp.garden]
 courier-msa.smtp.garden smtp:[courier-msa.smtp.garden]
 dovecot.smtp.garden smtp:[dovecot.smtp.garden]
