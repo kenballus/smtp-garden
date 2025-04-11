@@ -75,7 +75,7 @@
            <matcher match="HostIs=exim.smtp.garden"/>
            <matcher match="HostIs=msmtp.smtp.garden"/>
            <matcher match="HostIs=nullmailer.smtp.garden"/>
-           <matcher match="HostIs=opensmtp.smtp.garden"/>
+           <matcher match="HostIs=opensmtpd.smtp.garden"/>
            <matcher match="HostIs=postfix.smtp.garden"/>
            <matcher match="HostIs=sendmail.smtp.garden"/>
            <matcher match="HostIs=aiosmtpd"/>
@@ -85,7 +85,7 @@
            <matcher match="HostIs=exim"/>
            <matcher match="HostIs=msmtp"/>
            <matcher match="HostIs=nullmailer"/>
-           <matcher match="HostIs=opensmtp"/>
+           <matcher match="HostIs=opensmtpd"/>
            <matcher match="HostIs=postfix"/>
            <matcher match="HostIs=sendmail"/>
          </matcher>
