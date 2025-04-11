@@ -136,7 +136,7 @@ def get_banner(s):
     return banner
 
 def sendmsg(filename, servername, port):
-    print(f"Sending {filename} to {servername}:{port} ...")
+    print(f"==================== Sending {filename} to {servername}:{port} =====================")
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         sock_ok = establish_conn(s, servername, port)
         if not sock_ok:
