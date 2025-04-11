@@ -21,6 +21,7 @@ config.binding = {
 # Nesting keys and functions works, too.
 # Just make sure any dependencies get imported.
 config.grammar = {
+ "__PRIMARY__": ["PRIMARY HOSTNAME GOES HERE"],
  "__SOURCE__": ["validator@__SOURCEPEER__.smtp.garden"],
  "__SOURCEPEER__": ["validator"],
  "__DEST__": ["__USER__@__HOST__"],
