@@ -1,7 +1,7 @@
 ## Key Configuration Items
 
 Courier MTA is highly modular.  It has thorough documentation, but it is more reference than "how-to."
-- This image runs the MSA server, not the SMTP server.  See [courier](../courier)
+- This image runs the MSA server, not the SMTP server.  See [courier](../courier) and https://www.courier-mta.org/esmtpd.html
 - Main config files are deployed to [/usr/lib/courier/etc](conf/)
 - Main reference https://www.courier-mta.org/courier.html
 - Provided in the repo:
