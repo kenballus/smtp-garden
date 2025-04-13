@@ -50,7 +50,11 @@ echo "127.0.0.1 `hostname` `hostname`.localdomain" >> /etc/hosts
 
 # Start sendmail
 echo "$self starting..."
-$sendmail_cmd -v -bd -d0,9 
+
+# Commented out to see if it plays better with Dovecot Submission Server
+#$sendmail_cmd -v -bd -d0,9 
+
+$sendmail_cmd -bd
 sendmail_status=$?
 
 if [ $sendmail_status -ne 0 ]; then
