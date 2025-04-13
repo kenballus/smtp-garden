@@ -4,7 +4,7 @@
 
 A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 4/8/2025)
+## Status (as of 4/13/2025)
 The SMTP garden is undergoing formal validation and final routing troubleshooting.  It is ready for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
@@ -24,7 +24,7 @@ The SMTP garden is undergoing formal validation and final routing troubleshootin
       - Most servers seem to happily fall back on A records if MX record not available
       - This container will be removed if not needed
 - Validation:
-  - aiosmtpd tested against all other servers.  Other servers partially tested; in progress.
+  - __Complete__ for all current configurations.
 - Fuzzing: early development
   - A simple, payload delivery script is functional (`sendmsg.py`)
   - Multiplexer server (`mux`) in concept development
@@ -35,18 +35,20 @@ The SMTP garden is undergoing formal validation and final routing troubleshootin
   - see TODO below / [issues](https://github.com/kenballus/smtp-garden/issues)
   - Pre-fuzzing testing identified a few server bugs
 
-## TODO (as of 4/1/2025)
-- __HIGH__ Finish formal validation
-- __MEDIUM__ Payload generator: Need a generator; Concept design stage.
-- __MEDIUM__ Output comparator: Need automation and a screening method for false-positives; Concept design stage
-- __MEDIUM__ Development of `mux` server
-- LOW Automated method to gather and post-process received Maildir contents for comparison
+## TODO (as of 4/13/2025)
+- __HIGH__ Explore fuzzing strategies and "off-the-shelf" options.
+- __HIGH__ Configure eligible servers to relay to LMTP destinations, as able
+- __HIGH__ Output gatherer-comparator: Need automation and a screening method for false-positives; Concept design stage
+- LOW Develop adversarial second-stage server, for responsive fuzzing of relaying servers.
 - LOW Script to automatically update all image configurations when new servers are added or other routing rules change
 - LOW See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers.
 - LOW Optimize Dockerfiles for image size (i.e., James is huge)
+- Ongoing/as needed:
+  - Add new servers, see [issues](https://github.com/kenballus/smtp-garden/issues)
+  - Formal validation of future server additions and major configuration changes.
 
-## Validation (as of 4/8/2025)
-Verification of expected __SMTP routing__ and __email delivery__ behavior is recommended prior to formal testing.
+## Validation Process (as of 4/13/2025)
+Verification of expected __SMTP routing__ and __email delivery__ behavior is recommended prior to formal testing, for any new deployment or addition.
 - Expected behavior:
   - Emails for *recognized users*, received by servers with local user inboxes, are delivered locally in Maildir format
   - Emails for *unrecognized users*, recevied by servers with local user inboxes, are rejected (DSN to fallback server, in some cases)
@@ -55,9 +57,8 @@ Verification of expected __SMTP routing__ and __email delivery__ behavior is rec
     - i.e., Dovecot submission server
   - Emails for any user, at *any unrecognized host*, are delivered to fallback server
   - fallback server is `echo` by default, but each container can be configured individually to use a unique fallback host (allows daisy-chaining)
+  - Different servers handle rejection and generate backscatter differently.  This is fine/expected.
 - Scripts for template-based generation of testing payloads are provided in [validation/](validation)
-- Note: Dovecot LMTP requires `AUTH` interaction which the other servers are not configured to provide.
-  - So far, nothing can deliver to Dovecot LMTP as a secondary target.
 
 ## Deployment (volatile)
 
