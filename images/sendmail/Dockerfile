@@ -13,14 +13,14 @@ RUN apt -y update && apt -y upgrade \
   && chmod -v 1777 /var/mail \
   && install -v -m700 -d /var/spool/mqueue
 COPY site.config.m4 /app/sendmail/devtools/Site/site.config.m4
-COPY garden_config.mc /app/sendmail/cf/cf/garden_config.mc
-RUN sed -i "s/__RELAYHOST__/${RELAYHOST}/" /app/sendmail/cf/cf/garden_config.mc
+COPY sendmail.mc /app/sendmail/cf/cf
+RUN sed -i "s/__RELAYHOST__/${RELAYHOST}/" /app/sendmail/cf/cf/sendmail.mc
+COPY mailertable /etc/mail/mailertable
 
 # Build & Configure
 RUN cd /app/sendmail/sendmail \
   && sh Build \
   && cd /app/sendmail/cf/cf \
-  && cat generic-linux.mc garden_config.mc >> sendmail.mc \
   && sh Build sendmail.cf \
   && install -v -d -m755 /etc/mail \
   && sh Build install-cf \
@@ -29,7 +29,8 @@ RUN cd /app/sendmail/sendmail \
   && cp -v -R cf/* /etc/mail \
   && echo 'Connect:ALL RELAY' | makemap hash /etc/mail/access \
   && echo 'sendmail' > /etc/mail/local-host-names \
-  && printf 'postmaster: nMAILER\root-DAEMON: root\n\n' > /etc/mail/aliases
+  && printf 'postmaster: nMAILER\root-DAEMON: root\n\n' > /etc/mail/aliases \
+  && makemap hash /etc/mail/mailertable < /etc/mail/mailertable
 
 # Add local users
 RUN useradd user1 && useradd user2
