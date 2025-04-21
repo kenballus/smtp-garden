@@ -227,7 +227,7 @@ services:
         APP_VERSION: "master"
         MYDESTINATION: "postfix"
         RELAYHOST: "echo.smtp.garden"
-    image: smtp-garden-postfix:latest
+    image: smtp-garden-postfix:postcot
     environment:
       - HOST_UID=${HOST_UID}
       - HOST_GID=${HOST_GID}
