@@ -47,7 +47,7 @@ chown -R user2:user2 /home/user2
 
 echo "$self starting daemon..."
 
-$postfix_cmd start
+$postfix_cmd start-fg &
 
 ready_postfix=false
 while ! $ready_postfix; do
