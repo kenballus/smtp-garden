@@ -2,55 +2,58 @@
 
 ## General
 
-A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
+A containerized arrangement of various open-source SMTP and SMTP-like servers for differential fuzzing and SMTP smuggling testing.  Part of the [DIGIHEALS](https://github.com/narfindustries/digiheals-public) [ARPA-H](https://arpa-h.gov/) collaboration.
 
-## Status (as of 4/13/2025)
-The SMTP garden is undergoing formal validation and final routing troubleshooting.  It is ready for fuzzing development.  New servers may be added any time.
+The SMTP Garden contains 12 images derived from 10 independent SMTP server applications, plus 2 support images, and a foundational "soil" image.  It also includes directory trees used as Docker volumes, and various Python and bash utility scripts.
+
+Work currently under development includes a scalable fuzzing framework and additional test subject servers.
+
+## Status (as of 4/21/2025)
+The garden has passed initial formal validation (i.e. comprehensive internal testing).  Minor modifications and improvements to existing servers are ongoing, but the garden is sufficient for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
     - msmtp, nullmailer
-  - SMTP with relay and local delivery
-    - Maildir format: aiosmtpd, Exim, Postfix, OpenSMTPD, Courier MTA
-    - Pseudo-mailbox formats: Apache James, Sendmail
-- Configuration of LMTP Servers:
+  - SMTP with explicit routing, relay and local delivery
+    - Maildir format-capable: aiosmtpd, Exim, Postfix, OpenSMTPD, Courier MTA
+    - Local mail saved in spool/queue: Apache James, Sendmail (see TODO)
+  - Configuration of LMTP Servers:
     - Dovecot
   - Configuration of Submission Servers:
     - Dovecot ("smarthost-only")
     - Courier MSA (Same as Courier MTA, but RFC 2476 compliant)
   - Other candidate SMTP servers/MTAs are listed in [issues](https://github.com/kenballus/smtp-garden/issues)
   - Support containers:
-    - `echo` server improved with async methods.  An output filter/beautifier and a batch sending ability would be nice.
-    - DNS container for MX records ("dns-mx" running dnsmasq) on standby, but docker built-in DNS has been sufficient so far
-      - Most servers seem to happily fall back on A records if MX record not available
-      - This container will be removed if not needed
+    - `echo` server improved with async methods sends all received data to stdout.
+    - DNS container for MX records ("dns-mx" running dnsmasq) available on standby, but docker built-in DNS has been sufficient so far.
+      - Most servers seem to happily fall back on A records if MX record not available.
+      - This container will be removed if not needed.
 - Validation:
-  - __Complete__ for all current configurations.
+  - Initial phase __Complete__ for all configurations as of 4/13/2025 (commit 69b24f5)
+  - New server additional or major routing reconfigurations all require repeat validation on a rolling basis.
 - Fuzzing: early development
   - A simple, payload delivery script is functional (`sendmsg.py`)
-  - Multiplexer server (`mux`) in concept development
-    - Serves as a proxy between the primary peer and all other secondary peers
-    - `mux` identifies the primary peer source, and sends the received message to all other peers.
-    - Some email reprocessing may be involved, TBD.
-    - Functionally, this allows the single primary peer to relay to multiple smart hosts simultaneously
-  - see TODO below / [issues](https://github.com/kenballus/smtp-garden/issues)
+  - Exploring various frameworks; TODO item
   - Pre-fuzzing testing identified a few server bugs
+    - Independent discovery of Nullmailer type confusion bug and a latent SIGPIPE handling bug (low severity).
 
-## TODO (as of 4/13/2025)
+## TODO (as of 4/21/2025)
 - __HIGH__ Explore fuzzing strategies and "off-the-shelf" options.
 - __HIGH__ Configure eligible servers to relay to LMTP destinations, as able
 - __HIGH__ Output gatherer-comparator: Need automation and a screening method for false-positives; Concept design stage
-- LOW Develop adversarial second-stage server, for responsive fuzzing of relaying servers.
-- LOW Script to automatically update all image configurations when new servers are added or other routing rules change
-- LOW See [issues](https://github.com/kenballus/smtp-garden/issues) tab for new candidate servers.
+- MEDIUM Provide a Maildir delivery mechanism for James and Sendmail
+  - Note: at this stage, this would be considered for convenience of output collection.  It has not yet been decided if SMTP-MDA smuggling is in scope or not.
+- MEDIUM Scope discussion/determination: is SMTP-MDA smuggling in scope?
 - LOW Optimize Dockerfiles for image size (i.e., James is huge)
+- LOW Script to automatically update all image configurations when new servers are added or other routing rules change
+- LOW Suggested: develop adversarial second-stage server, for responsive fuzzing of relaying servers.
+  - Not clearly a smuggling vector; not yet confirmed in scope.
 - Ongoing/as needed:
-  - Add new servers, see [issues](https://github.com/kenballus/smtp-garden/issues)
-  - Formal validation of future server additions and major configuration changes.
+  - Add new servers, see [issues](https://github.com/kenballus/smtp-garden/issues), subject to re-validation.
 
 ## Validation Process (as of 4/13/2025)
 Verification of expected __SMTP routing__ and __email delivery__ behavior is recommended prior to formal testing, for any new deployment or addition.
 - Expected behavior:
-  - Emails for *recognized users*, received by servers with local user inboxes, are delivered locally in Maildir format
+  - Emails for *recognized users*, received by servers with local user inboxes, are delivered locally in Maildir format (*where currently capable. See James/sendmail exceptions*).
   - Emails for *unrecognized users*, recevied by servers with local user inboxes, are rejected (DSN to fallback server, in some cases)
   - Emails for any user, at a *recognized peer host*, are delivered directly to that host
     - Exception: submission / smarthost-only servers deliver everything to the designated target (usually, `echo`)
@@ -164,3 +167,4 @@ Payloads are ultimately delivered to stdout or a volume.
 
 ## Issues/Troubleshooting
 Please submit a new github issue or contact the maintainers directly.
+
