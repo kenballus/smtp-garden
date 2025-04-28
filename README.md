@@ -8,7 +8,7 @@ The SMTP Garden contains 12 images derived from 10 independent SMTP server appli
 
 Work currently under development includes a scalable fuzzing framework and additional test subject servers.
 
-## Status (as of 4/21/2025)
+## Status (as of 4/28/2025)
 The garden has passed initial formal validation (i.e. comprehensive internal testing).  Minor modifications and improvements to existing servers are ongoing, but the garden is sufficient for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers

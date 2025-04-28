@@ -26,5 +26,5 @@ Two components have been added, contained in the [maildir-utils](maildir-utils/)
 
 ## Future Work
 - With minimal adaptation, this image may serve as a basis for other James variants which could employ procmail, maildrop, fdm, or other test subject tools, as needed.
-- Modularization of the custom Java class, so it can be built independently of the main project.  This would enable "drop in" suppport, improving the development-testing cycle
+- Modularization of the custom Java class, so it can be built independently of the main project.  This would enable "drop in" support, improving the development-testing cycle
 
