@@ -12,6 +12,8 @@ find "$GARDEN_DIR"/dovecot/home -type f -not -name '.gitignore' -delete
 find "$GARDEN_DIR"/exim/home -type f -not -name '.gitignore' -delete
 find "$GARDEN_DIR"/james/home -type f -not -name '.gitignore' -delete
 find "$GARDEN_DIR"/james/inbox -type f -not -name '.gitignore' -delete
+find "$GARDEN_DIR"/james-maildir/home -type f -not -name '.gitignore' -delete
+find "$GARDEN_DIR"/james-maildir/inbox -type f -not -name '.gitignore' -delete
 find "$GARDEN_DIR"/opensmtpd/home -type f -not -name '.gitignore' -delete
 find "$GARDEN_DIR"/postfix/home -type f -not -name '.gitignore' -delete
 find "$GARDEN_DIR"/sendmail/spool -type f -not -name '.gitignore' -delete
