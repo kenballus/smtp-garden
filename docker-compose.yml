@@ -170,6 +170,28 @@ services:
     ports:
       - 127.0.0.1:2504:25
 
+  james-maildir:
+    build:
+      context: "./images/james-maildir"
+      args:
+        APP_VERSION: "master"
+        RELAYHOST: "echo.smtp.garden"
+    image: smtp-garden-james-maildir:latest
+    environment:
+      - HOST_UID=${HOST_UID}
+      - HOST_GID=${HOST_GID}
+    hostname: james.smtp.garden
+    volumes:
+      - ./images/james-maildir/home:/home
+      - ./images/james-maildir/inbox:/app/james/mail/inbox
+    networks:
+      smtp:
+        aliases:
+          - james.smtp.garden
+    ports:
+      - 127.0.0.1:2504:25
+
+
   msmtp:
     build:
       context: "./images/msmtp"
