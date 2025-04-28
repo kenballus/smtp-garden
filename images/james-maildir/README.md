@@ -1,55 +1,30 @@
-## Key configuration items
+## Alternative James Image: Custom Maildir delivery
 
-James is an enterprise application, with enterprise-scale configuration.
-- Main config files are deployed to [/app/james/conf/](conf/).
-  - Contents sourced/edited from various Apache James resource sites
-  - [conf/mailetcontainer.xml](conf/mailetcontainer.xml): Main message transport instructions.
-    - Directs emails to local users, SMTP Garden peers, or echo server, respectively.
-    - Contains a custom matchers and mailet logic.
-    - Can set a HELO name that James identifies self as when relaying to other SMTP servers.  The default is the hostname (set by docker), or can be manually overridden by setting the \<heloName\> child of a mailet.
-    - See also "Transport Pipeline" below
-  - [conf/smtpserver.xml](conf/smtpserver.xml): socket bindings, greeting message.
-  - [conf/domainlist.xml](conf/domainlist.xml): tells James what domain name(s) to identify as.
-    - Attempts autodetect and authorizes domain literals (autodetectIP)
-    - Also set to explicitly recognize `localhost`, `james`, `james.smtp.garden`
-  - [conf/activemq.properties](conf/activemq.properties) : seemingly necessary but insufficient config for __disabling__ ActiveMQ metrics (i.e., log spam).
-  - [conf/keystore](conf/keystore)
-    - Generated file, expected by James to match fields in smtpserver.xml.
-    - Everything may work fine without this, feel free to try without it.
-    - Uses default passphrase "james72laBalle" (a default, legacy, James phrase).
-  - [conf/mailrepositorystore.xml](conf/mailrepositorystore.xml) defines repositories (not to be confused with mailboxes) as local files.
-  - [conf/usersrepository.xml](conf/usersrepository.xml) file-based users repository was previously deprecated.  Without a working drop-in database of users, it is necessary to add local users via startup script (see __target inboxes__, below).
-- Other files from https://github.com/apache/james-project/tree/master/server/apps/spring-app/src/main/resources (especially James 3.8.1).
-  - Many of them can be removed, but incorporating them silences nuisance console warnings.
+This image is based off the `james` image, originally from commit 669db6a.  See [james](../james/) image for configuration details.
 
-## Transport Pipeline:
-How it works: message processing is defined primarily by contents of `conf/mailetcontainer.xml`.  The \<mailetcontainer\> tag contains the \<processors\> child, which contains individual \<processor\> children.  A processor is a sequence of mailets (i.e. analagous to servelets) that each do something to the message in sequence.  They can modify the message, save it to a local user's inbox, forward it to another gateway, ghost it, etc.
-- `root` processor immediately passes valid mail to the `transport` processor.  These names appear to be mandatory.
-- `transport` removes MIME headers (also mandatory), then tries to match it to one of several mailets.
-- Local user addresses match mailet class RecipientIsLocal.  Two sequential mailets first save the email to file repository, then save it to a mailbox, respectively.
-- If the hostname is local but the username is not recognized, the message is immediately rejected by the SMTP server (i.e. upon receipt of an invalid RCPT).
-- Addresses to unknown domains (non-SMTP garden hosts) match the custom matcher `not-relay-to-peer`, and are shunted to the `ToFallback` processor.  This goes to echo via \<gateway\>.
-- Addresses to SMTP garden hosts ("peers") match the custom matcher `relay-to-peer`, and are shunted to the `ToPeer` processor.  James attempts to identify these hosts via docker DNS.  MX lookup will fail, but James should then succeed with the A record.
-- This pipeline should exhaust all possible destinations, but a bounce relay is configured as an error annunciator.
-- Note: the mailet `<outgoing>` value represents the name of a mailet's respective outgoing email queue.  It __must__ to be unique between `ToPeer` and `ToFallback` or unexpected delivery behavior may result.
+This image *should* generally track the `james` image configuration, but it must be manually updated (see "Future Work").  This README contains only specifics regarding custom Maildir functionality.
 
-![Pipeline Flowchart](JamesMailetLogic.png)
+Two components have been added, contained in the [maildir-utils](maildir-utils/) directory.
+- [ToMaildir.java](maildir-utils/ToMaildir.java) is a custom mailet.  Notes:
+  - For each local recipient, it send email in text format to a delivery script
+  - Defaults to `/app/localdelivery.sh` but this can be overridden in `mailetcontainer.xml`.
+  - Respects `passThrough` setting.
+  - Utilizes James' native logging mechanism.
+  - The Docker build file places this Java class in the project source tree for compilation with the rest of the project
+    - Maven requires disabling style checker for this
+  - Future maintenance may include:
+    - Modularizing the Java class, so it can be modified without rebuilding the entire project (slow, inconvenient)
+    - Replacing the custom delivery script target with another subject program (such as procmail) for testing.
+- [localdelivery.sh](maildir-utils/localdelivery.sh) script is a custom shell script to enable Maildir delivery. Notes:
+  - Receives the email via `stdin`,
+  - Saves it under a unique file name (with a lock, to prevent races),
+  - Backs up any existing files in case of name collision (unlikely).
+- Strictly speaking, together these represent a convenience mechanism for output collection.  As such:
+  - They have __not__ been comprehensively tested, use at your own risk.
+  - Message delivery to James `inbox` has been preserved for confirmation of any anomalous output.
+- `mailetcontainer.xml` has also been modified accordingly.
 
-## Mailboxes / Issues
-- Two local mailboxes have been created, to serve as local delivery targets
-  - Usernames are `user1` and `user2`, and they are manually added during container startup
-  - __Ideally__, local user inboxes could be statically configured via a pre-made, "drop-in" database.  Since that has not been solved, a functional alternative is to use the script `james-cli.sh` to manually add local user accounts after the James server is running.
-  - The container's startup script anticipates __10 seconds__ required before this can be done, and `sleep`s accordingly.  Depending on your system, you may need to modify the sleep time.  The alternative would be to loop a healthcheck until it indicates the server is ready, but the developer-suggested method \([`curl -XGET http://172.17.0.2:8000/healthcheck`](https://james.apache.org/howTo/custom-healthchecks.html)\) does not work well for these purposes.
-- Maildir format was deprecated.  Locally stored emails are in a binary format, with basically human-readable content. (see /james/app/mail/inbox/)
-  - `inbox/` is volumized, maps to `/james/app/mail/inbox` within the container.
-  - Deprecated: `home/.../Maildir/...` was created and volumized for an earlier version of James, and remains enabled (but unused) until it is decided to remove it.  __No mail is currently delivered here.__
-  - A better method for retrieving mailbox content is desirable: Consider enabling IMAP/POP/custom instrumentation
-
-## Useful links
-http://james.apache.org/server/3/config.html
-https://james.apache.org/server/3/apidocs/org/apache/james/transport/mailets/
-https://james.apache.org/mailet/standard/mailet-report.html
-https://james.staged.apache.org/james-distributed-app/3.8.0/configure/mailets.html
-https://github.com/apache/james-project
-https://github.com/apache/james-project/blob/master/server/mailet/mailets/src/main/java/org/apache/james/transport/mailets
+## Future Work
+- With minimal adaptation, this image may serve as a basis for other James variants which could employ procmail, maildrop, fdm, or other test subject tools, as needed.
+- Modularization of the custom Java class, so it can be built independently of the main project.  This would enable "drop in" suppport, improving the development-testing cycle
 

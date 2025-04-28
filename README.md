@@ -14,8 +14,9 @@ The garden has passed initial formal validation (i.e. comprehensive internal tes
   - Relay-only / MTA servers
     - msmtp, nullmailer
   - SMTP with explicit routing, relay and local delivery
-    - Maildir format-capable: aiosmtpd, Exim, Postfix, OpenSMTPD, Courier MTA
-    - Local mail saved in spool/queue: Apache James, Sendmail (see TODO)
+    - Maildir format-capable: aiosmtpd, Exim, Postfix, OpenSMTPD, Courier MTA, James\*
+    - Local mail saved in spool/queue: Apache James\*, Sendmail (see TODO) 
+    - \*James: The `james` image saves to a database in `inbox` only.  The `james-maildir` image has a custom mailet to save in Maildir format in addition to `inbox`.  Both images share a docker DNS name and a host listening port, so they cannot run simultaneously.
   - Configuration of LMTP Servers:
     - Dovecot
   - Configuration of Submission Servers:
@@ -36,13 +37,13 @@ The garden has passed initial formal validation (i.e. comprehensive internal tes
   - Pre-fuzzing testing identified a few server bugs
     - Independent discovery of Nullmailer type confusion bug and a latent SIGPIPE handling bug (low severity).
 
-## TODO (as of 4/21/2025)
+## TODO (as of 4/28/2025)
 - __HIGH__ Explore fuzzing strategies and "off-the-shelf" options.
 - __HIGH__ Configure eligible servers to relay to LMTP destinations, as able
 - __HIGH__ Output gatherer-comparator: Need automation and a screening method for false-positives; Concept design stage
-- MEDIUM Provide a Maildir delivery mechanism for James and Sendmail
+- MEDIUM Provide a Maildir delivery mechanism for Sendmail
   - Note: at this stage, this would be considered for convenience of output collection.  It has not yet been decided if SMTP-MDA smuggling is in scope or not.
-- MEDIUM Scope discussion/determination: is SMTP-MDA smuggling in scope?
+- MEDIUM Scope discussion/determination: is SMTP-MDA smuggling in scope?  (i.e., James-{procmail|maildrop|fdm})
 - LOW Optimize Dockerfiles for image size (i.e., James is huge)
 - LOW Script to automatically update all image configurations when new servers are added or other routing rules change
 - LOW Suggested: develop adversarial second-stage server, for responsive fuzzing of relaying servers.
