@@ -24,3 +24,6 @@ Sendmail is started via a wrapper script.
 - Ensures the dynamically-assigned docker hostname is passed on to sendmail, preventing extended startup time.
 - Passes TERM, INT signals for a graceful shutdown.
 
+## TODO
+- [ ] Maildir tooling
+- [ ] LMTP configuration

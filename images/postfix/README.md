@@ -42,3 +42,6 @@
   - You can run `mailq` in the container to see email in the queues
   - Postfix uses `syslog`, but inside acontainer it's not a great option.
   - Adding verbosity flag `-v` to lines in `master.cf` seems to interfere with routing
+
+## TODO
+- [ ] LMTP mailer 
