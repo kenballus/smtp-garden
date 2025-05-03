@@ -149,26 +149,30 @@ services:
     ports:
       - 127.0.0.1:2503:25
 
-  james:
-    build:
-      context: "./images/james"
-      args:
-        APP_VERSION: "master"
-        RELAYHOST: "echo.smtp.garden"
-    image: smtp-garden-james:latest
-    environment:
-      - HOST_UID=${HOST_UID}
-      - HOST_GID=${HOST_GID}
-    hostname: james.smtp.garden
-    volumes:
-      - ./images/james/home:/home
-      - ./images/james/inbox:/app/james/mail/inbox
-    networks:
-      smtp:
-        aliases:
-          - james.smtp.garden
-    ports:
-      - 127.0.0.1:2504:25
+# Select james or james-maildir, or differentiate them on the network.
+# james-maildir is preferred, james is a deprecation candidate.
+# But until deprecation, james is the root development image for james-maildir.
+# Can uncomment this block for `docker compose build james`, as needed
+#  james:
+#    build:
+#      context: "./images/james"
+#      args:
+#        APP_VERSION: "master"
+#        RELAYHOST: "echo.smtp.garden"
+#    image: smtp-garden-james:latest
+#    environment:
+#      - HOST_UID=${HOST_UID}
+#      - HOST_GID=${HOST_GID}
+#    hostname: james.smtp.garden
+#    volumes:
+#      - ./images/james/home:/home
+#      - ./images/james/inbox:/app/james/mail/inbox
+#    networks:
+#      smtp:
+#        aliases:
+#          - james.smtp.garden
+#    ports:
+#      - 127.0.0.1:2504:25
 
   james-maildir:
     build:
