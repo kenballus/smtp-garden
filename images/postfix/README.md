@@ -19,7 +19,8 @@
   - fallback to smart host (`$relayhost`)
 #### master.cf
 - "the supervisor that keeps an eye on the well-being of the Postfix mail system"
-- SMTP chroot must be set to 'n'
+- SMTP and LMTP chroot must be set to 'n'
+- Want more debug output? Add `-v` arg to the desired lines
 #### Files referenced by main.cf:
 - recipient_canonical
   - Aliases for garden peers
@@ -27,6 +28,8 @@
   - Recognized SMTP Garden peers 
 - transport
   - Routing table
+  - Square brackets disable MX lookup, which will fail without an MX name server
+  - Note `lmtp:inet` associated with LMTP destinations (i.e., dovecot)
 
 ## Mailboxes
 - Two local mailboxes have been created, to serve as local delivery targets
@@ -43,5 +46,3 @@
   - Postfix uses `syslog`, but inside acontainer it's not a great option.
   - Adding verbosity flag `-v` to lines in `master.cf` seems to interfere with routing
 
-## TODO
-- [ ] LMTP mailer 

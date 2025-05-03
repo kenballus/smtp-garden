@@ -1,12 +1,12 @@
 # SMTP Garden Postfix master configuration file
+# Key changes: no chroot for smtp or lmtp
+# Note: add -v arg to smtp and lmtp services for more debug output
 #
 # ==========================================================================
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (no)    (never) (100)
 # ==========================================================================
 smtp      inet  n       -       n       -       -       smtpd
-lmtp      inet  n       -       n       -       -       lmtp
-
 pickup    unix  n       -       y       60      1       pickup
 cleanup   unix  n       -       y       -       0       cleanup
 qmgr      unix  n       -       n       300     1       qmgr
@@ -28,7 +28,7 @@ retry     unix  -       -       y       -       -       error
 discard   unix  -       -       y       -       -       discard
 local     unix  -       n       n       -       -       local
 virtual   unix  -       n       n       -       -       virtual
-# lmtp      unix  -       -       y       -       -       lmtp
+lmtp      unix  -       -       n       -       -       lmtp
 anvil     unix  -       -       y       -       1       anvil
 scache    unix  -       -       y       -       1       scache
 postlog   unix-dgram n  -       n       -       1       postlogd
