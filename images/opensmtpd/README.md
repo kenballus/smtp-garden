@@ -25,3 +25,6 @@
     - See rfc5322.c and smtp_session.c in OpenSMTPD/usr.sbin/smtpd
     - Appears to be checking that at least one header line exists, in this way
   - Reject any DATA message that contains an \n byte before the terminal `\r\n.\r\n`.
+
+## TODO
+- [ ] LMTP mailer

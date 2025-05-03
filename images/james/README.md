@@ -53,3 +53,5 @@ https://james.staged.apache.org/james-distributed-app/3.8.0/configure/mailets.ht
 https://github.com/apache/james-project
 https://github.com/apache/james-project/blob/master/server/mailet/mailets/src/main/java/org/apache/james/transport/mailets
 
+## TODO
+- [ ] LMTP mailer

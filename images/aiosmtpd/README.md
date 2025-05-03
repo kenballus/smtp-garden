@@ -9,3 +9,6 @@ Key items are in `config.py`, which should be self-explanatory.
 
 ## Other
 https://aiosmtpd.aio-libs.org/en/stable/index.html
+
+## TODO
+- [ ] LMTP mailer
