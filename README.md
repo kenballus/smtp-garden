@@ -8,7 +8,7 @@ The SMTP Garden contains 12 images derived from 10 independent SMTP server appli
 
 Work currently under development includes a scalable fuzzing framework and additional test subject servers.
 
-## Status (as of 4/28/2025)
+## Status (as of 5/3/2025)
 The garden has passed initial formal validation (i.e. comprehensive internal testing).  Minor modifications and improvements to existing servers are ongoing, but the garden is sufficient for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
@@ -37,13 +37,15 @@ The garden has passed initial formal validation (i.e. comprehensive internal tes
   - Pre-fuzzing testing identified a few server bugs
     - Independent discovery of Nullmailer type confusion bug and a latent SIGPIPE handling bug (low severity).
 
-## TODO (as of 4/28/2025)
+## TODO (as of 5/3/2025)
 - __HIGH__ Explore fuzzing strategies and "off-the-shelf" options.
 - __HIGH__ Configure eligible servers to relay to LMTP destinations, as able
+  - Postfix done
+  - Remaining: aiosmtpd, exim, james, msmtp, opensmtpd, sendmail
 - __HIGH__ Output gatherer-comparator: Need automation and a screening method for false-positives; Concept design stage
 - MEDIUM Provide a Maildir delivery mechanism for Sendmail
   - Note: at this stage, this would be considered for convenience of output collection.  It has not yet been decided if SMTP-MDA smuggling is in scope or not.
-- MEDIUM Scope discussion/determination: is SMTP-MDA smuggling in scope?  (i.e., James-{procmail|maildrop|fdm})
+- MEDIUM Scope discussion/determination: is SMTP-MDA smuggling in scope?  (i.e., James-{procmail,maildrop,fdm})
 - LOW Optimize Dockerfiles for image size (i.e., James is huge)
 - LOW Script to automatically update all image configurations when new servers are added or other routing rules change
 - LOW Suggested: develop adversarial second-stage server, for responsive fuzzing of relaying servers.
@@ -66,11 +68,11 @@ Verification of expected __SMTP routing__ and __email delivery__ behavior is rec
 
 ## Deployment (volatile)
 
-### Host environment (as of 4/8/2025)
+### Host environment (as of 5/3/2025)
 
 File tree permission management is necessary for __local user email delivery__ and __Maildir content retrieval from the host__.
 - Update the values in your `.env` file to reflect your desired host user UID and GID.
-- `images/<image>/home` trees get volumized by docker-compose, so ensure the appropriate `user{1|2}/Maildir/{new|cur|tmp}` subdirectories are intact.
+- `images/<image>/home` trees get volumized by docker-compose, so ensure the appropriate `user{1,2}/Maildir/{new,cur,tmp}` subdirectories are intact.
 - Server start scripts within each Docker image should take care of file system permissions automatically.
 - Those same start scripts trap SIGINT and SIGTERM, and will reassign ownership to the UID and GID set in `.env` upon container shutdown
   - In some environments CTRL-C (instead of `docker-compose {down | stop}`) may not get trapped
@@ -80,8 +82,8 @@ File tree permission management is necessary for __local user email delivery__ a
   - This will temporarily break the server's local mail delivery, but you can now access `images/<image>/home` contents at will, as the host user
   - Start script will reset permissions correctly next time the container is started.
 - Exceptions:
-  - Apache James: it uses `james/inbox` for all emails, see the [James README](images/james).
-  - Sendmail: Since it does not have MDA capacity, locally addressed messages can be gathered from `/var/spool/mqueue`, see [README](images/sendmail).
+  - Apache James: use james-maildir image for Maildir capability, see the [James README](images/james) and the [james-maildir README](images/james-maildir) for details.
+  - Sendmail: Since it does not have MDA capacity, locally addressed messages can be gathered from `/var/spool/mqueue`, see [README](images/sendmail) (and TODO).
 
 ### Build and tag containers
 
