@@ -1,7 +1,0 @@
-HELO smtpgarden\r\n
-MAIL FROM:<root@vm>\r\n
-RCPT TO:<root@echo>\r\n
-DATA\r\n
-:OpenSMTP requires at least a colon to validate RFC 2822\r\n
-\r\n.\r\n
-QUIT\r\n
