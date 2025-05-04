@@ -12,3 +12,4 @@ https://aiosmtpd.aio-libs.org/en/stable/index.html
 
 ## TODO
 - [ ] LMTP mailer
+- [ ] Routing and aliasing config
