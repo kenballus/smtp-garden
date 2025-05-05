@@ -112,7 +112,10 @@ docker compose up [--build] [-d] [echo] [postfix] [james] [exim] [...]
 - The soil container never needs to be run, but `docker compose up` by itself works fine.
 
 ## Employment (volatile)
-### Provisional localhost port assignment:
+
+Note: To run multiple instances of the garden on the same Docker host simultaneously, use unique host port mappings in each `docker-compose.yml` config.
+
+### Default localhost port assignment:
 SMTP (mostly arbitrary order)
 - 25 - echo
 - 2501 - aiosmtpd 
@@ -158,15 +161,18 @@ aiosmtpd=2501
 ./sendmsg.py message_file $aiosmtpd
 ```
 
-## Output Collection (4/8/2025)
+## Output Collection (5/5/2025)
 Payloads are ultimately delivered to stdout or a volume.
 - `echo` outputs all sent/received traffic to stdout
-- A host's `image/<image_name>/home` folders are bind mounted to each container's `/home` for Docker host-based access.
+- A host's `image/<server>/home` folders are bind mounted to each container's `/home` for Docker host-based access.
   - i.e. `images/exim/home/user1/Maildir` binds Exim container's `/home/user1/Maildir`
   - File system permission management:
     - Server start scripts in each Docker image should take care of file system and volume permissions (see "Deployment:Host Environment" above)
     - Without root on host, you may not be able to directly access volume contents while a container is running (without `exec`ing into the container)
-- The `purge.sh` script will clean all volumes of existing mail files.
+- Shells scripts
+  - `shownew.sh` to list (and optionally print contents of) files in `Maildir/new` directories
+  - `markread.sh` to move all emails from `Maildir/new/` to `Maildir/cur/` directories
+  - `purge.sh` will delete all volume files not called `.gitignore`.
 
 ## Issues/Troubleshooting
 Please submit a new github issue or contact the maintainers directly.
