@@ -17,9 +17,6 @@ RUN ./autogen.sh \
 # Configure
 RUN groupadd dovecot && useradd -g dovecot dovecot \
   && groupadd dovenull && useradd -g dovenull dovenull \
-  && useradd user1 && useradd user2 \
-  && mkdir -p /home/user1/Maildir/cur && mkdir /home/user1/Maildir/new && mkdir /home/user1/Maildir/tmp && chown -R user1:user1 /home/user1 \
-  && mkdir -p /home/user2/Maildir/cur && mkdir /home/user2/Maildir/new && mkdir /home/user2/Maildir/tmp && chown -R user2:user2 /home/user2 \
   && touch /var/log/dovecot.log \
   && touch /var/log/dovecot-info.log \
   && chown dovecot:dovecot /var/log/dovecot.log /var/log/dovecot-info.log

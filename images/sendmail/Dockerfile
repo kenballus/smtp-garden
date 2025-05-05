@@ -32,9 +32,6 @@ RUN cd /app/sendmail/sendmail \
   && printf 'postmaster: nMAILER\root-DAEMON: root\n\n' > /etc/mail/aliases \
   && makemap hash /etc/mail/mailertable < /etc/mail/mailertable
 
-# Add local users
-RUN useradd user1 && useradd user2
-
 # Start
 COPY start-sendmail.sh /app/sendmail/start.sh
 RUN chmod +x /app/sendmail/start.sh

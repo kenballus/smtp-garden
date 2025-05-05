@@ -14,15 +14,6 @@ RUN apt -y update && apt -y upgrade \
      tidy w3c-sgml-lib wget xsltproc socat \
   && chmod 777 /app
 
-# Local user inboxes, in case volumes aren't used
-RUN adduser user1 && adduser user2 \
-  && mkdir -p /home/user1/Maildir/{new,cur,tmp} \
-  && chown -R user1:user1 /home/user1/Maildir \
-  && chmod -R 744 /home/user1/Maildir \
-  && mkdir -p /home/user2/Maildir/{new,cur,tmp} \
-  && chown -R user2:user2 /home/user2/Maildir \
-  && chmod -R 744 /home/user2/Maildir
-
 # Set up authlib from scratch. Apt repo doesn't have everything necessary.
 USER user1
 ARG AUTHLIB_VER="0.72.3"

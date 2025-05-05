@@ -22,16 +22,8 @@ RUN cd exim \
 # Configure
 COPY configure /usr/exim/
 ARG RELAYHOST
-RUN sed -i "/ROUTER_RELAY_HOST/s/__RELAYHOST__/${RELAYHOST}/" /usr/exim/configure
-RUN useradd --create-home user1 && useradd --create-home user2 \
-  && usermod --append --groups users user1 \
-  && usermod --append --groups users user2 \
-  && chgrp -R users /home/user1 \
-  && chgrp -R users /home/user2 \
-  && chmod -R 770 /home/user1 \
-  && chmod -R 770 /home/user2 \
-  && usermod -a -G users exim
-RUN touch /etc/smtp-garden-domains
+RUN sed -i "/ROUTER_RELAY_HOST/s/__RELAYHOST__/${RELAYHOST}/" /usr/exim/configure \
+  && touch /etc/smtp-garden-domains
 
 # Go
 COPY start-exim.sh /app/start.sh

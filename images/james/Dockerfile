@@ -27,24 +27,14 @@ RUN cd /app/james-project && mvn -T $(nproc) -Dsort.skip=true -DskipTests clean 
 # Configure
 ARG RELAYHOST
 ADD conf /app/james/conf
-RUN sed -i "s/<gateway>__RELAYHOST__/<gateway>${RELAYHOST}/" /app/james/conf/mailetcontainer.xml
-
-# In the future, also dynamically configure the list of peer hosts in mailetcontainer.xml's "relay-to-peer" matcher
-
-# Set up local recepient accounts
-RUN useradd --create-home user1 && useradd --create-home user2 \
-  && usermod --append --groups users user1 \
-  && usermod --append --groups users user2 \
-  && chown -R user1:users /home/user1 \
-  && chown -R user2:users /home/user2 \
-  && chmod -R 770 /home/user1 \
-  && chmod -R 770 /home/user2 \
+RUN sed -i "s/<gateway>__RELAYHOST__/<gateway>${RELAYHOST}/" /app/james/conf/mailetcontainer.xml \
   && chmod +x /app/james-project/server/apps/spring-app/target/appassembler/bin/james-cli.sh
-
 
 # Go
 ADD start-james.sh /app/james/start-james.sh
 CMD ["/app/james/start-james.sh"]
+
+# Go without script:
 #CMD ["java", \
 #     "--enable-preview", \
 #     "--add-modules", "jdk.incubator.vector", \

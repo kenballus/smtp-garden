@@ -32,12 +32,6 @@ RUN chmod 644 /etc/postfix/main.cf \
   && postmap /etc/postfix/transport \
   && postmap /etc/postfix/relay_domains \
   && postmap /etc/postfix/recipient_canonical 
-RUN useradd user1 && useradd user2 \
-  && mkdir -p /home/user1/Maildir/cur && mkdir /home/user1/Maildir/new && mkdir /home/user1/Maildir/tmp && chown -R user1:user1 /home/user1 \
-  && mkdir -p /home/user2/Maildir/cur && mkdir /home/user2/Maildir/new && mkdir /home/user2/Maildir/tmp && chown -R user2:user2 /home/user2 \
-  && chmod -R 744 /home/user1 && chmod -R 744 /home/user2
-
-
 
 # Go
 COPY start-postfix.sh /app/start-postfix.sh
