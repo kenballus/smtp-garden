@@ -143,7 +143,7 @@ def sendmsg(filename, servername, port):
             return
         banner = get_banner(s)
         print(f"Received [{s.getpeername()}]: {banner!r}")
-        s.settimeout(0.25)
+        s.settimeout(0.05)
         with open(filename, "r") as email:
             send_email_to_socket(email, s)
 
