@@ -17,20 +17,24 @@ KNOWN_SERVERS=("aiosmtpd" "courier-msa" "courier" "dovecot" "exim" "james-maildi
 usage() {
     cat <<EOF
 usage:
-$ markread.sh [-h, --help] [server1] [server2] [...]
+$ markread.sh [OPTIONS] [server1] [server2] [...]
 Version $version
 Moves all files in .../Maildir/new/ to .../Maildir/cur/
 
-ARGUMENTS:
+OPTIONS:
+--invert, -v    Invert server list (i.e. all servers except those listed)
+--new, -n       Reverse move, i.e. from cur/ to new/
+-u1, -u2        Isolates search to user1 or user2 respectively
+                Use one or the other, not both
 --help, -h      This help
-[server]        Specific server directories to scan
 
-Note: if no servers are listed, all will be scanned.
-
+SERVERS:
+[server]        Specific server directories to scan.  If none are
+                specified, all will be scanned.
 EOF
 }
 
-move_emails() {
+move_emails() { # $2 -> IGNORE_U1; $3 -> IGNORE_U2; $4 = REVERSE
     DEFAULT_IMAGETREE="images/$1/home/"
     USER1="user1/"
     USER2="user2/"
@@ -42,28 +46,101 @@ move_emails() {
     SRC_USER2="$DEFAULT_ROOT$DEFAULT_IMAGETREE$USER2$DEFAULT_SRC_TAIL"
     DST_USER2="$DEFAULT_ROOT$DEFAULT_IMAGETREE$USER2$DEFAULT_DST_TAIL"
 
-    echo "Searching $1..."
-    find "$SRC_USER1" -type f -not -name '.gitignore' -exec mv {} "$DST_USER1" \;
-    find "$SRC_USER2" -type f -not -name '.gitignore' -exec mv {} "$DST_USER2" \;
+    if "$4"; then
+        temp=$SRC_USER1
+        SRC_USER1=$DST_USER1
+        DST_USER1=$temp
+        temp=$SRC_USER2
+        SRC_USER2=$DST_USER2
+        DST_USER2=$temp
+    fi
+
+    echo -n "Searching $1..."; if "$4"; then echo "(reverse move)"; else echo; fi
+
+    if ! "$2"; then
+        find "$SRC_USER1" -type f -not -name '.gitignore' -exec mv -b {} "$DST_USER1" \;
+    fi
+    if ! "$3"; then
+        find "$SRC_USER2" -type f -not -name '.gitignore' -exec mv -b {} "$DST_USER2" \;
+    fi
 }
 
-if [[ $1 == "-h" ]] || [[ $1 == "--help" ]]; then
-    usage
+INVERT=false # invert server list
+REVERSE=false # reverse direction of mv
+IGNORE_U1=false
+IGNORE_U2=false
+while [ $# -gt 0 ]; do
+    case $1 in
+        --invert|-v)
+            INVERT=true
+            shift
+            ;;
+        --help|-h)
+            usage
+            exit
+            ;;
+        --new|-n)
+            REVERSE=true
+            shift
+            ;;
+        -u1)
+            IGNORE_U2=true
+            shift
+            ;;
+        -u2)
+            IGNORE_U1=true
+            shift
+            ;;
+        -*)
+            echo "Unknown argument $1, try $0 --help"
+            exit
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if "$IGNORE_U1" && "$IGNORE_U2"; then
+    echo "Don't use -u1 and -u2 together. Try $0 --help"
     exit
 fi
 
 if [ $# -eq 0 ]; then
     echo "No servers specified, assuming \"all\""
+    if "$INVERT"; then
+        echo "Inverting server list requires listing at least one server."
+        exit
+    fi
     for server in "${KNOWN_SERVERS[@]}"; do
-        move_emails "$server"
+        move_emails "$server" "$IGNORE_U1" "$IGNORE_U2" "$REVERSE"
     done
+    exit
 fi
 
-while [ $# -gt 0 ]; do
-    if [[ ${KNOWN_SERVERS[@]} =~ $1 ]]; then
-        move_emails "$1"
+if "$INVERT"; then
+    echo "Inverting server list..."
+    NEW_LIST=()
+    for server in "${KNOWN_SERVERS[@]}"; do
+        [[ "$@" =~ $server ]] || NEW_LIST+=("$server")
+    done
+
+    count=${#NEW_LIST[@]}
+    if [[ $count -eq 0 ]]; then
+        echo "All servers ignored.  Nothing to do."
+        exit
     else
-        echo "Unknown server $1, ignoring"
+        for server in "${NEW_LIST[@]}"; do
+            move_emails "$server" "$IGNORE_U1" "$IGNORE_U2" "$REVERSE"
+        done
     fi
-    shift
-done
+else
+    while [ $# -gt 0 ]; do
+        if [[ ${KNOWN_SERVERS[@]} =~ $1 ]]; then
+            move_emails "$1" "$IGNORE_U1" "$IGNORE_U2" "$REVERSE"
+        else
+            echo "Unknown server $1, ignoring"
+        fi
+        shift
+    done
+fi

@@ -8,7 +8,7 @@ The SMTP Garden contains 12 images derived from 10 independent SMTP server appli
 
 Work currently under development includes a scalable fuzzing framework and additional test subject servers.
 
-## Status (as of 5/3/2025)
+## Status (as of 5/6/2025)
 The garden has passed initial formal validation (i.e. comprehensive internal testing).  Minor modifications and improvements to existing servers are ongoing, but the garden is sufficient for fuzzing development.  New servers may be added any time.
 - Images:
   - Relay-only / MTA servers
@@ -33,6 +33,7 @@ The garden has passed initial formal validation (i.e. comprehensive internal tes
   - New server additional or major routing reconfigurations all require repeat validation on a rolling basis.
 - Fuzzing: early development
   - A simple, payload delivery script is functional (`sendmsg.py`)
+  - Various output collection tools now available, see below
   - Exploring various frameworks; TODO item
   - Pre-fuzzing testing identified a few server bugs
     - Independent discovery of Nullmailer type confusion bug and a latent SIGPIPE handling bug (low severity).
@@ -161,7 +162,7 @@ aiosmtpd=2501
 ./sendmsg.py message_file $aiosmtpd
 ```
 
-## Output Collection (5/5/2025)
+## Output Collection (5/6/2025)
 Payloads are ultimately delivered to stdout or a volume.
 - `echo` outputs all sent/received traffic to stdout
 - A host's `image/<server>/home` folders are bind mounted to each container's `/home` for Docker host-based access.
@@ -169,9 +170,10 @@ Payloads are ultimately delivered to stdout or a volume.
   - File system permission management:
     - Server start scripts in each Docker image should take care of file system and volume permissions (see "Deployment:Host Environment" above)
     - Without root on host, you may not be able to directly access volume contents while a container is running (without `exec`ing into the container)
-- Shells scripts
+- Shell scripts
   - `shownew.sh` to list (and optionally print contents of) files in `Maildir/new` directories
-  - `markread.sh` to move all emails from `Maildir/new/` to `Maildir/cur/` directories
+  - `diffnew.sh` finds files in `Maildir/new` directories and diffs them
+  - `markread.sh` to move emails between `Maildir/new/` and `Maildir/cur/` directories
   - `purge.sh` will delete all volume files not called `.gitignore`.
 
 ## Issues/Troubleshooting
