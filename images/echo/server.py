@@ -1,22 +1,23 @@
 """
 SMTP Garden - Python Echo Server
 
-Version 1.5, -replies with ESMTP codes if it receives an "EHLO".
-             -set global EHLO_announce to False to disable
-Version 1.4, -replies with minimum 4 bytes (instead of 3) to appease finicky clients
-             -generate_response method drafted in comment block -mss 8/27/2024
-Version 1.3, -handles ConnectionResetError, commonly caused by MTA disconnecting abruptly
-Version 1.2, -async routines
-             -handles SIGTERM gracefully
-Version 1.1, -prints peer identification info -mss 6/10/2024
-Version 1.0, -by bk (original)
+Version 1.5.1, -EHLO disabled pending further investigation, as it breaks msmtp
+Version 1.5,   -replies with ESMTP codes if it receives an "EHLO".
+               -set global EHLO_announce to False to disable
+Version 1.4,   -replies with minimum 4 bytes (instead of 3) to appease finicky clients
+               -generate_response method drafted in comment block -mss 8/27/2024
+Version 1.3,   -handles ConnectionResetError, commonly caused by MTA disconnecting abruptly
+Version 1.2,   -async routines
+               -handles SIGTERM gracefully
+Version 1.1,   -prints peer identification info -mss 6/10/2024
+Version 1.0,   -by bk (original)
 """
 
 import asyncio
 import signal
 import sys
 
-EHLO_announce = True
+EHLO_announce = False
 RECV_SIZE = 65536
 
 """
@@ -69,7 +70,7 @@ async def handle_connection(reader, writer):
             writer.write(response)
             await writer.drain()
         writer.close()
-        await writer.wait_closed()
+        Hawait writer.wait_closed()
     except ConnectionResetError:
         print("ConnectionResetError caught: Connection reset by peer (premature disconnection)")
 
@@ -98,5 +99,4 @@ if __name__ == "__main__":
         asyncio.run(main())
     except asyncio.CancelledError:
         print("echo server closed.")
-
 

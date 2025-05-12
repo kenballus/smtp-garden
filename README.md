@@ -44,6 +44,7 @@ The garden has passed initial formal validation (i.e. comprehensive internal tes
   - Postfix done
   - Remaining: aiosmtpd, exim, james, msmtp, opensmtpd, sendmail
 - __HIGH__ Output gatherer-comparator: Need automation and a screening method for false-positives; Concept design stage
+- MEDIUM Investigate why echo server breaks msmtp when echo announces "EHLO"
 - MEDIUM Provide a Maildir delivery mechanism for Sendmail
   - Note: at this stage, this would be considered for convenience of output collection.  It has not yet been decided if SMTP-MDA smuggling is in scope or not.
 - MEDIUM Scope discussion/determination: is SMTP-MDA smuggling in scope?  (i.e., James-{procmail,maildrop,fdm})
