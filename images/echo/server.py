@@ -70,7 +70,7 @@ async def handle_connection(reader, writer):
             writer.write(response)
             await writer.drain()
         writer.close()
-        Hawait writer.wait_closed()
+        await writer.wait_closed()
     except ConnectionResetError:
         print("ConnectionResetError caught: Connection reset by peer (premature disconnection)")
 

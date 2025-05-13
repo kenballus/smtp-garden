@@ -38,7 +38,7 @@ The garden has passed initial formal validation (i.e. comprehensive internal tes
   - Pre-fuzzing testing identified a few server bugs
     - Independent discovery of Nullmailer type confusion bug and a latent SIGPIPE handling bug (low severity).
 
-## TODO (as of 5/3/2025)
+## TODO (as of 5/12/2025)
 - __HIGH__ Explore fuzzing strategies and "off-the-shelf" options.
 - __HIGH__ Configure eligible servers to relay to LMTP destinations, as able
   - Postfix done
