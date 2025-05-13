@@ -1,0 +1,7 @@
+*
+!.gitignore
+!Dockerfile
+!dovecot.conf
+!home
+!README.md
+!start-dovecot.sh

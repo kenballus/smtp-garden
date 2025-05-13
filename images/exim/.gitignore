@@ -1,0 +1,8 @@
+*
+!.gitignore
+!configure
+!Dockerfile
+!home
+!README.md
+!smtp-garden-domains
+!start-exim.sh

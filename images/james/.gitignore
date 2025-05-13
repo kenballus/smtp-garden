@@ -1,0 +1,9 @@
+*
+!.gitignore
+!conf
+!Dockerfile
+!home
+!inbox
+!JamesMailetLogic.png
+!README.md
+!start-james.sh

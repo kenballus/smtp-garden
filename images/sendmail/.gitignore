@@ -1,0 +1,9 @@
+*
+!.gitignore
+!Dockerfile
+!mailertable
+!README.md
+!sendmail.mc
+!site.config.m4
+!spool/
+!start-sendmail.sh
