@@ -43,6 +43,7 @@ ROUTER_RELAY_HOST = __RELAYHOST__
 # because `hostname` gives nonreproducible output
 # primary_hostname = exim.smtp.garden
 domainlist local_domains = @ : exim : exim.smtp.garden : localhost
+domainlist lmtp_domains = @ : dovecot : dovecot.smtp.garden
 domainlist relay_to_domains = /etc/smtp-garden-domains
 #domainlist relay_to_domains = *.smtp.garden
 
@@ -193,6 +194,12 @@ begin routers
 
 # Beware that the hostname is specified again in the Transport.
 
+# lmtp delivery
+lmtpserver:
+  driver = accept
+  domains = +lmtp_domains
+  transport = remote_lmtp
+
 # accept raw ip addresses
 domain_literal:
   driver = ipliteral
@@ -244,6 +251,13 @@ local_delivery:
   maildir_format
   create_directory
   mode = 0750
+
+remote_lmtp:
+  driver = smtp
+  protocol = lmtp
+  port = 24
+  hosts = dovecot.smtp.garden
+  allow_localhost
 
 remote_smtp:
   driver = smtp
