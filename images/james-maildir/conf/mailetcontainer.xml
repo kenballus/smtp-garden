@@ -67,11 +67,10 @@
       <processor state="transport" enableJmx="true">
 
          <!-- Custom SMTP Garden matchers -->
-         <matcher name="relay-to-peer" match="org.apache.james.mailetcontainer.impl.matchers.Or">
+         <matcher name="relay-to-smtp" match="org.apache.james.mailetcontainer.impl.matchers.Or">
            <matcher match="HostIs=aiosmtpd.smtp.garden"/>
            <matcher match="HostIs=courier.smtp.garden"/>
            <matcher match="HostIs=courier-msa.smtp.garden"/>
-           <matcher match="HostIs=dovecot.smtp.garden"/>
            <matcher match="HostIs=exim.smtp.garden"/>
            <matcher match="HostIs=msmtp.smtp.garden"/>
            <matcher match="HostIs=nullmailer.smtp.garden"/>
@@ -81,13 +80,22 @@
            <matcher match="HostIs=aiosmtpd"/>
            <matcher match="HostIs=courier"/>
            <matcher match="HostIs=courier-msa"/>
-           <matcher match="HostIs=dovecot"/>
            <matcher match="HostIs=exim"/>
            <matcher match="HostIs=msmtp"/>
            <matcher match="HostIs=nullmailer"/>
            <matcher match="HostIs=opensmtpd"/>
            <matcher match="HostIs=postfix"/>
            <matcher match="HostIs=sendmail"/>
+         </matcher>
+
+         <matcher name="relay-to-lmtp" match="org.apache.james.mailetcontainer.impl.matchers.Or">
+           <matcher match="HostIs=dovecot.smtp.garden"/>
+           <matcher match="HostIs=dovecot"/>
+         </matcher>
+
+         <matcher name="relay-to-peer" match="org.apache.james.mailetcontainer.impl.matchers.Or">
+           <matcher match="relay-to-smtp"/>
+           <matcher match="relay-to-lmtp"/>
          </matcher>
 
          <matcher name="not-relay-to-peer" match="org.apache.james.mailetcontainer.impl.matchers.Not">
@@ -127,15 +135,21 @@
             <debug>true</debug>
          </mailet>
 
-         <!-- This will not yet work with dovecot (LMTP), unfortunately -->
-         <mailet match="relay-to-peer" class="ToProcessor">
-            <processor>ToPeer</processor>
+         <!-- SMTP peers -->
+         <mailet match="relay-to-smtp" class="ToProcessor">
+            <processor>ToPeerSMTP</processor>
+            <debug>true</debug>
+         </mailet>
+
+         <!-- LMTP peers -->
+         <mailet match="relay-to-lmtp" class="ToProcessor">
+            <processor>ToPeerLMTP</processor>
             <debug>true</debug>
          </mailet>
 
          <!-- For testing.  Everything should have been handled by prior
-              mailets. If that process went wrong, this will draw
-              attention to it.  #DontFailSilently -->
+              mailets. If that process went wrong, this will send DSN
+              to echo server with notice field.  #DontFailSilently -->
          <mailet match="All" class="ToProcessor">
             <notice>550 - Did not match any mailets</notice>
             <processor>bounces</processor>
@@ -143,11 +157,27 @@
 
       </processor>
 
-      <processor state="ToPeer" enableJmx="true">
+      <processor state="ToPeerSMTP" enableJmx="true">
          <mailet match="All" class="RemoteDelivery">
             <!-- uses default DNS (docker) for destination -->
-                         <message>[James custom processor]: ToPeer</message>
-            <outgoing>peerQueue</outgoing>
+            <message>[James custom processor]: ToPeerSMTP</message>
+            <outgoing>peerSMTPQueue</outgoing>
+            <delayTime>200</delayTime>
+            <maxRetries>1</maxRetries>
+            <maxDnsProblemRetries>0</maxDnsProblemRetries>
+            <deliveryThreads>10</deliveryThreads>
+            <sendpartial>true</sendpartial>
+            <bounceProcessor>bounces</bounceProcessor>
+            <debug>true</debug>
+         </mailet>
+      </processor>
+
+      <processor state="ToPeerLMTP" enableJmx="true">
+         <mailet match="All" class="RemoteDelivery">
+            <!-- uses default DNS (docker) for destination -->
+            <message>[James custom processor]: ToPeerLMTP</message>
+            <outgoing>peerLMTPQueue</outgoing>
+            <gateway>dovecot.smtp.garden</gateway>
             <delayTime>200</delayTime>
             <maxRetries>1</maxRetries>
             <maxDnsProblemRetries>0</maxDnsProblemRetries>
