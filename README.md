@@ -38,11 +38,11 @@ The garden has passed initial formal validation (i.e. comprehensive internal tes
   - Pre-fuzzing testing identified a few server bugs
     - Independent discovery of Nullmailer type confusion bug and a latent SIGPIPE handling bug (low severity).
 
-## TODO (as of 5/12/2025)
+## TODO (as of 5/19/2025)
 - __HIGH__ Explore fuzzing strategies and "off-the-shelf" options.
 - __HIGH__ Configure eligible servers to relay to LMTP destinations, as able
-  - Postfix done
-  - Remaining: aiosmtpd, exim, james, msmtp, opensmtpd, sendmail
+  - Exim, Postfix done
+  - Remaining: aiosmtpd, james, msmtp, opensmtpd, sendmail
 - __HIGH__ Output gatherer-comparator: Need automation and a screening method for false-positives; Concept design stage
 - MEDIUM Investigate why echo server breaks msmtp when echo announces "EHLO"
 - MEDIUM Provide a Maildir delivery mechanism for Sendmail

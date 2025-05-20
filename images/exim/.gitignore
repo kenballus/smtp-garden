@@ -4,5 +4,6 @@
 !Dockerfile
 !home
 !README.md
+!lmtp-garden-domains
 !smtp-garden-domains
 !start-exim.sh

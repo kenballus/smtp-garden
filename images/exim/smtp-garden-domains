@@ -6,8 +6,6 @@ courier
 courier.smtp.garden
 courier-msa
 courier-msa.smtp.garden
-dovecot
-dovecot.smtp.garden
 james
 james.smtp.garden
 msmtp

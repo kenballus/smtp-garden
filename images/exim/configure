@@ -43,9 +43,10 @@ ROUTER_RELAY_HOST = __RELAYHOST__
 # because `hostname` gives nonreproducible output
 # primary_hostname = exim.smtp.garden
 domainlist local_domains = @ : exim : exim.smtp.garden : localhost
-domainlist lmtp_domains = @ : dovecot : dovecot.smtp.garden
-domainlist relay_to_domains = /etc/smtp-garden-domains
-#domainlist relay_to_domains = *.smtp.garden
+domainlist lmtp_domains = /etc/lmtp-garden-domains
+domainlist smtp_domains = /etc/smtp-garden-domains
+# relay_to_domains was refactored into smtp_domains, and lmtp servers were
+# split out of smtp_domains into lmtp_domains
 
 allow_domain_literals
 
@@ -194,13 +195,7 @@ begin routers
 
 # Beware that the hostname is specified again in the Transport.
 
-# lmtp delivery
-lmtpserver:
-  driver = accept
-  domains = +lmtp_domains
-  transport = remote_lmtp
-
-# accept raw ip addresses
+# accept raw ip addresses (SMTP only, for now)
 domain_literal:
   driver = ipliteral
   domains = !+local_domains
@@ -213,20 +208,26 @@ domain_literal:
 #   check_local_user
 #   transport = local_delivery
 
-# use dns-mx service to route garden addresses
-dnslookup:
-  driver = dnslookup
-  domains = +relay_to_domains
-  transport = remote_smtp
-
-# local inboxes
+# to local inboxes
 localuser:
   driver = accept
   domains = +local_domains
   check_local_user
   transport = local_delivery
 
-# everything else goes to the relay host (i.e. echo)
+# to smtp servers
+dnslookup_smtp:
+  driver = dnslookup
+  domains = +smtp_domains
+  transport = remote_smtp
+
+# to lmtp servers
+dnslookup_lmtp:
+  driver = dnslookup
+  domains = +lmtp_domains
+  transport = remote_lmtp
+
+# everything else is routed via SMTP
 relay_everything_else:
   driver = manualroute
   domains = *
@@ -256,14 +257,14 @@ remote_lmtp:
   driver = smtp
   protocol = lmtp
   port = 24
-  hosts = dovecot.smtp.garden
-  allow_localhost
+  multi_domain
+#  lmtp_ignore_quota
+#  hosts = dovecot.smtp.garden
 
 remote_smtp:
   driver = smtp
-#  message_size_limit = ${if > {$max_received_linelength}{998} {1}{0}}
   multi_domain
-  allow_localhost
+#  message_size_limit = ${if > {$max_received_linelength}{998} {1}{0}}
 
 
 ######################################################################

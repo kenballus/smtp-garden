@@ -21,9 +21,11 @@ RUN cd exim \
 
 # Configure
 COPY configure /usr/exim/
+COPY smtp-garden-domains /etc/smtp-garden-domains
+COPY lmtp-garden-domains /etc/lmtp-garden-domains
 ARG RELAYHOST
-RUN sed -i "/ROUTER_RELAY_HOST/s/__RELAYHOST__/${RELAYHOST}/" /usr/exim/configure \
-  && touch /etc/smtp-garden-domains
+RUN sed -i "/ROUTER_RELAY_HOST/s/__RELAYHOST__/${RELAYHOST}/" /usr/exim/configure
+#  && touch /etc/smtp-garden-domains
 
 # Go
 COPY start-exim.sh /app/start.sh
