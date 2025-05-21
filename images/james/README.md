@@ -27,6 +27,7 @@ How it works: message processing is defined primarily by contents of `conf/maile
 - `root` processor immediately passes valid mail to the `transport` processor.  These names appear to be mandatory.
 - `transport` removes MIME headers (also mandatory), then tries to match it to one of several mailets.
 - Local user addresses match mailet class RecipientIsLocal.  Two sequential mailets first save the email to file repository, then save it to a mailbox, respectively.
+  - Note: Maildir support was previously deprecated.  See james-maildir image for that capability.
 - If the hostname is local but the username is not recognized, the message is immediately rejected by the SMTP server (i.e. upon receipt of an invalid RCPT).
 - Addresses to unknown domains (non-SMTP garden hosts) match the custom matcher `not-relay-to-peer`, and are shunted to the `ToFallback` processor.  This goes to echo via \<gateway\>.
 - Addresses to SMTP garden hosts ("peers") match the custom matcher `relay-to-peer`, and are shunted to the `ToPeer` processor.  James attempts to identify these hosts via docker DNS.  MX lookup will fail, but James should then succeed with the A record.
@@ -44,6 +45,8 @@ How it works: message processing is defined primarily by contents of `conf/maile
   - `inbox/` is volumized, maps to `/james/app/mail/inbox` within the container.
   - Even though it is not used, `home/.../Maildir/...` was created and volumized for an earlier version of James, and remains enabled (but unused) until it is decided to remove it.  __No mail is currently delivered here.  See the `james-maildir`image for the alternative.__
   - Future work may include enabling IMAP, POP, installing procmail|maildrop|fdm, adding a locally-running LMTP server, etc.
+- The Apache JAMES project maintainers have confirmed that there is no intrinsic capability for James to send outgoing LMTP mail (i.e. to Dovecot).
+  - `mailetcontainer.xml` in james-maildir has a separate transport option reserved for LMTP-bound traffic, it may be directed to echo or elsewhere as desired (SMTP only).
 
 ## Useful links
 http://james.apache.org/server/3/config.html
@@ -54,4 +57,4 @@ https://github.com/apache/james-project
 https://github.com/apache/james-project/blob/master/server/mailet/mailets/src/main/java/org/apache/james/transport/mailets
 
 ## TODO
-- [ ] LMTP mailer
+- [ ] replace current james image with james-maildir

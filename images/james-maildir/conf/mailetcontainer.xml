@@ -183,7 +183,7 @@
             <maxDnsProblemRetries>0</maxDnsProblemRetries>
             <deliveryThreads>10</deliveryThreads>
             <sendpartial>true</sendpartial>
-            <bounceProcessor>bounces</bounceProcessor>
+            <bounceProcessor>ToFallback</bounceProcessor>
             <debug>true</debug>
          </mailet>
       </processor>
