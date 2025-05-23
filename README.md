@@ -70,16 +70,26 @@ Verification of expected __SMTP routing__ and __email delivery__ behavior is rec
 
 ## Deployment (volatile)
 
-### Host environment (as of 5/3/2025)
+### Host environment (as of 5/22/2025)
 
-File tree permission management is necessary for __local user email delivery__ and __Maildir content retrieval from the host__.
+File tree __ownership__ and __permission management__ is necessary for __local user email delivery__ and __Maildir content retrieval from the host__.
 - Update the values in your `.env` file to reflect your desired host user UID and GID.
 - `images/<image>/home` trees get volumized by docker-compose, so ensure the appropriate `user{1,2}/Maildir/{new,cur,tmp}` subdirectories are intact.
-- Server start scripts within each Docker image should take care of file system permissions automatically.
+- Suggested permissions:
+  - `<image>/home/` and all subdirectories: mode 777
+  - All `.gitignore` files: as desired (i.e., 644)
+  - any `.courier` files: must be 600 (maybe 660), or Courier will withhold deliveries to Maildir
+- To the maximum extent practical, servers have been configured/patched to save new Maildir contents as 666 for ease of management from the host, when the container is running.
+  - dovecot: saves, mode 666 (based on folder permissions?)
+  - exim: saves, mode 750
+  - james-maildir: saves, mode 644
+  - opensmtpd: patched to save, mode 666 (otherwise saves as 600 or similar AND resets Maildir permissions restrictively)
+  - courier[-msa], postfix, sendmail: save, mode 600
+- Server start scripts within each Docker image should take care of file system ownership automatically.
 - Those same start scripts trap SIGINT and SIGTERM, and will reassign ownership to the UID and GID set in `.env` upon container shutdown
   - In some environments CTRL-C (instead of `docker-compose {down | stop}`) may not get trapped
 - The fix, if file ownership has been mangled, and you can't access Maildirs from the host:
-  - Re-launch the container and ensure the volume is attached
+  - Re-launch the container (via compose) and ensure the volume is attached
   - Within the container, run `chown -R <UID>:<GID> /home`
   - This will temporarily break the server's local mail delivery, but you can now access `images/<image>/home` contents at will, as the host user
   - Start script will reset permissions correctly next time the container is started.

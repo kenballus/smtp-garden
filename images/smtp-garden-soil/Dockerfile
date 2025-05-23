@@ -12,7 +12,8 @@ RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-17 100 \
  && update-alternatives --install /usr/bin/cc cc /usr/bin/clang-17 100
 
 RUN useradd --create-home user1 && useradd --create-home user2 \
- && mkdir -p /home/user1/Maildir/{cur,new,tmp} && mkdir -p /home/user2/Maildir/{cur,new,tmp} \
- && chmod -R 744 /home/user1 && chmod -R 744 /home/user2 \
+ && mkdir -p /home/user1/Maildir/cur && mkdir /home/user1/Maildir/new && mkdir /home/user1/Maildir/tmp \
+ && mkdir -p /home/user2/Maildir/cur && mkdir /home/user2/Maildir/new && mkdir /home/user2/Maildir/tmp \
+ && chmod -R 777 /home/user1 && chmod -R 777 /home/user2 \
  && rm -rf /var/lib/apt/lists/*
 
