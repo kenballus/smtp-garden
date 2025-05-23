@@ -79,7 +79,7 @@ File tree __ownership__ and __permission management__ is necessary for __local u
   - `<image>/home/` and all subdirectories: mode 777
   - All `.gitignore` files: as desired (i.e., 644)
   - any `.courier` files: must be 600 (maybe 660), or Courier will withhold deliveries to Maildir
-- To the maximum extent practical, servers have been configured/patched to save new Maildir contents as 666 for ease of management from the host, when the container is running.
+- To the maximum extent practical, servers should be configured/patched to save new Maildir contents as 666 for ease of management from the host, when the container is running (in progress/TODO).
   - dovecot: saves, mode 666 (based on folder permissions?)
   - exim: saves, mode 750
   - james-maildir: saves, mode 644
