@@ -2,6 +2,7 @@
 !.gitignore
 !Dockerfile
 !home
+!patch.diff
 !peer_domains
 !README.md
 !smtpd.conf

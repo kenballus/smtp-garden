@@ -1,0 +1,33 @@
+For security reasons, OpenSMTPD requires subdirectories and
+files in the Maildir tree to have restrictive permissions.
+This is an impediment to data collection, and is modified
+for ease of managing contents of the docker volume.
+--- a/mail.maildir.c	2025-05-22 19:31:44.399144785 +0000
++++ b/mail.maildir.c	2025-05-23 00:38:00.537128036 +0000
+@@ -94,7 +94,7 @@
+ 	char	pathname[PATH_MAX];
+ 	char	*subdirs[] = { "cur", "tmp", "new" };
+ 
+-	if (mkdirs(dirname, 0700) == -1 && errno != EEXIST) {
++	if (mkdirs(dirname, 0777) == -1 && errno != EEXIST) {
+ 		if (errno == EINVAL || errno == ENAMETOOLONG)
+ 			err(1, NULL);
+ 		err(EX_TEMPFAIL, NULL);
+@@ -105,7 +105,7 @@
+ 		    subdirs[i]);
+ 		if (ret < 0 || (size_t)ret >= sizeof pathname)
+ 			errc(1, ENAMETOOLONG, "%s/%s", dirname, subdirs[i]);
+-		if (mkdir(pathname, 0700) == -1 && errno != EEXIST)
++		if (mkdir(pathname, 0777) == -1 && errno != EEXIST)
+ 			err(EX_TEMPFAIL, NULL);
+ 	}
+ }
+@@ -179,7 +179,7 @@
+
+	(void)snprintf(tmp, sizeof tmp, "%s/tmp/%s", dirname, filename);
+
+-	fd = open(tmp, O_CREAT | O_EXCL | O_WRONLY, 0600);
++   fd = open(tmp, O_CREAT | O_EXCL | O_WRONLY, 0666);
+	if (fd == -1)
+		err(EX_TEMPFAIL, NULL);
+	if ((fp = fdopen(fd, "w")) == NULL)

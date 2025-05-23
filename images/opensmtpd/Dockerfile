@@ -4,10 +4,15 @@ FROM smtp-garden-soil:latest
 ARG APP_VERSION
 RUN apt -y update && apt -y upgrade \
   && apt -y --no-install-recommends install pkg-config libevent-dev libssl-dev autoconf automake bison libtool \
-  && git clone --recurse-submodules https://github.com/OpenSMTPD/OpenSMTPD.git \
-# Build
-  && cd OpenSMTPD \
+  && git clone --recurse-submodules https://github.com/OpenSMTPD/OpenSMTPD.git
+
+# Override Maildir file tree permissions with patch, to facilitate data recovery, before building
+COPY patch.diff /app/OpenSMTPD/usr.sbin/smtpd/patch.diff
+RUN cd /app/OpenSMTPD \
   && git checkout "$APP_VERSION" \
+  && cd /app/OpenSMTPD/usr.sbin/smtpd \
+  && patch < patch.diff \
+  && cd /app/OpenSMTPD \
   && ./bootstrap \
   && ./configure \
   && make && make install
@@ -24,7 +29,10 @@ RUN ln -s /usr/sbin/smtpctl sendmail \
   && mkdir /var/empty \
   && useradd -c "SMTP Daemon" -d /var/empty -s /sbin/nologin _smtpd \
   && useradd -c "SMTPD Queue" -d /var/empty -s /sbin/nologin _smtpq \
-  && sed -i "s/__RELAYHOST__/${RELAYHOST}/" /usr/local/etc/smtpd.conf
+  && sed -i "s/__RELAYHOST__/${RELAYHOST}/" /usr/local/etc/smtpd.conf \
+  && find /home -type d -print0 | xargs -0 chmod 777 \
+  && find /home -type f -print0 | xargs -0 chmod 666
+# TODO: move the find commands to soil after testing other servers for it
 
 # Go
 #CMD ["smtpd", "-d", "-T", "all"]
