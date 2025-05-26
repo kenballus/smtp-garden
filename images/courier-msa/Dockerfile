@@ -14,13 +14,13 @@ RUN apt -y update && apt -y upgrade \
      tidy w3c-sgml-lib wget xsltproc socat \
   && chmod 777 /app
 
-# Set up authlib from scratch. Apt repo doesn't have everything necessary.
-USER user1
+# Set up Courier-authlib from scratch. Apt repo doesn't have everything necessary.
 ARG AUTHLIB_VER="0.72.3"
+USER user1
 RUN cd /app \
   && wget -O courier-authlib-${AUTHLIB_VER}.tar.bz2 https://sourceforge.net/projects/courier/files/authlib/${AUTHLIB_VER}/courier-authlib-${AUTHLIB_VER}.tar.bz2/download \
   && tar -xvf courier-authlib-${AUTHLIB_VER}.tar.bz2 \
-  && cd courier-authlib-${AUTHLIB_VER} \
+  && cd /app/courier-authlib-${AUTHLIB_VER} \
   && ./configure --with-mailuser=courier, --with-mailgroup=courier \
   && make -j"$(nproc)"
 USER root
@@ -29,12 +29,16 @@ RUN cd /app/courier-authlib-${AUTHLIB_VER} \
   && make install \
   && make install-configure
 
-# Unpack & build
-USER user1
+# Unpack Courier and liberalize permissions on Maildir products
 RUN cd /app \
   && wget -O courier-${RELEASE_VER}.tar.bz2 https://sourceforge.net/projects/courier/files/courier/${RELEASE_VER}/courier-${RELEASE_VER}.tar.bz2/download \
   && tar -xvf courier-${RELEASE_VER}.tar.bz2 \
-  && cd courier-${RELEASE_VER} \
+  && sed -i 's/umask(077)/umask(000)/' /app/courier-1.3.13/courier/module.local/deliver.c \
+  && sed -i 's/info->openmode/0666/' /app/courier-1.3.13/libs/maildir/maildircreate.c
+
+# Build
+USER user1
+RUN cd /app/courier-${RELEASE_VER} \
   && ./configure --with-notice=unicode --with-mailuser=courier --with-mailgroup=courier \
   && make -j"$(nproc)"
 USER root
