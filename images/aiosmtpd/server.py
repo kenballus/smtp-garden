@@ -78,7 +78,7 @@ class GardenHandler:
         The address is intended to be local. """
         u,d = self.split_rcpt(rcpt)
         if u == None or u == '':
-            return False        # Nonexistent username
+            return False        # Empty username
         if d == None or d == '':
             return True         # Empty domain, assume local
         if d in self.host_aliases:
@@ -86,9 +86,10 @@ class GardenHandler:
         return False            # Everything else
 
     def is_remote(self, rcpt):
+        """ Not a perfect inverse of is_local """
         u,d = self.split_rcpt(rcpt)
         if u == None or u == '':
-            return False        # Nonexistent username
+            return False        # Empty username
         if d == None or d == '':
             return False        # Empty domain, assume local
         if d in self.host_aliases:
@@ -104,7 +105,6 @@ class GardenHandler:
         
         message = message_from_bytes(envelope.content)
         for recipient in local_recipients:
-
             user,discard = self.split_rcpt(recipient)
             user_maildir = os.path.expanduser(f"~{user}/Maildir")
             if not os.path.exists(user_maildir):
@@ -112,6 +112,7 @@ class GardenHandler:
                 continue
             try:
                 mdir = mailbox.Maildir(user_maildir)
+                os.umask(0o000)
                 mdir.add(message)
                 announce(f"Saved message for {recipient} in {user_maildir}")
             except OSError as e:

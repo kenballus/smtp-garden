@@ -38,11 +38,11 @@ The garden has passed initial formal validation (i.e. comprehensive internal tes
   - Pre-fuzzing testing identified a few server bugs
     - Independent discovery of Nullmailer type confusion bug and a latent SIGPIPE handling bug (low severity).
 
-## TODO (as of 5/19/2025)
+## TODO (as of 5/26/2025)
 - __HIGH__ Explore fuzzing strategies and "off-the-shelf" options.
 - __HIGH__ Configure eligible servers to relay to LMTP destinations, as able
   - Exim, Postfix done
-  - Remaining: aiosmtpd, james, msmtp, opensmtpd, sendmail
+  - Remaining: aiosmtpd, msmtp, opensmtpd, sendmail
 - __HIGH__ Output gatherer-comparator: Need automation and a screening method for false-positives; Concept design stage
 - MEDIUM Investigate why echo server breaks msmtp when echo announces "EHLO"
 - MEDIUM Provide a Maildir delivery mechanism for Sendmail
@@ -70,21 +70,26 @@ Verification of expected __SMTP routing__ and __email delivery__ behavior is rec
 
 ## Deployment (volatile)
 
-### Host environment (as of 5/22/2025)
+### Host environment (as of 5/26/2025)
 
 File tree __ownership__ and __permission management__ is necessary for __local user email delivery__ and __Maildir content retrieval from the host__.
 - Update the values in your `.env` file to reflect your desired host user UID and GID.
 - `images/<image>/home` trees get volumized by docker-compose, so ensure the appropriate `user{1,2}/Maildir/{new,cur,tmp}` subdirectories are intact.
-- Suggested permissions:
-  - `<image>/home/` and all subdirectories: mode 777
-  - All `.gitignore` files: as desired (i.e., 644)
-  - any `.courier` files: must be 600 (maybe 660), or Courier will withhold deliveries to Maildir
-- To the maximum extent practical, servers should be configured/patched to save new Maildir contents as 666 for ease of management from the host, when the container is running (in progress/TODO).
+- Ideal Maildir file permissions:
+  - `<image>/home/` and subdirectories: mode 777
+  - Maildir files: mode 666 (server-dependent)
+  - `.gitignore` files: as desired (i.e., 600)
+  - After patch (0ac3045), any `.courier` files: must be 600 (maybe 660), or Courier will withhold deliveries to Maildir
+- Native permissions:
+  - aiosmtpd: depends on umask (custom wrapper saves Maildir files as 666)
   - dovecot: saves, mode 666 (based on folder permissions?)
   - exim: saves, mode 750
   - james-maildir: saves, mode 644
   - opensmtpd: patched to save, mode 666 (otherwise saves as 600 or similar AND resets Maildir permissions restrictively)
   - courier[-msa], postfix, sendmail: save, mode 600
+- Patched permissions, to 777/666:
+  - courier[-msa], opensmtpd
+  - TODO: exim, james, postfix, sendmail (sendmail needs Maildir utility)
 - Server start scripts within each Docker image should take care of file system ownership automatically.
 - Those same start scripts trap SIGINT and SIGTERM, and will reassign ownership to the UID and GID set in `.env` upon container shutdown
   - In some environments CTRL-C (instead of `docker-compose {down | stop}`) may not get trapped
