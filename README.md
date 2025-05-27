@@ -79,17 +79,15 @@ File tree __ownership__ and __permission management__ is necessary for __local u
   - `<image>/home/` and subdirectories: mode 777
   - Maildir files: mode 666 (server-dependent)
   - `.gitignore` files: as desired (i.e., 600)
-  - After patch (0ac3045), any `.courier` files: must be 600 (maybe 660), or Courier will withhold deliveries to Maildir
-- Native permissions:
-  - aiosmtpd: depends on umask (custom wrapper saves Maildir files as 666)
-  - dovecot: saves, mode 666 (based on folder permissions?)
-  - exim: saves, mode 750
-  - james-maildir: saves, mode 644
-  - opensmtpd: patched to save, mode 666 (otherwise saves as 600 or similar AND resets Maildir permissions restrictively)
-  - courier[-msa], postfix, sendmail: save, mode 600
-- Patched permissions, to 777/666:
-  - courier[-msa], opensmtpd
-  - TODO: exim, james, postfix, sendmail (sendmail needs Maildir utility)
+- TODO: Native permissions (checkbox = patched to 666, as needed):
+  - [x] aiosmtpd: depends on umask (custom wrapper saves Maildir files as 666)
+  - [x] dovecot: mode 666 (by default in current config)
+  - [ ] exim: mode 750
+  - [ ] james-maildir: mode 644
+  - [ ] postfix: mode 600
+  - [x] opensmtpd: mode 600
+  - [x] courier[-msa]: mode 600
+  - [ ] sendmail: ? (still needs a mail dropper)
 - Server start scripts within each Docker image should take care of file system ownership automatically.
 - Those same start scripts trap SIGINT and SIGTERM, and will reassign ownership to the UID and GID set in `.env` upon container shutdown
   - In some environments CTRL-C (instead of `docker-compose {down | stop}`) may not get trapped
