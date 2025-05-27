@@ -24,3 +24,21 @@ index affbcc0df..3bdd7397d 100644
  		bp->flags |= VSTREAM_FLAG_WR_ERR;
  	    } else {
  		incr = VSTREAM_ROUNDUP(shortage, stream->req_bufsize);
+
+manual patch for Maildir file permissions
+--- a/postfix/src/local/maildir.c	2025-05-27 15:37:19.409491463 +0000
++++ b/postfix/src/local/maildir.c	2025-05-27 15:38:58.560136106 +0000
+@@ -185,10 +185,10 @@
+ 		 (unsigned long) starttime.tv_sec, var_pid, get_hostname());
+     tmpfile = concatenate(tmpdir, STR(buf), (char *) 0);
+     newfile = 0;
+-    if ((dst = vstream_fopen(tmpfile, O_WRONLY | O_CREAT | O_EXCL, 0600)) == 0
++    if ((dst = vstream_fopen(tmpfile, O_WRONLY | O_CREAT | O_EXCL, 0666)) == 0
+ 	&& (errno != ENOENT
+ 	    || make_dirs(tmpdir, 0700) < 0
+-	    || (dst = vstream_fopen(tmpfile, O_WRONLY | O_CREAT | O_EXCL, 0600)) == 0)) {
++	    || (dst = vstream_fopen(tmpfile, O_WRONLY | O_CREAT | O_EXCL, 0666)) == 0)) {
+ 	dsb_simple(why, mbox_dsn(errno, "5.2.0"),
+ 		   "create maildir file %s: %m", tmpfile);
+     } else if (fstat(vstream_fileno(dst), &st) < 0) {
+
