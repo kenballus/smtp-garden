@@ -43,7 +43,7 @@ The garden has passed initial formal validation (i.e. comprehensive internal tes
 - __HIGH__ Configure eligible servers to relay to LMTP destinations, as able
   - Exim, Postfix done
   - Remaining: aiosmtpd, msmtp, opensmtpd, sendmail
-- __HIGH__ Output gatherer-comparator: Need automation and a screening method for false-positives; Concept design stage
+- __HIGH__ Output gatherer-comparator: Need automation and a screening method for false-positives; Concept design stage (private repo)
 - MEDIUM Investigate why echo server breaks msmtp when echo announces "EHLO"
 - MEDIUM Provide a Maildir delivery mechanism for Sendmail
   - Note: at this stage, this would be considered for convenience of output collection.  It has not yet been decided if SMTP-MDA smuggling is in scope or not.
@@ -70,35 +70,23 @@ Verification of expected __SMTP routing__ and __email delivery__ behavior is rec
 
 ## Deployment (volatile)
 
-### Host environment (as of 5/26/2025)
+### Host environment (as of 5/27/2025)
 
 File tree __ownership__ and __permission management__ is necessary for __local user email delivery__ and __Maildir content retrieval from the host__.
 - Update the values in your `.env` file to reflect your desired host user UID and GID.
 - `images/<image>/home` trees get volumized by docker-compose, so ensure the appropriate `user{1,2}/Maildir/{new,cur,tmp}` subdirectories are intact.
-- Ideal Maildir file permissions:
-  - `<image>/home/` and subdirectories: mode 777
-  - Maildir files: mode 666 (server-dependent)
-  - `.gitignore` files: as desired (i.e., 600)
-- TODO: Native permissions (checkbox = patched to 666, as needed):
-  - [x] aiosmtpd: depends on umask (custom wrapper saves Maildir files as 666)
-  - [x] dovecot: mode 666 (by default in current config)
-  - [ ] exim: mode 750
-  - [ ] james-maildir: mode 644
-  - [ ] postfix: mode 600
-  - [x] opensmtpd: mode 600
-  - [x] courier[-msa]: mode 600
-  - [ ] sendmail: ? (still needs a mail dropper)
 - Server start scripts within each Docker image should take care of file system ownership automatically.
 - Those same start scripts trap SIGINT and SIGTERM, and will reassign ownership to the UID and GID set in `.env` upon container shutdown
   - In some environments CTRL-C (instead of `docker-compose {down | stop}`) may not get trapped
 - The fix, if file ownership has been mangled, and you can't access Maildirs from the host:
   - Re-launch the container (via compose) and ensure the volume is attached
   - Within the container, run `chown -R <UID>:<GID> /home`
-  - This will temporarily break the server's local mail delivery, but you can now access `images/<image>/home` contents at will, as the host user
+  - This might temporarily break the server's local mail delivery, but you can now access `images/<image>/home` contents at will, as the host user
   - Start script will reset permissions correctly next time the container is started.
 - Exceptions:
   - Apache James: use james-maildir image for Maildir capability, see the [James README](images/james) and the [james-maildir README](images/james-maildir) for details.
-  - Sendmail: Since it does not have MDA capacity, locally addressed messages can be gathered from `/var/spool/mqueue`, see [README](images/sendmail) (and TODO).
+  - Sendmail: Since it does not have MDA capacity, locally addressed messages can be gathered from `/var/spool/mqueue`, see [README](images/sendmail).
+- Permissions: see "Output Collection," below.
 
 ### Build and tag containers
 
@@ -136,7 +124,7 @@ SMTP (mostly arbitrary order)
 - 2501 - aiosmtpd 
 - 2502 - courier
 - 2503 - exim
-- 2504 - james
+- 2504 - james[-maildir]
 - 2505 - msmtp
 - 2506 - (reserved)
 - 2507 - nullmailer
@@ -176,19 +164,24 @@ aiosmtpd=2501
 ./sendmsg.py message_file $aiosmtpd
 ```
 
-## Output Collection (5/6/2025)
+## Output Collection (as of 5/27/2025)
 Payloads are ultimately delivered to stdout or a volume.
 - `echo` outputs all sent/received traffic to stdout
 - A host's `image/<server>/home` folders are bind mounted to each container's `/home` for Docker host-based access.
   - i.e. `images/exim/home/user1/Maildir` binds Exim container's `/home/user1/Maildir`
-  - File system permission management:
-    - Server start scripts in each Docker image should take care of file system and volume permissions (see "Deployment:Host Environment" above)
-    - Without root on host, you may not be able to directly access volume contents while a container is running (without `exec`ing into the container)
-- Shell scripts
+  - File permission management:
+    - Maildir-capable servers are patched to save files in mode 666 for flexibility in outpout management 
+    - Ideal Maildir file permissions:
+      - `<image>/home/` and subdirectories: mode 777
+      - Maildir files: mode 666
+      - `.gitignore` files: as desired (i.e., 600)
+  - Server start scripts in each Docker image should take care of file system and volume ownership (see "Deployment:Host Environment" above)
+- Utility scripts:
   - `shownew.sh` to list (and optionally print contents of) files in `Maildir/new` directories
   - `diffnew.sh` finds files in `Maildir/new` directories and diffs them
   - `markread.sh` to move emails between `Maildir/new/` and `Maildir/cur/` directories
   - `purge.sh` will delete all volume files not called `.gitignore`.
+  - Scripts have useful options, see `-h`
 
 ## Issues/Troubleshooting
 Please submit a new github issue or contact the maintainers directly.
