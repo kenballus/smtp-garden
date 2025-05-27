@@ -251,7 +251,8 @@ local_delivery:
   directory = ${home}/Maildir
   maildir_format
   create_directory
-  mode = 0750
+  mode = 0666
+  mode_fail_narrower = false
 
 remote_lmtp:
   driver = smtp

@@ -15,9 +15,11 @@ RUN cd exim \
   && cp src/EDITME Local/Makefile \
   && sed -i -e 's/^EXIM_USER=/EXIM_USER=exim/' -e 's/^# USE_OPENSSL=/USE_OPENSSL=/' \
        -e 's/^# USE_OPENSSL_PC=/USE_OPENSSL_PC=/' -e 's/^# SUPPORT_MAILDIR=/SUPPORT_MAILDIR=/' \
-       Local/Makefile \
+       -e 's/# APPENDFILE_MODE=0600/APPENDFILE_MODE=0666/' Local/Makefile \
   && make -j$(nproc) \
   && make install
+  # was up above, but moved into single sed line:
+  #&& sed -i 's/# APPENDFILE_MODE=0600/APPENDFILE_MODE=0666/' /app/exim/src/src/EDITME \
 
 # Configure
 COPY configure /usr/exim/
