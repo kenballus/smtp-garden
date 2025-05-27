@@ -54,6 +54,18 @@ mkdir -p "$(dirname "$LOCKFILE")"
         echo "$MESSAGE" >> "$LOGFILE"
     fi
 
+    chmod 666 $NEWFILE > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        MESSAGE="[$(date '+%Y-%m-%d %H:%M:%S')] Unable to chmod 666 $NEWFILE"
+        if [ "$QUIET" -eq 0 ]; then
+            echo "$MESSAGE"
+        fi
+        if [ -n "$LOGFILE" ]; then
+            echo "$MESSAGE" >> "$LOGFILE"
+        fi
+    fi
+
+
 ) 200>"$LOCKFILE"
 
 exit 0
